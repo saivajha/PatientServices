@@ -428,12 +428,17 @@ def main():
         
         # Sidebar
         with st.sidebar:
+            # Create proper HTML content
+            card_class = 'user-card' if st.session_state.user_role == 'patient' else 'agent-card'
+            diagnosis_html = f'<p><strong>Diagnosis:</strong> {user_context["diagnosis"]}</p>' if st.session_state.user_role == "patient" else ''
+            department_html = f'<p><strong>Department:</strong> {user_context["department"]}</p>' if st.session_state.user_role == "agent" else ''
+            
             st.markdown(f"""
-            <div class="{'user-card' if st.session_state.user_role == 'patient' else 'agent-card'}">
+            <div class="{card_class}">
                 <h3>👋 Welcome, {st.session_state.user_name}!</h3>
                 <p><strong>Role:</strong> {st.session_state.user_role.title()}</p>
-                {f'<p><strong>Diagnosis:</strong> {user_context["diagnosis"]}</p>' if st.session_state.user_role == "patient" else ''}
-                {f'<p><strong>Department:</strong> {user_context["department"]}</p>' if st.session_state.user_role == "agent" else ''}
+                {diagnosis_html}
+                {department_html}
             </div>
             """, unsafe_allow_html=True)
             
@@ -485,7 +490,7 @@ def show_patient_dashboard(user_context):
     with journey_col1:
         st.markdown("""
         <div class="journey-step">
-            <h4 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem;">✅ MS Diagnosis</h4>
+            <h5 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem;">✅ MS Diagnosis</h5>
             <p style="color: #666; margin: 0; font-size: 0.9rem;">October 20, 2025</p>
         </div>
         """, unsafe_allow_html=True)
@@ -493,7 +498,7 @@ def show_patient_dashboard(user_context):
     with journey_col2:
         st.markdown("""
         <div class="journey-step">
-            <h4 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem;">✅ Treatment Plan</h4>
+            <h5 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem;">✅ Treatment Plan</h5>
             <p style="color: #666; margin: 0; font-size: 0.9rem;">Tysabri Approved</p>
         </div>
         """, unsafe_allow_html=True)
@@ -501,7 +506,7 @@ def show_patient_dashboard(user_context):
     with journey_col3:
         st.markdown("""
         <div class="journey-step">
-            <h4 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem;">📅 First Infusion</h4>
+            <h5 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem;">📅 First Infusion</h5>
             <p style="color: #666; margin: 0; font-size: 0.9rem;">October 25, 2025</p>
         </div>
         """, unsafe_allow_html=True)
@@ -722,7 +727,6 @@ def show_agent_dashboard(user_context):
     
     # Test different scenarios
     test_scenarios = [
-        "What is my name?",
         "Tell me about Tysabri side effects",
         "I'm feeling anxious about my treatment",
         "Can you help with transportation?",
