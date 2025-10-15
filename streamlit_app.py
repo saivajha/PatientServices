@@ -3,6 +3,7 @@ import openai
 import os
 from datetime import datetime
 import json
+import urllib.parse
 
 # Page configuration
 st.set_page_config(
@@ -555,7 +556,36 @@ def show_patient_dashboard(user_context):
     
     with col1:
         if st.button("📞 Contact Your Rep", use_container_width=True):
-            st.success("WhatsApp integration would connect you with your Patient Services Agent Cindy Smith.")
+            # Get patient phone number
+            patient_phone = st.text_input("Enter your phone number (e.g., +15551234567):", key="patient_phone", placeholder="+1 555 123-4567")
+            if patient_phone:
+                # Create WhatsApp message
+                message = f"Hi Cindy! This is Sarah Parker (Patient ID: SP-2025-001). I have some questions about my Tysabri therapy. My number is {patient_phone}. Thank you for your support! 💙"
+                encoded_message = urllib.parse.quote(message)
+                agent_number = "+15559876543"  # Cindy's number
+                whatsapp_url = f"https://wa.me/{agent_number.replace('+', '').replace('-', '').replace(' ', '')}?text={encoded_message}"
+                
+                # Create a clickable link
+                st.markdown(f"""
+                <div style="text-align: center; margin: 20px 0;">
+                    <a href="{whatsapp_url}" target="_blank" style="
+                        background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+                        color: white;
+                        padding: 12px 24px;
+                        text-decoration: none;
+                        border-radius: 25px;
+                        font-weight: 600;
+                        display: inline-block;
+                        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+                    ">
+                        💬 Open WhatsApp Chat
+                    </a>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                st.success("✅ WhatsApp link generated! Click the button above to start chatting with Cindy.")
+            else:
+                st.info("Please enter your phone number to generate the WhatsApp link.")
     
     with col2:
         if st.button("🚗 Request Transportation", use_container_width=True):
@@ -646,6 +676,46 @@ def show_agent_dashboard(user_context):
                 st.write(f"**Last Contact:** {info['last_contact']}")
             with col2:
                 st.write(f"**Key Concerns:** {', '.join(info['concerns'])}")
+            
+            # WhatsApp contact button
+            st.markdown("---")
+            col_btn1, col_btn2 = st.columns(2)
+            with col_btn1:
+                if st.button(f"📞 Contact {patient.split()[0]}", key=f"contact_{patient}"):
+                    # Get patient phone number
+                    phone_input = st.text_input(f"Enter {patient}'s phone number:", key=f"phone_{patient}", placeholder="+1 555 123-4567")
+                    if phone_input:
+                        # Create WhatsApp message
+                        message = f"Hi {patient.split()[0]}! This is Cindy from Biogen Patient Services. I'm calling to check on your Tysabri treatment. How are you feeling today? We're here to support you every step of the way! 💙"
+                        encoded_message = urllib.parse.quote(message)
+                        patient_number = phone_input.replace('+', '').replace('-', '').replace(' ', '')
+                        whatsapp_url = f"https://wa.me/{patient_number}?text={encoded_message}"
+                        
+                        st.markdown(f"""
+                        <div style="text-align: center; margin: 10px 0;">
+                            <a href="{whatsapp_url}" target="_blank" style="
+                                background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+                                color: white;
+                                padding: 10px 20px;
+                                text-decoration: none;
+                                border-radius: 20px;
+                                font-weight: 600;
+                                display: inline-block;
+                                box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+                                font-size: 14px;
+                            ">
+                                💬 Open WhatsApp Chat
+                            </a>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        
+                        st.success("✅ WhatsApp link generated! Click the button above to start chatting.")
+                    else:
+                        st.info("Please enter the patient's phone number to generate the WhatsApp link.")
+            
+            with col_btn2:
+                if st.button(f"📋 View Details", key=f"details_{patient}"):
+                    st.info(f"Detailed patient information for {patient} would be displayed here in a real system.")
     
     # AI Testing Section
     st.markdown("### 🤖 AI Testing & Support")
