@@ -689,7 +689,171 @@ def show_patient_dashboard(user_context):
     
     with col2:
         if st.button("🚗 Request Transportation", use_container_width=True):
-            st.success("Transportation assistance feature would help arrange rides to your appointments.")
+            st.session_state.show_transportation = True
+    
+    # Transportation Section
+    if st.session_state.get('show_transportation', False):
+        st.markdown("### 🚗 Transportation Assistance")
+        
+        # Starting address input
+        st.markdown("**Enter your starting address:**")
+        starting_address = st.text_input(
+            "Your address:",
+            placeholder="e.g., 123 Main St, Palo Alto, CA 94301",
+            key="starting_address"
+        )
+        
+        if starting_address:
+            # Simulate AI finding nearby infusion centers
+            st.markdown("**🤖 AI is finding nearby infusion centers...**")
+            
+            # Simulated infusion centers (in a real app, this would use geocoding APIs)
+            nearby_centers = [
+                {
+                    "name": "Palo Alto Infusion Center",
+                    "address": "456 University Ave, Palo Alto, CA 94301",
+                    "distance": "2.3 miles",
+                    "rating": "4.8",
+                    "phone": "(650) 123-4567",
+                    "hours": "Mon-Fri 8AM-6PM"
+                },
+                {
+                    "name": "Stanford Medical Center",
+                    "address": "300 Pasteur Dr, Stanford, CA 94305",
+                    "distance": "3.1 miles", 
+                    "rating": "4.9",
+                    "phone": "(650) 723-4000",
+                    "hours": "Mon-Fri 7AM-7PM"
+                },
+                {
+                    "name": "Mountain View Infusion Clinic",
+                    "address": "789 Castro St, Mountain View, CA 94041",
+                    "distance": "4.7 miles",
+                    "rating": "4.6",
+                    "phone": "(650) 987-6543",
+                    "hours": "Mon-Fri 9AM-5PM"
+                },
+                {
+                    "name": "Redwood City Medical Center",
+                    "address": "123 Veterans Blvd, Redwood City, CA 94063",
+                    "distance": "6.2 miles",
+                    "rating": "4.7",
+                    "phone": "(650) 555-0123",
+                    "hours": "Mon-Fri 8AM-6PM"
+                }
+            ]
+            
+            st.markdown("**📍 Nearby Infusion Centers:**")
+            
+            # Display centers with selection
+            selected_center = None
+            for i, center in enumerate(nearby_centers):
+                col_name, col_distance, col_select = st.columns([3, 1, 1])
+                
+                with col_name:
+                    st.markdown(f"""
+                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #0066cc;">
+                        <strong>{center['name']}</strong><br>
+                        <small style="color: #666;">{center['address']}</small><br>
+                        <small style="color: #666;">⭐ {center['rating']} • 📞 {center['phone']}</small><br>
+                        <small style="color: #666;">🕒 {center['hours']}</small>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                with col_distance:
+                    st.markdown(f"**{center['distance']}**")
+                
+                with col_select:
+                    if st.button(f"Select", key=f"select_center_{i}"):
+                        selected_center = center
+                        st.session_state.selected_center = center
+                        st.success(f"✅ Selected: {center['name']}")
+            
+            # Uber booking section
+            if selected_center or 'selected_center' in st.session_state:
+                center = selected_center or st.session_state.selected_center
+                
+                st.markdown("---")
+                st.markdown(f"### 🚗 Book Uber Ride to {center['name']}")
+                
+                col_from, col_to = st.columns(2)
+                
+                with col_from:
+                    st.markdown(f"**From:** {starting_address}")
+                
+                with col_to:
+                    st.markdown(f"**To:** {center['address']}")
+                
+                # Trip details
+                st.markdown("**Trip Details:**")
+                col_distance, col_time, col_price = st.columns(3)
+                
+                with col_distance:
+                    st.metric("Distance", center['distance'])
+                
+                with col_time:
+                    # Simulate estimated time based on distance
+                    estimated_time = "8-12 min" if float(center['distance'].split()[0]) < 3 else "12-18 min"
+                    st.metric("Est. Time", estimated_time)
+                
+                with col_price:
+                    # Simulate price estimation
+                    base_price = 8.50 if float(center['distance'].split()[0]) < 3 else 12.75
+                    st.metric("Est. Price", f"${base_price:.2f}")
+                
+                # Uber booking options
+                st.markdown("**Choose Uber Service:**")
+                col_uberx, col_comfort, col_xl = st.columns(3)
+                
+                with col_uberx:
+                    if st.button("🚗 UberX", use_container_width=True):
+                        uber_url = f"https://m.uber.com/ul/?action=setPickup&pickup[latitude]=37.4419&pickup[longitude]=-122.1430&dropoff[latitude]=37.4419&dropoff[longitude]=-122.1430&dropoff[nickname]={center['name']}"
+                        st.markdown(f"""
+                        <div style="text-align: center; margin: 15px 0;">
+                            <a href="{uber_url}" target="_blank" style="
+                                background: linear-gradient(135deg, #000000 0%, #333333 100%);
+                                color: white;
+                                padding: 12px 24px;
+                                text-decoration: none;
+                                border-radius: 25px;
+                                font-weight: 600;
+                                display: inline-block;
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                            ">
+                                🚗 Open Uber App
+                            </a>
+                        </div>
+                        """, unsafe_allow_html=True)
+                        st.success("✅ UberX ride requested! The Uber app will open with your trip details.")
+                
+                with col_comfort:
+                    if st.button("🚙 Uber Comfort", use_container_width=True):
+                        st.info("💡 Uber Comfort provides newer cars with extra legroom - perfect for medical appointments!")
+                
+                with col_xl:
+                    if st.button("🚐 UberXL", use_container_width=True):
+                        st.info("💡 UberXL offers larger vehicles - ideal if you need assistance or extra space!")
+                
+                # Additional options
+                st.markdown("**Additional Options:**")
+                col_schedule, col_roundtrip = st.columns(2)
+                
+                with col_schedule:
+                    if st.button("📅 Schedule for Later", use_container_width=True):
+                        st.info("💡 Schedule your ride for a specific time - great for planned appointments!")
+                
+                with col_roundtrip:
+                    if st.button("🔄 Round Trip", use_container_width=True):
+                        st.info("💡 Book a round trip to ensure you have a ride home after your infusion!")
+                
+                # Reset selection
+                if st.button("🔄 Choose Different Center"):
+                    if 'selected_center' in st.session_state:
+                        del st.session_state.selected_center
+                    st.rerun()
+        
+        else:
+            st.info("📍 Please enter your starting address to find nearby infusion centers.")
     
     with col3:
         if st.button("📅 Schedule Appointment", use_container_width=True):
