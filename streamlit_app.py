@@ -504,17 +504,21 @@ def main():
         with st.sidebar:
             # Create proper HTML content
             card_class = 'user-card' if st.session_state.user_role == 'patient' else 'agent-card'
-            diagnosis_html = f'<p><strong>Diagnosis:</strong> {user_context["diagnosis"]}</p>' if st.session_state.user_role == "patient" else ''
-            department_html = f'<p><strong>Department:</strong> {user_context["department"]}</p>' if st.session_state.user_role == "agent" else ''
             
-            st.markdown(f"""
+            # Build HTML content safely
+            html_content = f"""
             <div class="{card_class}">
                 <h3>👋 Welcome, {st.session_state.user_name}!</h3>
-                <p><strong>Role:</strong> {st.session_state.user_role.title()}</p>
-                {diagnosis_html}
-                {department_html}
-            </div>
-            """, unsafe_allow_html=True)
+                <p><strong>Role:</strong> {st.session_state.user_role.title()}</p>"""
+            
+            if st.session_state.user_role == "patient":
+                html_content += f'<p><strong>Diagnosis:</strong> {user_context["diagnosis"]}</p>'
+            else:
+                html_content += f'<p><strong>Department:</strong> {user_context["department"]}</p>'
+            
+            html_content += "</div>"
+            
+            st.markdown(html_content, unsafe_allow_html=True)
             
             # Logout
             if st.button("🚪 Logout", use_container_width=True):
