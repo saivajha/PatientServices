@@ -1,7 +1,7 @@
 import streamlit as st
 import openai
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import urllib.parse
 
@@ -730,17 +730,21 @@ def show_patient_dashboard(user_context):
             col_save, col_cancel = st.columns(2)
             with col_save:
                 if st.button("💾 Save Changes", key="save_appointment"):
-                    # Calculate new start date
-                    new_start = new_date
-                    new_appointments = []
-                    for i in range(6):
-                        appointment_date = new_start + timedelta(days=28 * i)
-                        new_appointments.append(appointment_date.strftime("%Y-%m-%d"))
-                    
-                    st.session_state.appointments = new_appointments
-                    st.session_state.edit_appointment = None
-                    st.success("✅ Appointments updated! All future appointments adjusted to maintain 28-day intervals.")
-                    st.rerun()
+                    try:
+                        # Calculate new start date
+                        new_start = new_date
+                        new_appointments = []
+                        for i in range(6):
+                            appointment_date = new_start + timedelta(days=28 * i)
+                            new_appointments.append(appointment_date.strftime("%Y-%m-%d"))
+                        
+                        st.session_state.appointments = new_appointments
+                        st.session_state.edit_appointment = None
+                        st.success("✅ Appointments updated! All future appointments adjusted to maintain 28-day intervals.")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"❌ Error updating appointments: {str(e)}")
+                        st.info("Please try again or contact support if the issue persists.")
             
             with col_cancel:
                 if st.button("❌ Cancel", key="cancel_appointment"):
@@ -752,27 +756,57 @@ def show_patient_dashboard(user_context):
         st.markdown("### 📅 Custom Date Selection")
         st.markdown("**Need to schedule an appointment more than 28 days apart?**")
         
+        # Safe date calculation for custom date input
+        try:
+            if 'appointments' in st.session_state and st.session_state.appointments:
+                last_appointment = datetime.strptime(st.session_state.appointments[-1], "%Y-%m-%d").date()
+                default_custom_date = last_appointment + timedelta(days=28)
+            else:
+                # Fallback to a default date if appointments not initialized
+                default_custom_date = datetime(2025, 10, 25).date() + timedelta(days=28)
+        except (ValueError, KeyError, IndexError):
+            # Additional fallback in case of any date parsing issues
+            default_custom_date = datetime(2025, 11, 22).date()
+        
         custom_date = st.date_input(
             "Select custom date:",
-            value=datetime.strptime(st.session_state.appointments[-1], "%Y-%m-%d").date() + timedelta(days=28),
+            value=default_custom_date,
             key="custom_date",
             help="This will create a new appointment at your selected date, and subsequent appointments will be 28 days from this date."
         )
         
         if st.button("📅 Schedule Custom Appointment"):
-            # Add custom appointment and regenerate future ones
-            custom_appointments = [app for app in st.session_state.appointments if datetime.strptime(app, "%Y-%m-%d").date() < custom_date]
-            custom_appointments.append(custom_date.strftime("%Y-%m-%d"))
-            
-            # Generate remaining appointments from custom date
-            remaining_count = 6 - len(custom_appointments)
-            for i in range(remaining_count):
-                next_date = custom_date + timedelta(days=28 * (i + 1))
-                custom_appointments.append(next_date.strftime("%Y-%m-%d"))
-            
-            st.session_state.appointments = custom_appointments[:6]
-            st.success(f"✅ Custom appointment scheduled for {custom_date.strftime('%B %d, %Y')}! Future appointments adjusted.")
-            st.rerun()
+            try:
+                # Ensure appointments are initialized
+                if 'appointments' not in st.session_state:
+                    st.session_state.appointments = generate_appointments()
+                
+                # Add custom appointment and regenerate future ones
+                custom_appointments = []
+                for app in st.session_state.appointments:
+                    try:
+                        app_date = datetime.strptime(app, "%Y-%m-%d").date()
+                        if app_date < custom_date:
+                            custom_appointments.append(app)
+                    except ValueError:
+                        # Skip invalid dates
+                        continue
+                
+                custom_appointments.append(custom_date.strftime("%Y-%m-%d"))
+                
+                # Generate remaining appointments from custom date
+                remaining_count = 6 - len(custom_appointments)
+                for i in range(remaining_count):
+                    next_date = custom_date + timedelta(days=28 * (i + 1))
+                    custom_appointments.append(next_date.strftime("%Y-%m-%d"))
+                
+                st.session_state.appointments = custom_appointments[:6]
+                st.success(f"✅ Custom appointment scheduled for {custom_date.strftime('%B %d, %Y')}! Future appointments adjusted.")
+                st.rerun()
+                
+            except Exception as e:
+                st.error(f"❌ Error scheduling appointment: {str(e)}")
+                st.info("Please try again or contact support if the issue persists.")
         
         # Reset appointments button
         if st.button("🔄 Reset to Default Schedule"):
