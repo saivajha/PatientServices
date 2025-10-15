@@ -5,6 +5,16 @@ from datetime import datetime, timedelta
 import json
 import urllib.parse
 
+# Helper function for generating appointments
+def generate_appointments(start_date_str="2025-10-25", count=6):
+    """Generate a list of appointment dates spaced 28 days apart"""
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+    appointments = []
+    for i in range(count):
+        appointment_date = start_date + timedelta(days=28 * i)
+        appointments.append(appointment_date.strftime("%Y-%m-%d"))
+    return appointments
+
 # Page configuration
 st.set_page_config(
     page_title="Patient Services",
@@ -678,16 +688,6 @@ def show_patient_dashboard(user_context):
     if st.session_state.get('show_scheduling', False):
         st.markdown("### 📅 Infusion Scheduling")
         
-        # Generate next 6 appointments (28 days apart)
-        def generate_appointments(start_date_str="2025-10-25", count=6):
-            from datetime import datetime, timedelta
-            start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
-            appointments = []
-            for i in range(count):
-                appointment_date = start_date + timedelta(days=28 * i)
-                appointments.append(appointment_date.strftime("%Y-%m-%d"))
-            return appointments
-        
         # Initialize appointments if not exists
         if 'appointments' not in st.session_state:
             st.session_state.appointments = generate_appointments()
@@ -699,8 +699,11 @@ def show_patient_dashboard(user_context):
             col_date, col_edit, col_status = st.columns([3, 1, 1])
             
             with col_date:
-                appointment_dt = datetime.strptime(appointment, "%Y-%m-%d")
-                st.write(f"**Appointment {i+1}:** {appointment_dt.strftime('%B %d, %Y')} ({appointment_dt.strftime('%A')})")
+                try:
+                    appointment_dt = datetime.strptime(appointment, "%Y-%m-%d")
+                    st.write(f"**Appointment {i+1}:** {appointment_dt.strftime('%B %d, %Y')} ({appointment_dt.strftime('%A')})")
+                except ValueError:
+                    st.write(f"**Appointment {i+1}:** {appointment} (Invalid Date)")
             
             with col_edit:
                 if st.button("✏️", key=f"edit_{i}", help="Edit this appointment"):
@@ -720,9 +723,16 @@ def show_patient_dashboard(user_context):
             st.markdown(f"### ✏️ Edit Appointment {st.session_state.edit_appointment + 1}")
             
             current_date = st.session_state.appointments[st.session_state.edit_appointment]
+            try:
+                current_date_obj = datetime.strptime(current_date, "%Y-%m-%d").date()
+            except ValueError:
+                # Fallback to a default date if current date is invalid
+                current_date_obj = datetime(2025, 10, 25).date()
+                st.warning(f"⚠️ Invalid date format found: {current_date}. Using default date.")
+            
             new_date = st.date_input(
                 "Select new date:",
-                value=datetime.strptime(current_date, "%Y-%m-%d").date(),
+                value=current_date_obj,
                 key=f"new_date_{st.session_state.edit_appointment}",
                 help="Select any date. Appointments will adjust to maintain 28-day intervals."
             )
