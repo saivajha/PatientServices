@@ -24,30 +24,46 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
     
-    /* Main header with Biogen blue gradient */
+    /* Main header with Biogen blue gradient - Mobile optimized */
     .main-header {
         background: linear-gradient(135deg, #003366 0%, #0066cc 50%, #0080ff 100%);
-        padding: 3rem 2rem;
-        border-radius: 15px;
+        padding: 1.5rem 1rem;
+        border-radius: 10px;
         color: white;
         text-align: center;
-        margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(0, 102, 204, 0.2);
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 16px rgba(0, 102, 204, 0.2);
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     .main-header h1 {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
         font-weight: 700;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
     
     .main-header p {
-        font-size: 1.2rem;
+        font-size: 1rem;
         font-weight: 300;
         opacity: 0.9;
         margin: 0;
+    }
+    
+    /* Mobile responsive adjustments */
+    @media (max-width: 768px) {
+        .main-header {
+            padding: 1rem 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .main-header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .main-header p {
+            font-size: 0.9rem;
+        }
     }
     
     /* Patient card with elegant blue gradient */
@@ -218,6 +234,64 @@ st.markdown("""
         background: linear-gradient(135deg, #e6f3ff 0%, #f0f8ff 100%);
         transform: translateY(-2px);
         box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
+    }
+    
+    /* Mobile-specific improvements */
+    @media (max-width: 768px) {
+        .stApp {
+            padding: 0.5rem;
+        }
+        
+        .user-card, .agent-card {
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .metric-card {
+            padding: 1rem;
+            margin: 0.5rem;
+        }
+        
+        .journey-step {
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .chat-message {
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .user-message {
+            margin-left: 15%;
+        }
+        
+        .ai-message {
+            margin-right: 15%;
+        }
+        
+        /* Sidebar improvements for mobile */
+        .css-1d391kg {
+            padding: 0.5rem;
+        }
+        
+        /* Button improvements for mobile */
+        .stButton > button {
+            padding: 0.75rem 1rem;
+            font-size: 14px;
+        }
+        
+        /* Input improvements for mobile */
+        .stTextInput > div > div > input {
+            padding: 0.75rem;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+        
+        /* Date input improvements for mobile */
+        .stDateInput > div > div > input {
+            padding: 0.75rem;
+            font-size: 16px;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -442,21 +516,6 @@ def main():
             </div>
             """, unsafe_allow_html=True)
             
-            # AI Configuration
-            st.markdown("### 🤖 AI Configuration")
-            ai_provider = st.selectbox(
-                "Choose AI Provider",
-                ["openai", "demo"],
-                help="OpenAI requires API key, Demo works without"
-            )
-            
-            # Test AI Connection
-            if st.button("🔍 Test AI Connection"):
-                test_message = "Hello, are you working?"
-                with st.spinner("Testing AI connection..."):
-                    response = generate_ai_response(test_message, user_context, ai_provider)
-                st.success(f"✅ AI Response: {response}")
-            
             # Logout
             if st.button("🚪 Logout", use_container_width=True):
                 st.session_state.user_role = None
@@ -561,18 +620,25 @@ def show_patient_dashboard(user_context):
     
     with col1:
         if st.button("📞 Contact Your Rep", use_container_width=True):
-            # Get patient phone number
+            st.session_state.show_whatsapp = True
+        
+        if st.session_state.get('show_whatsapp', False):
             patient_phone = st.text_input("Enter your phone number (e.g., +15551234567):", key="patient_phone", placeholder="+1 555 123-4567")
-            if patient_phone:
+            if patient_phone and len(patient_phone.replace('+', '').replace('-', '').replace(' ', '')) >= 10:
+                # Clean phone number
+                clean_phone = patient_phone.replace('+', '').replace('-', '').replace(' ', '')
+                if not clean_phone.startswith('1') and len(clean_phone) == 10:
+                    clean_phone = '1' + clean_phone
+                
                 # Create WhatsApp message
                 message = f"Hi Cindy! This is Sarah Parker (Patient ID: SP-2025-001). I have some questions about my Tysabri therapy. My number is {patient_phone}. Thank you for your support! 💙"
                 encoded_message = urllib.parse.quote(message)
-                agent_number = "+15559876543"  # Cindy's number
-                whatsapp_url = f"https://wa.me/{agent_number.replace('+', '').replace('-', '').replace(' ', '')}?text={encoded_message}"
+                agent_number = "15559876543"  # Cindy's number (no +)
+                whatsapp_url = f"https://wa.me/{agent_number}?text={encoded_message}"
                 
-                # Create a clickable link
+                # Create a clickable link that actually works
                 st.markdown(f"""
-                <div style="text-align: center; margin: 20px 0;">
+                <div style="text-align: center; margin: 15px 0;">
                     <a href="{whatsapp_url}" target="_blank" style="
                         background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
                         color: white;
@@ -582,13 +648,17 @@ def show_patient_dashboard(user_context):
                         font-weight: 600;
                         display: inline-block;
                         box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+                        font-size: 16px;
                     ">
                         💬 Open WhatsApp Chat
                     </a>
                 </div>
                 """, unsafe_allow_html=True)
                 
-                st.success("✅ WhatsApp link generated! Click the button above to start chatting with Cindy.")
+                st.success("✅ WhatsApp link generated! Click the green button above to start chatting with Cindy.")
+                st.info(f"📱 This will open WhatsApp and send a message to Cindy at +1-555-987-6543")
+            elif patient_phone:
+                st.error("❌ Please enter a valid phone number (at least 10 digits)")
             else:
                 st.info("Please enter your phone number to generate the WhatsApp link.")
     
@@ -598,7 +668,113 @@ def show_patient_dashboard(user_context):
     
     with col3:
         if st.button("📅 Schedule Appointment", use_container_width=True):
-            st.success("Appointment scheduling feature would help you manage your infusion appointments.")
+            st.session_state.show_scheduling = True
+    
+    # Scheduling Section
+    if st.session_state.get('show_scheduling', False):
+        st.markdown("### 📅 Infusion Scheduling")
+        
+        # Generate next 6 appointments (28 days apart)
+        def generate_appointments(start_date_str="2025-10-25", count=6):
+            from datetime import datetime, timedelta
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+            appointments = []
+            for i in range(count):
+                appointment_date = start_date + timedelta(days=28 * i)
+                appointments.append(appointment_date.strftime("%Y-%m-%d"))
+            return appointments
+        
+        # Initialize appointments if not exists
+        if 'appointments' not in st.session_state:
+            st.session_state.appointments = generate_appointments()
+        
+        st.markdown("**Your Next 6 Infusion Appointments (Every 28 Days):**")
+        
+        # Display appointments with edit capability
+        for i, appointment in enumerate(st.session_state.appointments):
+            col_date, col_edit, col_status = st.columns([3, 1, 1])
+            
+            with col_date:
+                appointment_dt = datetime.strptime(appointment, "%Y-%m-%d")
+                st.write(f"**Appointment {i+1}:** {appointment_dt.strftime('%B %d, %Y')} ({appointment_dt.strftime('%A')})")
+            
+            with col_edit:
+                if st.button("✏️", key=f"edit_{i}", help="Edit this appointment"):
+                    st.session_state.edit_appointment = i
+            
+            with col_status:
+                if i == 0:
+                    st.success("Next")
+                elif i < 3:
+                    st.info("Upcoming")
+                else:
+                    st.write("Scheduled")
+        
+        # Edit appointment modal
+        if 'edit_appointment' in st.session_state:
+            st.markdown("---")
+            st.markdown(f"### ✏️ Edit Appointment {st.session_state.edit_appointment + 1}")
+            
+            current_date = st.session_state.appointments[st.session_state.edit_appointment]
+            new_date = st.date_input(
+                "Select new date:",
+                value=datetime.strptime(current_date, "%Y-%m-%d").date(),
+                key=f"new_date_{st.session_state.edit_appointment}",
+                help="Select any date. Appointments will adjust to maintain 28-day intervals."
+            )
+            
+            col_save, col_cancel = st.columns(2)
+            with col_save:
+                if st.button("💾 Save Changes", key="save_appointment"):
+                    # Calculate new start date
+                    new_start = new_date
+                    new_appointments = []
+                    for i in range(6):
+                        appointment_date = new_start + timedelta(days=28 * i)
+                        new_appointments.append(appointment_date.strftime("%Y-%m-%d"))
+                    
+                    st.session_state.appointments = new_appointments
+                    st.session_state.edit_appointment = None
+                    st.success("✅ Appointments updated! All future appointments adjusted to maintain 28-day intervals.")
+                    st.rerun()
+            
+            with col_cancel:
+                if st.button("❌ Cancel", key="cancel_appointment"):
+                    st.session_state.edit_appointment = None
+                    st.rerun()
+        
+        # Custom date selection for extended intervals
+        st.markdown("---")
+        st.markdown("### 📅 Custom Date Selection")
+        st.markdown("**Need to schedule an appointment more than 28 days apart?**")
+        
+        custom_date = st.date_input(
+            "Select custom date:",
+            value=datetime.strptime(st.session_state.appointments[-1], "%Y-%m-%d").date() + timedelta(days=28),
+            key="custom_date",
+            help="This will create a new appointment at your selected date, and subsequent appointments will be 28 days from this date."
+        )
+        
+        if st.button("📅 Schedule Custom Appointment"):
+            # Add custom appointment and regenerate future ones
+            custom_appointments = [app for app in st.session_state.appointments if datetime.strptime(app, "%Y-%m-%d").date() < custom_date]
+            custom_appointments.append(custom_date.strftime("%Y-%m-%d"))
+            
+            # Generate remaining appointments from custom date
+            remaining_count = 6 - len(custom_appointments)
+            for i in range(remaining_count):
+                next_date = custom_date + timedelta(days=28 * (i + 1))
+                custom_appointments.append(next_date.strftime("%Y-%m-%d"))
+            
+            st.session_state.appointments = custom_appointments[:6]
+            st.success(f"✅ Custom appointment scheduled for {custom_date.strftime('%B %d, %Y')}! Future appointments adjusted.")
+            st.rerun()
+        
+        # Reset appointments button
+        if st.button("🔄 Reset to Default Schedule"):
+            st.session_state.appointments = generate_appointments()
+            st.success("✅ Appointments reset to default 28-day schedule starting October 25, 2025.")
+            st.rerun()
 
 def show_agent_dashboard(user_context):
     """Display agent dashboard"""
@@ -687,36 +863,45 @@ def show_agent_dashboard(user_context):
             col_btn1, col_btn2 = st.columns(2)
             with col_btn1:
                 if st.button(f"📞 Contact {patient.split()[0]}", key=f"contact_{patient}"):
-                    # Get patient phone number
-                    phone_input = st.text_input(f"Enter {patient}'s phone number:", key=f"phone_{patient}", placeholder="+1 555 123-4567")
-                    if phone_input:
-                        # Create WhatsApp message
-                        message = f"Hi {patient.split()[0]}! This is Cindy from Biogen Patient Services. I'm calling to check on your Tysabri treatment. How are you feeling today? We're here to support you every step of the way! 💙"
-                        encoded_message = urllib.parse.quote(message)
-                        patient_number = phone_input.replace('+', '').replace('-', '').replace(' ', '')
-                        whatsapp_url = f"https://wa.me/{patient_number}?text={encoded_message}"
-                        
-                        st.markdown(f"""
-                        <div style="text-align: center; margin: 10px 0;">
-                            <a href="{whatsapp_url}" target="_blank" style="
-                                background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-                                color: white;
-                                padding: 10px 20px;
-                                text-decoration: none;
-                                border-radius: 20px;
-                                font-weight: 600;
-                                display: inline-block;
-                                box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-                                font-size: 14px;
-                            ">
-                                💬 Open WhatsApp Chat
-                            </a>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        st.success("✅ WhatsApp link generated! Click the button above to start chatting.")
-                    else:
-                        st.info("Please enter the patient's phone number to generate the WhatsApp link.")
+                    st.session_state[f'show_agent_whatsapp_{patient}'] = True
+            
+            if st.session_state.get(f'show_agent_whatsapp_{patient}', False):
+                phone_input = st.text_input(f"Enter {patient}'s phone number:", key=f"phone_{patient}", placeholder="+1 555 123-4567")
+                if phone_input and len(phone_input.replace('+', '').replace('-', '').replace(' ', '')) >= 10:
+                    # Clean phone number
+                    clean_phone = phone_input.replace('+', '').replace('-', '').replace(' ', '')
+                    if not clean_phone.startswith('1') and len(clean_phone) == 10:
+                        clean_phone = '1' + clean_phone
+                    
+                    # Create WhatsApp message
+                    message = f"Hi {patient.split()[0]}! This is Cindy from Biogen Patient Services. I'm calling to check on your Tysabri treatment. How are you feeling today? We're here to support you every step of the way! 💙"
+                    encoded_message = urllib.parse.quote(message)
+                    whatsapp_url = f"https://wa.me/{clean_phone}?text={encoded_message}"
+                    
+                    st.markdown(f"""
+                    <div style="text-align: center; margin: 10px 0;">
+                        <a href="{whatsapp_url}" target="_blank" style="
+                            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+                            color: white;
+                            padding: 10px 20px;
+                            text-decoration: none;
+                            border-radius: 20px;
+                            font-weight: 600;
+                            display: inline-block;
+                            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+                            font-size: 14px;
+                        ">
+                            💬 Open WhatsApp Chat
+                        </a>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    st.success("✅ WhatsApp link generated! Click the button above to start chatting.")
+                    st.info(f"📱 This will open WhatsApp and send a message to {patient}")
+                elif phone_input:
+                    st.error("❌ Please enter a valid phone number (at least 10 digits)")
+                else:
+                    st.info("Please enter the patient's phone number to generate the WhatsApp link.")
             
             with col_btn2:
                 if st.button(f"📋 View Details", key=f"details_{patient}"):
