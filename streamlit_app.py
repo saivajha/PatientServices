@@ -717,7 +717,10 @@ def show_patient_dashboard(user_context):
             
             with col_edit:
                 if st.button("✏️", key=f"edit_{i}", help="Edit this appointment"):
-                    st.session_state.edit_appointment = i
+                    try:
+                        st.session_state.edit_appointment = int(i)
+                    except (ValueError, TypeError):
+                        st.session_state.edit_appointment = 0
             
             with col_status:
                 if i == 0:
@@ -728,22 +731,36 @@ def show_patient_dashboard(user_context):
                     st.write("Scheduled")
         
         # Edit appointment modal
-        if 'edit_appointment' in st.session_state:
-            st.markdown("---")
-            st.markdown(f"### ✏️ Edit Appointment {st.session_state.edit_appointment + 1}")
-            
-            current_date = st.session_state.appointments[st.session_state.edit_appointment]
+        if 'edit_appointment' in st.session_state and st.session_state.edit_appointment is not None:
             try:
-                current_date_obj = datetime.strptime(current_date, "%Y-%m-%d").date()
-            except ValueError:
-                # Fallback to a default date if current date is invalid
-                current_date_obj = datetime(2025, 10, 25).date()
-                st.warning(f"⚠️ Invalid date format found: {current_date}. Using default date.")
+                appointment_index = int(st.session_state.edit_appointment)
+                st.markdown("---")
+                st.markdown(f"### ✏️ Edit Appointment {appointment_index + 1}")
+                
+                if appointment_index < len(st.session_state.appointments):
+                    current_date = st.session_state.appointments[appointment_index]
+                    
+                    try:
+                        current_date_obj = datetime.strptime(current_date, "%Y-%m-%d").date()
+                    except ValueError:
+                        # Fallback to a default date if current date is invalid
+                        current_date_obj = datetime(2025, 10, 25).date()
+                        st.warning(f"⚠️ Invalid date format found: {current_date}. Using default date.")
+                else:
+                    st.error("❌ Invalid appointment index. Please try again.")
+                    st.session_state.edit_appointment = None
+                    st.rerun()
+                    return
+            except (ValueError, TypeError):
+                st.error("❌ Invalid appointment selection. Please try again.")
+                st.session_state.edit_appointment = None
+                st.rerun()
+                return
             
             new_date = st.date_input(
                 "Select new date:",
                 value=current_date_obj,
-                key=f"new_date_{st.session_state.edit_appointment}",
+                key=f"new_date_{appointment_index}",
                 help="Select any date. Appointments will adjust to maintain 28-day intervals."
             )
             
