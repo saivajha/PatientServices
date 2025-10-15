@@ -637,18 +637,28 @@ def show_patient_dashboard(user_context):
             st.session_state.show_whatsapp = True
         
         if st.session_state.get('show_whatsapp', False):
-            patient_phone = st.text_input("Enter your phone number (e.g., +15551234567):", key="patient_phone", placeholder="+1 555 123-4567")
-            if patient_phone and len(patient_phone.replace('+', '').replace('-', '').replace(' ', '')) >= 10:
-                # Clean phone number
-                clean_phone = patient_phone.replace('+', '').replace('-', '').replace(' ', '')
-                if not clean_phone.startswith('1') and len(clean_phone) == 10:
-                    clean_phone = '1' + clean_phone
+            col_patient, col_agent = st.columns(2)
+            
+            with col_patient:
+                patient_phone = st.text_input("Your phone number:", key="patient_phone", placeholder="+1 555 123-4567")
+            
+            with col_agent:
+                agent_phone = st.text_input("Agent's phone number:", key="agent_phone", placeholder="+1 555 987-6543", value="+1 555 987-6543")
+            
+            if patient_phone and agent_phone and len(patient_phone.replace('+', '').replace('-', '').replace(' ', '')) >= 10 and len(agent_phone.replace('+', '').replace('-', '').replace(' ', '')) >= 10:
+                # Clean phone numbers
+                clean_patient_phone = patient_phone.replace('+', '').replace('-', '').replace(' ', '')
+                clean_agent_phone = agent_phone.replace('+', '').replace('-', '').replace(' ', '')
+                
+                if not clean_patient_phone.startswith('1') and len(clean_patient_phone) == 10:
+                    clean_patient_phone = '1' + clean_patient_phone
+                if not clean_agent_phone.startswith('1') and len(clean_agent_phone) == 10:
+                    clean_agent_phone = '1' + clean_agent_phone
                 
                 # Create WhatsApp message
                 message = f"Hi Cindy! This is Sarah Parker (Patient ID: SP-2025-001). I have some questions about my Tysabri therapy. My number is {patient_phone}. Thank you for your support! 💙"
                 encoded_message = urllib.parse.quote(message)
-                agent_number = "15559876543"  # Cindy's number (no +)
-                whatsapp_url = f"https://wa.me/{agent_number}?text={encoded_message}"
+                whatsapp_url = f"https://wa.me/{clean_agent_phone}?text={encoded_message}"
                 
                 # Create a clickable link that actually works
                 st.markdown(f"""
@@ -669,12 +679,12 @@ def show_patient_dashboard(user_context):
                 </div>
                 """, unsafe_allow_html=True)
                 
-                st.success("✅ WhatsApp link generated! Click the green button above to start chatting with Cindy.")
-                st.info(f"📱 This will open WhatsApp and send a message to Cindy at +1-555-987-6543")
-            elif patient_phone:
-                st.error("❌ Please enter a valid phone number (at least 10 digits)")
+                st.success("✅ WhatsApp link generated! Click the green button above to start chatting with your agent.")
+                st.info(f"📱 This will open WhatsApp and send a message to {agent_phone}")
+            elif patient_phone or agent_phone:
+                st.error("❌ Please enter valid phone numbers for both fields (at least 10 digits each)")
             else:
-                st.info("Please enter your phone number to generate the WhatsApp link.")
+                st.info("Please enter both your phone number and the agent's phone number to generate the WhatsApp link.")
     
     with col2:
         if st.button("🚗 Request Transportation", use_container_width=True):
