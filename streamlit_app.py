@@ -586,7 +586,7 @@ def show_patient_dashboard(user_context):
         """, unsafe_allow_html=True)
     
     # AI Chat Section - Compact
-    st.markdown("### 💬 AI Chat")
+    st.markdown("### 🤖 AI Agent")
     
     # Display chat history
     for message in st.session_state.chat_history:
@@ -606,7 +606,7 @@ def show_patient_dashboard(user_context):
     # Chat input
     user_input = st.text_input("Ask me anything about MS, Tysabri, appointments, or your treatment:", placeholder="e.g., What is Tysabri?")
     
-    if st.button("Send Message", use_container_width=True):
+    if st.button("Ask Patient Services AI Agent", use_container_width=True):
         if user_input:
             # Add user message to history
             st.session_state.chat_history.append({
