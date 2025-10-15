@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce Health Cloud + AgentForce - Tysabri Patient Services Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .salesforce-blue { background-color: #00A1E0; }
+        .salesforce-dark { background-color: #16325C; }
+        .gradient-bg { background: linear-gradient(135deg, #00A1E0 0%, #16325C 100%); }
+        .tracking-card { transition: all 0.3s ease; }
+        .tracking-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .step-active { border-left: 4px solid #00A1E0; background: linear-gradient(90deg, rgba(0,161,224,0.1) 0%, transparent 100%); }
+        .step-completed { border-left: 4px solid #10B981; background: linear-gradient(90deg, rgba(16,185,129,0.1) 0%, transparent 100%); }
+        .ai-pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .agentforce-glow { box-shadow: 0 0 20px rgba(0,161,224,0.3); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header with Salesforce Branding -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
+                        <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Salesforce Health Cloud</h1>
+                        <p class="text-blue-100">+ AgentForce AI Automation</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm text-blue-100">Tysabri Patient Services Demo</div>
+                    <div class="text-lg font-semibold">Sarah Parker's Journey</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Demo Controls -->
+    <div class="bg-white border-b shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button id="playDemo" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 flex items-center space-x-2">
+                        <i data-lucide="play" class="w-4 h-4"></i>
+                        <span>Play Demo</span>
+                    </button>
+                    <button id="resetDemo" class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 flex items-center space-x-2">
+                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                        <span>Reset</span>
+                    </button>
+                    <div class="text-sm text-gray-600">
+                        Step <span id="currentStep">1</span> of 12
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                    <span class="text-sm text-gray-600">AgentForce AI Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Patient Mobile Dashboard (Left Column) -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-semibold text-gray-900">Sarah's Mobile Dashboard</h2>
+                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i data-lucide="smartphone" class="w-4 h-4 text-blue-600"></i>
+                        </div>
+                    </div>
+
+                    <!-- Patient Info -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                                SP
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-900">Sarah Parker</h3>
+                                <p class="text-sm text-gray-600">New MS Patient • Tysabri Therapy</p>
+                                <p class="text-xs text-blue-600">Patient ID: SP-2024-001</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Therapy Status Tracker -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                            <i data-lucide="package" class="w-4 h-4 mr-2 text-blue-600"></i>
+                            Therapy Onboarding Status
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="step-completed tracking-card p-3 rounded-lg border">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+                                        <span class="text-sm font-medium">Start Form Submitted</span>
+                                    </div>
+                                    <span class="text-xs text-green-600">Completed</span>
+                                </div>
+                            </div>
+                            <div class="step-completed tracking-card p-3 rounded-lg border">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+                                        <span class="text-sm font-medium">Welcome Call</span>
+                                    </div>
+                                    <span class="text-xs text-green-600">Completed</span>
+                                </div>
+                            </div>
+                            <div class="step-active tracking-card p-3 rounded-lg border">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="clock" class="w-4 h-4 text-blue-600"></i>
+                                        <span class="text-sm font-medium">Benefits Investigation</span>
+                                    </div>
+                                    <span class="text-xs text-blue-600">In Progress</span>
+                                </div>
+                            </div>
+                            <div class="tracking-card p-3 rounded-lg border border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <i data-lucide="circle" class="w-4 h-4 text-gray-400"></i>
+                                        <span class="text-sm font-medium text-gray-500">Prior Authorization</span>
+                                    </div>
+                                    <span class="text-xs text-gray-400">Pending</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Infusion -->
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 mb-6">
+                        <h3 class="font-semibold text-gray-900 mb-2 flex items-center">
+                            <i data-lucide="calendar" class="w-4 h-4 mr-2 text-green-600"></i>
+                            Next Infusion
+                        </h3>
+                        <div class="text-sm text-gray-700">
+                            <div class="font-medium">Stanford Infusion Center</div>
+                            <div class="text-gray-600">Nov 18, 2024 • 9:00 AM</div>
+                            <div class="mt-2 flex items-center text-green-600">
+                                <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i>
+                                <span class="text-xs">15 min drive</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="space-y-2">
+                        <button class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 flex items-center justify-center space-x-2">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>Message Nurse</span>
+                        </button>
+                        <button class="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg text-sm font-medium hover:bg-gray-200 flex items-center justify-center space-x-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                            <span>View Documents</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agent Console (Center Column) -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-semibold text-gray-900">AgentForce Console - Cindy Smith</h2>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-3 h-3 bg-green-500 rounded-full ai-pulse"></div>
+                            <span class="text-sm text-gray-600">AI Copilot Active</span>
+                        </div>
+                    </div>
+
+                    <!-- Current Step Display -->
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6 agentforce-glow">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="font-semibold text-gray-900" id="currentStepTitle">Step 3: Patient Services Welcome Call</h3>
+                                <p class="text-sm text-gray-600" id="currentStepDescription">Cindy calls Sarah with AI-generated empathetic script</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-blue-600 font-medium">AgentForce AI</div>
+                                <div class="text-xs text-gray-500">Confidence: 94%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Copilot Script -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                            <i data-lucide="brain" class="w-4 h-4 mr-2 text-purple-600"></i>
+                            AI Copilot Script
+                        </h3>
+                        <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-purple-500">
+                            <div class="text-sm text-gray-700 leading-relaxed">
+                                <p class="mb-2"><strong>Opening:</strong> "Hi Sarah, this is Cindy from Biogen Patient Services. I'm calling to welcome you to our Tysabri support program. How are you feeling today?"</p>
+                                <p class="mb-2"><strong>Empathy Note:</strong> Sarah may be feeling overwhelmed with her recent MS diagnosis. Use warm, reassuring tone.</p>
+                                <p class="mb-2"><strong>Key Points:</strong></p>
+                                <ul class="list-disc list-inside ml-4 space-y-1">
+                                    <li>Explain our comprehensive support program</li>
+                                    <li>Confirm communication preferences (SMS, mobile app)</li>
+                                    <li>Schedule nurse educator call</li>
+                                    <li>Discuss infusion site preferences</li>
+                                </ul>
+                                <p class="mt-2 text-purple-600"><strong>AI Suggestion:</strong> Based on Sarah's profile, she prefers SMS notifications and has indicated anxiety about therapy. Emphasize our 24/7 support.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Live Activity Feed -->
+                    <div class="mb-6">
+                        <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                            <i data-lucide="activity" class="w-4 h-4 mr-2 text-green-600"></i>
+                            Live Activity Feed
+                        </h3>
+                        <div class="space-y-3 max-h-64 overflow-y-auto">
+                            <div class="flex items-start space-x-3 p-3 bg-green-50 rounded-lg border-l-4 border-green-500">
+                                <i data-lucide="check-circle" class="w-4 h-4 text-green-600 mt-0.5"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm font-medium text-gray-900">Start Form Processed</div>
+                                    <div class="text-xs text-gray-600">AgentForce extracted patient data and created Health Cloud record</div>
+                                    <div class="text-xs text-gray-500">2 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                                <i data-lucide="phone" class="w-4 h-4 text-blue-600 mt-0.5"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm font-medium text-gray-900">Welcome Call Initiated</div>
+                                    <div class="text-xs text-gray-600">AI Copilot generated personalized script based on Sarah's profile</div>
+                                    <div class="text-xs text-gray-500">Just now</div>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3 p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                                <i data-lucide="clock" class="w-4 h-4 text-yellow-600 mt-0.5"></i>
+                                <div class="flex-1">
+                                    <div class="text-sm font-medium text-gray-900">Benefits Investigation Queued</div>
+                                    <div class="text-xs text-gray-600">AgentForce will automatically check Sarah's insurance coverage</div>
+                                    <div class="text-xs text-gray-500">Next: 5 minutes</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Automation Status -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white border rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                                <i data-lucide="zap" class="w-4 h-4 mr-2 text-yellow-600"></i>
+                                Active Automations
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600">Form Processing</span>
+                                    <span class="text-green-600">✓</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600">Script Generation</span>
+                                    <span class="text-green-600">✓</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600">BI Automation</span>
+                                    <span class="text-blue-600">⏳</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white border rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 mb-2 flex items-center">
+                                <i data-lucide="trending-up" class="w-4 h-4 mr-2 text-green-600"></i>
+                                Performance Metrics
+                            </h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600">Call Duration</span>
+                                    <span class="text-gray-900">8 min</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600">Sentiment Score</span>
+                                    <span class="text-green-600">+0.7</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600">AI Confidence</span>
+                                    <span class="text-blue-600">94%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Steps Progress -->
+        <div class="mt-6 bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">12-Step Demo Flow Progress</h3>
+            <div class="grid grid-cols-6 gap-4">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="check" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                    <div class="text-xs font-medium text-gray-900">Start Form</div>
+                    <div class="text-xs text-gray-500">Completed</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="check" class="w-6 h-6 text-green-600"></i>
+                    </div>
+                    <div class="text-xs font-medium text-gray-900">Covered Entity</div>
+                    <div class="text-xs text-gray-500">Completed</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="phone" class="w-6 h-6 text-blue-600"></i>
+                    </div>
+                    <div class="text-xs font-medium text-gray-900">Welcome Call</div>
+                    <div class="text-xs text-blue-600">Active</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="circle" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="text-xs font-medium text-gray-900">Nurse Call</div>
+                    <div class="text-xs text-gray-500">Pending</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="circle" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="text-xs font-medium text-gray-900">Site Locator</div>
+                    <div class="text-xs text-gray-500">Pending</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="circle" class="w-6 h-6 text-gray-400"></i>
+                    </div>
+                    <div class="text-xs font-medium text-gray-900">Benefits</div>
+                    <div class="text-xs text-gray-500">Pending</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing demo...');
+            
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+                console.log('Lucide icons initialized');
+            } else {
+                console.error('Lucide not loaded');
+            }
+
+            // Demo steps data
+            const demoSteps = [
+            {
+                title: "Step 1: Diagnosis & Start Form Submission",
+                description: "HCP e-submits Start Form → triggers Salesforce Health Cloud intake record",
+                patientStatus: "Start Form Submitted",
+                agentAction: "AgentForce extracts key data using LLM-based form parsing"
+            },
+            {
+                title: "Step 2: Covered Entity Check",
+                description: "Cindy verifies provider eligibility in Covered Entity Network",
+                patientStatus: "Provider Verified",
+                agentAction: "Health Cloud Provider Network auto-matches HCP NPI and site ID"
+            },
+            {
+                title: "Step 3: Patient Services Welcome Call",
+                description: "Cindy calls Sarah with AI-generated empathetic script",
+                patientStatus: "Welcome Call Completed",
+                agentAction: "AgentForce Copilot generates personalized script with sentiment analysis"
+            },
+            {
+                title: "Step 4: Nurse Educator Call",
+                description: "Tysabri Nurse Educator provides disease & therapy education",
+                patientStatus: "Education Completed",
+                agentAction: "Health Cloud task auto-assigned to Nurse queue with generated checklist"
+            },
+            {
+                title: "Step 5: Infusion Site Locator",
+                description: "Sarah chooses infusion site based on location & availability",
+                patientStatus: "Site Selected",
+                agentAction: "AgentForce suggests top 3 sites based on travel time and REMS certification"
+            },
+            {
+                title: "Step 6: Benefits Investigation & Financial Assistance",
+                description: "Automated BI & FA workflows triggered",
+                patientStatus: "Benefits Cleared",
+                agentAction: "AgentForce triggers BI workflow, checks eligibility, triggers Copay program"
+            },
+            {
+                title: "Step 7: SPP Intake Call & PA/Appeals",
+                description: "Specialty Pharmacy record creation and Prior Authorization submission",
+                patientStatus: "PA Submitted",
+                agentAction: "AgentForce monitors payer portals and alerts Cindy of approvals"
+            },
+            {
+                title: "Step 8: Copay & Financial Assistance",
+                description: "AgentForce evaluates Sarah's insurance + household income",
+                patientStatus: "Copay Enrolled",
+                agentAction: "Auto-qualifies for Copay assistance and enrolls Sarah automatically"
+            },
+            {
+                title: "Step 9: SPP Shipment Coordination",
+                description: "Health Cloud integrates with Specialty Pharmacy shipping system",
+                patientStatus: "Shipment Tracking",
+                agentAction: "AgentForce generates shipment tracking number and updates Sarah's dashboard"
+            },
+            {
+                title: "Step 10: Infusion Visit & Support",
+                description: "Health Cloud calendar tracks infusion appointment",
+                patientStatus: "Infusion Scheduled",
+                agentAction: "AgentForce sends automated SMS reminders and Uber booking link"
+            },
+            {
+                title: "Step 11: Therapy Confirmation & Graduation",
+                description: "After first infusion, Cindy confirms completion",
+                patientStatus: "Therapy Graduated",
+                agentAction: "AgentForce auto-updates patient journey status to 'On Therapy'"
+            },
+            {
+                title: "Step 12: Adherence, REMS & Ongoing Support",
+                description: "Health Cloud Adherence Program monitors shipment dates",
+                patientStatus: "Ongoing Support",
+                agentAction: "AgentForce sends automated reminders and tracks REMS compliance"
+            }
+        ];
+
+            let currentStepIndex = 2; // Start at step 3 (Welcome Call)
+
+            // Update demo display
+            function updateDemoDisplay() {
+                const step = demoSteps[currentStepIndex];
+                const currentStepEl = document.getElementById('currentStep');
+                const currentStepTitleEl = document.getElementById('currentStepTitle');
+                const currentStepDescriptionEl = document.getElementById('currentStepDescription');
+                
+                if (currentStepEl) currentStepEl.textContent = currentStepIndex + 1;
+                if (currentStepTitleEl) currentStepTitleEl.textContent = step.title;
+                if (currentStepDescriptionEl) currentStepDescriptionEl.textContent = step.description;
+                
+                console.log('Updated to step:', currentStepIndex + 1, step.title);
+            }
+
+            // Play demo button
+            const playDemoBtn = document.getElementById('playDemo');
+            if (playDemoBtn) {
+                playDemoBtn.addEventListener('click', function() {
+                    console.log('Play demo clicked, current step:', currentStepIndex);
+                    if (currentStepIndex < demoSteps.length - 1) {
+                        currentStepIndex++;
+                        updateDemoDisplay();
+                        
+                        // Add some visual feedback
+                        this.classList.add('bg-green-500');
+                        setTimeout(() => {
+                            this.classList.remove('bg-green-500');
+                            this.classList.add('bg-green-600');
+                        }, 200);
+                    } else {
+                        console.log('Demo completed!');
+                        alert('Demo completed! All 12 steps have been shown.');
+                    }
+                });
+                console.log('Play demo button event listener added');
+            } else {
+                console.error('Play demo button not found');
+            }
+
+            // Reset demo button
+            const resetDemoBtn = document.getElementById('resetDemo');
+            if (resetDemoBtn) {
+                resetDemoBtn.addEventListener('click', function() {
+                    console.log('Reset demo clicked');
+                    currentStepIndex = 2; // Reset to step 3
+                    updateDemoDisplay();
+                });
+                console.log('Reset demo button event listener added');
+            } else {
+                console.error('Reset demo button not found');
+            }
+
+            // Initialize
+            updateDemoDisplay();
+            console.log('Demo initialized successfully');
+        });
+    </script>
+</body>
+</html>

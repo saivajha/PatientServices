@@ -1,0 +1,136 @@
+# Salesforce HealthCloud AgentForce Tysabri Demo Requirements
+
+This is a use case to showcase the power of Salesforce Health Cloud + AgentForce (AI automation) to create a modern, empathetic, and operationally excellent Patient Services Call Center.
+
+Below is a step-by-step demo scenario using your “Supporting the Patient Journey” workflow, mapped to Salesforce capabilities, AgentForce automations, and patient/agent interactions for Sarah Parker (patient) and Cindy Smith (Patient Services Agent at Biogen).
+ 
+Scenario Overview
+Patient: Sarah Parker (New MS Patient)
+Therapy: Tysabri (Infusion Therapy for Multiple Sclerosis)
+PS Agent: Cindy Smith (Biogen Patient Services)
+Goal: Seamless onboarding and therapy initiation with visibility, automation, and empathy — like an “Amazon delivery” experience for specialty therapy.
+Key Demo Aspects:
+•	End-to-end visibility: Patient sees everything like an Amazon delivery tracker.
+•	Empathetic human + AI: Cindy uses AgentForce to focus on care, not admin.
+•	Operational excellence: Automation reduces PA/Bi wait times dramatically.
+•	Scalability: This flow can support thousands of patients with minimal manual overhead.
+Core Systems Used:
+•	Salesforce Health Cloud – Patient 360, Care Plans, Provider Network, PA/BI workflows
+•	AgentForce – AI copilots and automated task orchestration for call center and patient engagement
+•	Salesforce Mobile Experience – Patient-facing dashboard for real-time status & reminders
+
+STEP-BY-STEP DEMO FLOW
+1. Diagnosis & Start Form Submission
+•	Event: Sarah visits her neurologist → Diagnosed with MS → Prescribed Tysabri.
+•	Action: HCP e-submits Start Form → triggers Salesforce Health Cloud intake record.
+•	System:
+o	Health Cloud auto-creates a Patient Profile with demographic, insurance, and therapy info.
+o	AgentForce extracts key data (therapy type, insurance, physician, site preference) using LLM-based form parsing.
+
+Demo: Show Health Cloud intake record auto-populating fields. AgentForce flags missing data for Cindy.
+ 
+2. Covered Entity Check
+•	Actor: Cindy Smith (PS Agent)
+•	Action: Cindy verifies provider eligibility in Covered Entity Network.
+•	System:
+o	Health Cloud Provider Network → Auto-match HCP NPI and site ID.
+o	AgentForce recommends next steps if site not covered (e.g., alternate site suggestion).
+Demo: Cindy clicks “Verify” → AI auto-suggests nearest covered site if mismatch.
+ 
+3. Patient Services Welcome Call
+•	Actor: Cindy calls Sarah.
+•	System:
+o	Health Cloud Care Plan auto-generates Welcome Call Script using AgentForce Copilot.
+o	Sarah’s record is updated with consent preferences, communication channels (SMS, mobile app), and language.
+•	Outcome: Sarah is onboarded empathetically.
+Demo: Show Agent Console with copilot-suggested empathetic script, sentiment analysis live.
+ 
+4. Nurse Educator Call
+•	Actor: Tysabri Nurse Educator
+•	System:
+o	Health Cloud task auto-assigned to Nurse queue.
+o	AgentForce generates education checklist tailored to therapy.
+•	Outcome: Sarah receives disease & therapy education, injection guidance.
+Demo: Show task routing automation & generated nurse script in console.
+ 
+5. Infusion Site Locator
+•	Action: Sarah chooses infusion site based on location & availability.
+•	System:
+o	Health Cloud Provider Directory + Geolocation API.
+o	AgentForce suggests top 3 sites based on travel time, REMS certification, and availability.
+Demo: Show site selection on map UI within Sarah’s patient record.
+ 
+6. Benefits Investigation & Financial Assistance
+•	Actor: Cindy / Automated AgentForce
+•	System:
+o	AgentForce triggers BI & FA workflows:
+	Pulls payer info
+	Checks eligibility
+	Triggers Copay program if needed
+o	Auto-notifies Cindy once BI is clear.
+Demo: Show BI task moving from “Pending” → “Approved” automatically with notifications.
+ 
+7. SPP Intake Call & PA/Appeals
+•	Actor: Cindy / AgentForce
+•	System:
+o	Health Cloud → Specialty Pharmacy record creation, linking to Sarah’s infusion site.
+o	AgentForce triggers Prior Authorization submission, monitors payer portals, and alerts Cindy of approvals.
+o	Appeals auto-generated if PA is denied.
+Demo: Show PA dashboard with AgentForce bot checking payer portal every 4 hours and auto-closing once approved.
+ 
+8. Copay & Financial Assistance
+•	System:
+o	AgentForce evaluates Sarah’s insurance + household income to auto-qualify for Copay assistance.
+o	Enrolls Sarah automatically if criteria met, notifies Cindy for review.
+Demo: Show Copay program enrollment with auto-generated documentation in Sarah’s record.
+ 
+9. SPP Shipment Coordination
+•	System:
+o	Health Cloud integrates with Specialty Pharmacy shipping system.
+o	AgentForce generates shipment tracking number and updates Sarah’s dashboard (similar to Amazon delivery tracking).
+Demo: Sarah’s mobile dashboard shows “Tysabri shipment arriving at Infusion Site – ETA: Nov 18”.
+ 
+10. Infusion Visit & Support
+•	System:
+o	Health Cloud calendar tracks infusion appointment.
+o	AgentForce sends automated SMS reminders for appointment, travel assistance, Uber booking link.
+o	Nurse Educator follow-up is auto-triggered after infusion completion.
+Demo: Show infusion reminder notification on Sarah’s mobile dashboard + agent’s activity timeline.
+ 
+11. Therapy Confirmation & Graduation
+•	Actor: Cindy
+•	System:
+o	After first infusion, Cindy confirms completion → clicks “Mark Graduation” in Health Cloud.
+o	AgentForce auto-updates patient journey status to “On Therapy”, triggers adherence program enrollment.
+Demo: Graduation badge appears on Sarah’s mobile dashboard.
+ 
+12. Adherence, REMS & Ongoing Support
+•	System:
+o	Health Cloud Adherence Program monitors shipment dates, infusion schedules.
+o	AgentForce sends automated reminders, flags missed infusions.
+o	Tracks REMS compliance & auto-logs AE/SAE reports to regulatory module.
+Demo: Sarah gets push notification: “Next infusion in 3 days at Stanford Infusion Center. Uber scheduled for pickup at 8:30 AM ”.
+ 
+Sarah’s Mobile Dashboard (Patient App View)
+Modules:
+•	✅ Therapy Onboarding Status → visual tracker like Amazon delivery
+•	🏥 Infusion Schedule → Calendar + Reminders
+•	🚗 Travel Assistance → Uber booking & reimbursement info
+•	🎓 Patient Graduation → Milestone badge & congratulatory message
+•	💬 Secure Messaging → Chat with Nurse or PS Agent
+•	📄 Documents → BI/PA approval letters, educational materials
+ 
+AgentForce Automations Highlight
+Automation Area	AgentForce Function
+Start Form Intake	LLM-based form parsing, patient creation
+Covered Entity Check	Site match + fallback recommendations
+Welcome Call		AI Copilot script + sentiment analysis
+BI/FA			Automated payer API checks
+PA/Appeals		Continuous monitoring + appeals generation
+Copay Assistance	Eligibility logic + enrollment
+Shipment Tracking	Real-time status integration
+Infusion Reminders	SMS/Push automation
+Adherence		Missed infusion alerts
+REMS			AE detection & reporting
+
+

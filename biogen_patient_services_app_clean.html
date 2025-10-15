@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biogen Patient Services App</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div class="glass-effect rounded-2xl p-8 w-full max-w-md text-white">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2">Biogen Patient Services</h1>
+                <p class="text-blue-100">AI-Powered Healthcare Support</p>
+            </div>
+            
+            <div class="space-y-4">
+                <button onclick="login('patient')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>Login as Patient (Sarah Parker)</span>
+                </button>
+                
+                <button onclick="login('agent')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i data-lucide="headphones" class="w-5 h-5"></i>
+                    <span>Login as Agent (Cindy Smith)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i data-lucide="heart" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-semibold text-gray-900">Biogen Patient Services</h1>
+                            <p class="text-sm text-gray-500" id="userInfo">Welcome back!</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="text-gray-500 hover:text-gray-700">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Patient Dashboard -->
+        <div id="patientDashboard" class="hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Welcome Section -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-6 border border-blue-200">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-lg">SP</span>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900">Welcome back, Sarah!</h2>
+                            <p class="text-gray-600">Relapsing-Remitting MS • Tysabri Therapy</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">Your next infusion is scheduled for <strong>October 25, 2025</strong>. We're here to support you every step of the way.</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <button onclick="contactAgent()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="message-circle" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Contact Your Rep</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Get help from Cindy</p>
+                    </button>
+                    
+                    <button onclick="openChatModal()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">AI Support</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Ask questions 24/7</p>
+                    </button>
+                </div>
+
+                <!-- Journey Tracker -->
+                <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                        Your Treatment Journey
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">MS Diagnosis</p>
+                                <p class="text-sm text-gray-600">October 20, 2025</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">Treatment Plan</p>
+                                <p class="text-sm text-gray-600">Tysabri approved</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="calendar" class="w-4 h-4 text-blue-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">First Infusion</p>
+                                <p class="text-sm text-gray-600">October 25, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Dashboard -->
+        <div id="agentDashboard" class="hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Welcome Section -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 mb-6 border border-green-200">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-lg">CS</span>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900">Welcome back, Cindy!</h2>
+                            <p class="text-gray-600">Patient Services Agent • Biogen</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">You have <strong>3 active patients</strong> today. AI is handling routine questions while you focus on complex cases.</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <button onclick="contactPatient()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="phone" class="w-4 h-4 text-blue-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Contact Patient</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Call Sarah Parker</p>
+                    </button>
+                    
+                    <button onclick="openChatModal()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Test AI</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Try AI responses</p>
+                    </button>
+                </div>
+
+                <!-- Patient Queue -->
+                <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="users" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                        Active Patients
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <span class="text-blue-600 font-medium text-sm">SP</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-900">Sarah Parker</p>
+                                    <p class="text-sm text-gray-600">New patient, first infusion Oct 25</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">High Priority</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-2xl h-[600px] flex flex-col">
+            <!-- Chat Header -->
+            <div class="flex items-center justify-between p-4 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900">AI Assistant</h3>
+                        <p class="text-sm text-gray-600">Ask me anything about MS or Tysabri</p>
+                    </div>
+                </div>
+                <button onclick="closeChatModal()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <div class="flex items-start space-x-3">
+                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
+                    </div>
+                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                        <p class="text-sm text-gray-700">Hi! I'm your AI assistant. I can help you with questions about MS, Tysabri treatment, side effects, appointments, and more. What would you like to know?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t">
+                <div class="flex space-x-2">
+                    <input type="text" id="chatInput" placeholder="Ask me anything..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    <button onclick="sendChatMessage()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRole = '';
+        let currentUser = '';
+
+        // Initialize Lucide icons
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
+
+        // Login function
+        function login(role) {
+            currentRole = role;
+            currentUser = role === 'patient' ? 'Sarah Parker' : 'Cindy Smith';
+            
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            if (role === 'patient') {
+                document.getElementById('patientDashboard').classList.remove('hidden');
+                document.getElementById('userInfo').textContent = 'Patient • Sarah Parker';
+            } else {
+                document.getElementById('agentDashboard').classList.remove('hidden');
+                document.getElementById('userInfo').textContent = 'Agent • Cindy Smith';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            currentRole = '';
+            currentUser = '';
+            
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('patientDashboard').classList.add('hidden');
+            document.getElementById('agentDashboard').classList.add('hidden');
+            closeChatModal();
+        }
+
+        // Chat modal functions
+        function openChatModal() {
+            document.getElementById('chatModal').classList.remove('hidden');
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').classList.add('hidden');
+        }
+
+        // Send chat message
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage('user', message);
+                input.value = '';
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Generate AI response
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    const aiResponse = generateAIResponse(message);
+                    addMessage('ai', aiResponse);
+                }, 1000);
+            }
+        }
+
+        // Add message to chat
+        function addMessage(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-3 ${sender === 'user' ? 'justify-end' : ''}`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                    <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 font-medium text-xs">U</span>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
+                    </div>
+                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                        <div class="text-sm text-gray-700">${formatMessage(message)}</div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Re-initialize Lucide icons for new elements
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex items-start space-x-3';
+            typingDiv.innerHTML = `
+                <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                    <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Format message with basic markdown
+        function formatMessage(message) {
+            return message
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Generate AI response
+        function generateAIResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            const userName = currentUser.split(' ')[0];
+            
+            // Intent analysis
+            if (message.includes('tysabri')) {
+                return `**About Tysabri:**
+
+Tysabri (natalizumab) is a monoclonal antibody medication used to treat relapsing-remitting multiple sclerosis (MS). Here's what you should know:
+
+**How it works:**
+• Targets specific cells that cause MS inflammation
+• Helps prevent immune cells from crossing the blood-brain barrier
+• Reduces relapses and slows disease progression
+
+**Administration:**
+• Given as an intravenous infusion every 28 days
+• Each infusion takes about 1 hour
+• Done at specialized infusion centers or hospitals
+
+**Effectiveness:**
+• Highly effective in reducing relapses (up to 68% reduction)
+• Can slow disability progression
+• Works well for many people with MS
+
+**Your situation:**
+Since you're newly diagnosed with MS and starting Tysabri on October 25, 2025, this is an excellent choice for early, aggressive treatment. Early treatment often leads to better long-term outcomes.
+
+Would you like to know more about what to expect during your first infusion or any specific concerns you have?`;
+            }
+            
+            if (message.includes('side effect') || message.includes('side effects')) {
+                return `**Tysabri Side Effects:**
+
+**Common side effects (usually mild):**
+• **Headache** - Most common, usually improves over time
+• **Fatigue** - May feel more tired, especially initially
+• **Nausea** - Usually mild and temporary
+• **Upper respiratory infections** - Cold-like symptoms
+• **Joint pain** - Mild to moderate discomfort
+
+**Less common side effects:**
+• Allergic reactions during infusion
+• Liver function changes (monitored with blood tests)
+• Low blood cell counts (monitored regularly)
+
+**Serious but rare side effects:**
+• **PML (Progressive Multifocal Leukoencephalopathy)** - A rare brain infection
+• Liver problems (rare)
+• Severe allergic reactions (rare)
+
+**Important monitoring:**
+• Regular blood tests to check for PML risk
+• MRI scans to monitor brain changes
+• Close communication with your healthcare team
+
+**What you can do:**
+• Report any new symptoms immediately
+• Keep all your appointments
+• Ask questions if you're concerned
+• Stay informed about your treatment
+
+Since you're starting treatment soon, it's normal to be concerned about side effects. Most people tolerate Tysabri very well, and the benefits usually far outweigh the risks. Your healthcare team will monitor you closely.
+
+Do you have specific concerns about any particular side effects?`;
+            }
+            
+            if (message.includes('infusion') || message.includes('appointment')) {
+                return `**Your Infusion Appointment:**
+
+**Date & Time:** October 25, 2025
+**Location:** Palo Alto area (we can help you find the best center)
+**Duration:** Plan for 1.5-2 hours total
+
+**What to expect:**
+• **Arrival:** Come 15 minutes early
+• **Check-in:** Paperwork and vital signs
+• **Preparation:** IV line insertion
+• **Infusion:** Tysabri administered over about 1 hour
+• **Monitoring:** Healthcare team watches for any reactions
+• **Recovery:** Brief observation period
+
+**How to prepare:**
+• Stay well hydrated the day before and day of
+• Eat a light meal beforehand
+• Bring something to read or do during the infusion
+• Wear comfortable clothing with easy access to your arm
+• Bring a list of your current medications
+
+**After the infusion:**
+• Most people feel normal within 24-48 hours
+• Some may experience mild fatigue or headache
+• You can resume normal activities
+• Contact your healthcare team if you have concerns
+
+**Transportation:**
+We can help arrange transportation to and from your appointment if needed. Just let us know!
+
+Is there anything specific about your upcoming infusion that you'd like to know more about?`;
+            }
+            
+            if (message.includes('worried') || message.includes('anxious') || message.includes('scared') || message.includes('nervous')) {
+                return `**It's completely normal to feel this way, ${userName}.**
+
+Starting a new treatment for MS can be overwhelming, and your feelings are completely valid. Here's what I want you to know:
+
+**You're taking the right steps:**
+• Getting diagnosed early is crucial
+• Starting treatment promptly gives you the best outcomes
+• You have a strong support team behind you
+
+**Common feelings:**
+• Anxiety about the unknown
+• Worry about side effects
+• Concerns about how MS will affect your life
+• Feeling overwhelmed by information
+
+**Remember:**
+• **You're not alone** - Millions of people live well with MS
+• **Treatment has come a long way** - Modern therapies like Tysabri are very effective
+• **You have control** - You're being proactive about your health
+• **Support is available** - Your healthcare team, family, and support groups are here
+
+**Coping strategies:**
+• Take things one day at a time
+• Focus on what you can control
+• Stay connected with loved ones
+• Ask questions when you need clarification
+• Practice relaxation techniques
+
+**Your strength:**
+You've already shown incredible strength by seeking diagnosis and starting treatment. That takes courage.
+
+Would you like me to connect you with additional support resources or help you with specific concerns you have?`;
+            }
+            
+            if (message.includes('work') || message.includes('job') || message.includes('employment')) {
+                return `**MS and Work - The Good News:**
+
+Most people with MS continue to work successfully, and early treatment like you're getting can help preserve your function.
+
+**Your rights:**
+• **ADA protection** - Employers must provide reasonable accommodations
+• **FMLA coverage** - Job protection for medical leave
+• **Privacy rights** - You don't have to disclose your diagnosis unless you choose to
+
+**Workplace accommodations that help:**
+• Flexible scheduling for appointments
+• Remote work options
+• Ergonomic workspace modifications
+• Breaks for rest and fatigue management
+• Reduced hours if needed
+
+**Strategies for success:**
+• Pace yourself and prioritize tasks
+• Use your most energetic times for important work
+• Communicate openly with your supervisor about your needs
+• Build a support network with colleagues
+• Continue learning and growing professionally
+
+**When to consider changes:**
+• If current job becomes too demanding
+• If accommodations aren't working
+• If health significantly affects your ability to work
+• If stress becomes overwhelming
+
+**Resources available:**
+• Vocational rehabilitation services
+• Career counseling
+• Legal assistance for workplace issues
+• Support groups for working with MS
+
+Since you're newly diagnosed and starting treatment early, you have time to consider your options and make informed decisions about your career.
+
+What type of work do you do? I can provide more specific advice based on your profession.`;
+            }
+            
+            if (message.includes('family') || message.includes('kids') || message.includes('children')) {
+                return `**Talking to family about MS:**
+
+This can be one of the most challenging aspects of a new diagnosis. Here's how to approach it:
+
+**For children:**
+• **Age-appropriate information** - Younger kids need simpler explanations
+• **Reassurance** - Emphasize that you're getting the best treatment available
+• **Stability** - Focus on what won't change in your relationship
+• **Honesty** - Answer their questions honestly but appropriately
+
+**For your spouse/partner:**
+• **Open communication** - Share your feelings and concerns
+• **Include them** - Invite them to appointments if they want
+• **Practical support** - Discuss how they can help with daily tasks
+• **Emotional support** - Let them know how they can best support you
+
+**For extended family:**
+• **Gradual disclosure** - You don't have to tell everyone at once
+• **Boundaries** - Decide what you want to share and what to keep private
+• **Education** - Provide resources if they want to learn more
+• **Support** - Let them know how they can help
+
+**Practical tips:**
+• Choose the right time when everyone is relaxed
+• Prepare what you want to say beforehand
+• Be ready for questions and emotions
+• Set expectations about what you need
+
+**Resources for families:**
+• MS Society family resources
+• Support groups for families
+• Family therapy or counseling
+• Online communities for families
+
+**Your specific situation:**
+Since you're newly diagnosed, your family is probably still processing the news. It's normal for them to feel worried, confused, or overwhelmed too.
+
+Give them time to process the information, provide educational resources, and reassure them about your treatment plan.
+
+How is your family responding to your diagnosis? I can provide more specific guidance based on your situation.`;
+            }
+            
+            if (message.includes('transportation') || message.includes('transport') || message.includes('ride') || message.includes('uber')) {
+                return `**Transportation Assistance:**
+
+I can definitely help you arrange transportation to your infusion appointments!
+
+**Available options:**
+• **Uber/Lyft integration** - Book rides directly through our app
+• **Medical transportation** - Wheelchair-accessible vehicles available
+• **Family coordination** - Help coordinate rides with your support network
+• **Insurance coverage** - Check if your plan covers transportation
+
+**For your October 25th appointment:**
+• I can help you find the best infusion center in your area
+• Arrange round-trip transportation
+• Coordinate pickup and drop-off times
+• Handle any special needs or accessibility requirements
+
+**Cost considerations:**
+• Many insurance plans cover medical transportation
+• We can check your specific coverage
+• Financial assistance programs may be available
+• Estimated cost for rideshare: $15-25 for local appointments
+
+**To get started:**
+1. Confirm your appointment details
+2. Choose your preferred transportation method
+3. Provide your pickup address
+4. I'll handle the booking and confirmation
+
+**Special considerations:**
+• Post-infusion recovery time
+• Comfort needs during travel
+• Accessibility requirements
+• Weather and traffic considerations
+
+Would you like me to help you book transportation for your October 25th appointment? I can start by checking available options in your area.`;
+            }
+            
+            // Default response for unrecognized queries
+            return `I want to make sure I understand your question completely, ${userName}. You asked: "${userMessage}"
+
+I'm here to help with any questions about MS, Tysabri treatment, managing symptoms, lifestyle adjustments, or practical support. 
+
+**I can help with:**
+• Medical questions about MS and Tysabri
+• Side effects and safety information
+• Appointment and infusion details
+• Transportation and practical support
+• Emotional support and coping strategies
+• Work and family considerations
+• Insurance and financial assistance
+
+**To give you the best answer:**
+• Could you provide a bit more detail about your question?
+• What specific information would be most helpful?
+• Is this urgent or do you have time for a detailed discussion?
+
+The more specific you can be, the better I can provide you with accurate, personalized information that addresses your actual needs.
+
+What would you like to know more about?`;
+        }
+
+        // Patient-specific functions
+        function contactAgent() {
+            const phoneNumber = prompt('Please enter your phone number for WhatsApp contact:', '+1234567890');
+            if (phoneNumber) {
+                const message = encodeURIComponent(`Hi Cindy! This is Sarah Parker (Patient ID: SP-2025-001). I have some questions about my Tysabri therapy. Thank you for your support! 💙`);
+                const whatsappUrl = `https://wa.me/1234567890?text=${message}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+
+        // Agent-specific functions
+        function contactPatient() {
+            const phoneNumber = prompt('Please enter patient phone number:', '+1234567890');
+            if (phoneNumber) {
+                const message = encodeURIComponent(`Hi Sarah! This is Cindy from Biogen Patient Services. I'm calling to welcome you to our Tysabri support program. How are you feeling today? We're here to support you every step of the way! 💙`);
+                const whatsappUrl = `https://wa.me/${phoneNumber.replace(/\D/g, '')}?text=${message}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+
+        // Allow Enter key to send messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendChatMessage();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

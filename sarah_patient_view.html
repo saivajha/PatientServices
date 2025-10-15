@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarah's Patient Journey - Tysabri Support | October 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #00A1E0 0%, #16325C 100%); }
+        .step-completed { border-left: 4px solid #10B981; background: linear-gradient(90deg, rgba(16,185,129,0.1) 0%, transparent 100%); }
+        .step-active { border-left: 4px solid #00A1E0; background: linear-gradient(90deg, rgba(0,161,224,0.1) 0%, transparent 100%); }
+        .step-pending { border-left: 4px solid #E5E7EB; background: linear-gradient(90deg, rgba(229,231,235,0.1) 0%, transparent 100%); }
+        .pulse-animation { animation: pulse 2s infinite; }
+        .slide-in { animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .notification { animation: slideIn 0.3s ease-out; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Mobile Header -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 font-bold text-lg">SP</span>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold">Sarah Parker</h1>
+                        <p class="text-blue-100 text-sm">Tysabri Patient Journey</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-blue-100">Patient ID</div>
+                    <div class="text-sm font-semibold">SP-2024-001</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Diagnosis Alert -->
+    <div id="diagnosisAlert" class="bg-red-50 border-l-4 border-red-500 p-4 mx-4 mt-4 rounded-r-lg notification">
+        <div class="flex items-start">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-red-600 mt-0.5 mr-3"></i>
+            <div>
+                <h3 class="text-sm font-semibold text-red-800">New MS Diagnosis</h3>
+                <p class="text-sm text-red-700 mt-1">Dr. Chen has diagnosed you with Multiple Sclerosis and prescribed Tysabri therapy. Your Patient Services team will contact you soon.</p>
+                <div class="text-xs text-red-600 mt-2">Diagnosed: Oct 20, 2025</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Journey Progress -->
+    <div class="px-4 mt-6">
+        <div class="bg-white rounded-xl shadow-lg p-4">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <i data-lucide="map" class="w-5 h-5 mr-2 text-blue-600"></i>
+                Your Therapy Journey
+            </h2>
+            
+            <div class="space-y-3">
+                <!-- Step 1: Diagnosis -->
+                <div class="step-completed p-3 rounded-lg border slide-in">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">MS Diagnosis</div>
+                                <div class="text-sm text-gray-600">Dr. Chen diagnosed MS and prescribed Tysabri</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-green-600 font-medium">Completed</div>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">Oct 20, 2025 • Stanford Neurology</div>
+                </div>
+
+                <!-- Step 2: Start Form -->
+                <div class="step-completed p-3 rounded-lg border slide-in">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">Start Form Submitted</div>
+                                <div class="text-sm text-gray-600">Your doctor submitted your therapy start form</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-green-600 font-medium">Completed</div>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">Oct 20, 2025 • 2:30 PM</div>
+                </div>
+
+                <!-- Step 3: Welcome Call -->
+                <div class="step-active p-3 rounded-lg border slide-in">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center pulse-animation">
+                                <i data-lucide="phone" class="w-4 h-4 text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-900">Welcome Call</div>
+                                <div class="text-sm text-gray-600">Cindy from Patient Services will call you</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-blue-600 font-medium">In Progress</div>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500">Expected: Oct 21, 2025</div>
+                </div>
+
+                <!-- Step 4: Nurse Education -->
+                <div class="step-pending p-3 rounded-lg border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="circle" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-500">Nurse Education</div>
+                                <div class="text-sm text-gray-400">Learn about Tysabri and MS management</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-400 font-medium">Pending</div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Site Selection -->
+                <div class="step-pending p-3 rounded-lg border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="circle" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-500">Infusion Site</div>
+                                <div class="text-sm text-gray-400">Choose your preferred infusion location</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-400 font-medium">Pending</div>
+                    </div>
+                </div>
+
+                <!-- Step 6: Benefits -->
+                <div class="step-pending p-3 rounded-lg border">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="circle" class="w-4 h-4 text-gray-400"></i>
+                            </div>
+                            <div>
+                                <div class="font-medium text-gray-500">Insurance & Benefits</div>
+                                <div class="text-sm text-gray-400">Verify coverage and financial assistance</div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-400 font-medium">Pending</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Status Card -->
+    <div class="px-4 mt-4">
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+            <h3 class="font-semibold text-gray-900 mb-2 flex items-center">
+                <i data-lucide="clock" class="w-4 h-4 mr-2 text-blue-600"></i>
+                What's Happening Now
+            </h3>
+            <div class="text-sm text-gray-700">
+                <p class="mb-2">Your Patient Services team is preparing your welcome call. Cindy Smith will contact you to:</p>
+                <ul class="list-disc list-inside ml-4 space-y-1">
+                    <li>Welcome you to the Tysabri support program</li>
+                    <li>Explain your therapy journey</li>
+                    <li>Schedule your nurse education call</li>
+                    <li>Discuss your preferences</li>
+                </ul>
+            </div>
+            <div class="mt-3 flex items-center text-blue-600">
+                <i data-lucide="phone" class="w-4 h-4 mr-2"></i>
+                <span class="text-sm font-medium">Expected call: Tomorrow morning</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Infusion Scheduling -->
+    <div class="px-4 mt-4">
+        <div class="bg-white rounded-xl shadow-lg p-4">
+            <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                <i data-lucide="calendar" class="w-4 h-4 mr-2 text-blue-600"></i>
+                Schedule Your Infusion
+            </h3>
+            
+            <!-- Next Available Dates -->
+            <div class="mb-4">
+                <h4 class="text-sm font-medium text-gray-700 mb-2">Next Available Dates</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-left hover:bg-blue-100 transition-colors">
+                        <div class="text-sm font-medium text-blue-800">Oct 25, 2025</div>
+                        <div class="text-xs text-blue-600">Friday • 9:00 AM</div>
+                        <div class="text-xs text-gray-500">Stanford Infusion Center</div>
+                    </button>
+                    <button class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-left hover:bg-blue-100 transition-colors">
+                        <div class="text-sm font-medium text-blue-800">Oct 28, 2025</div>
+                        <div class="text-xs text-blue-600">Monday • 10:30 AM</div>
+                        <div class="text-xs text-gray-500">Stanford Infusion Center</div>
+                    </button>
+                    <button class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-left hover:bg-blue-100 transition-colors">
+                        <div class="text-sm font-medium text-blue-800">Oct 30, 2025</div>
+                        <div class="text-xs text-blue-600">Wednesday • 2:00 PM</div>
+                        <div class="text-xs text-gray-500">Stanford Infusion Center</div>
+                    </button>
+                    <button class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-left hover:bg-blue-100 transition-colors">
+                        <div class="text-sm font-medium text-blue-800">Nov 1, 2025</div>
+                        <div class="text-xs text-blue-600">Friday • 11:00 AM</div>
+                        <div class="text-xs text-gray-500">Stanford Infusion Center</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Calendar View Toggle -->
+            <div class="flex items-center justify-between mb-3">
+                <h4 class="text-sm font-medium text-gray-700">Your Infusion Schedule</h4>
+                <button id="toggleCalendar" class="text-blue-600 text-sm font-medium flex items-center space-x-1">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    <span>View Full Calendar</span>
+                </button>
+            </div>
+
+            <!-- Mini Calendar Preview -->
+            <div id="miniCalendar" class="bg-gray-50 rounded-lg p-3">
+                <div class="text-sm font-medium text-gray-700 mb-2">Next 3 Infusions (Every 28 Days)</div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">First Infusion:</span>
+                        <span class="font-medium text-blue-600">Oct 25, 2025</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">Second Infusion:</span>
+                        <span class="font-medium text-gray-500">Nov 22, 2025</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">Third Infusion:</span>
+                        <span class="font-medium text-gray-500">Dec 20, 2025</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Calendar View (Hidden by default) -->
+            <div id="fullCalendar" class="hidden bg-white border rounded-lg p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="font-medium text-gray-900">2025 Infusion Schedule</h4>
+                    <button id="closeCalendar" class="text-gray-500 hover:text-gray-700">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                
+                <!-- Calendar Grid -->
+                <div class="grid grid-cols-7 gap-1 text-xs">
+                    <div class="text-center font-medium text-gray-500 py-2">Sun</div>
+                    <div class="text-center font-medium text-gray-500 py-2">Mon</div>
+                    <div class="text-center font-medium text-gray-500 py-2">Tue</div>
+                    <div class="text-center font-medium text-gray-500 py-2">Wed</div>
+                    <div class="text-center font-medium text-gray-500 py-2">Thu</div>
+                    <div class="text-center font-medium text-gray-500 py-2">Fri</div>
+                    <div class="text-center font-medium text-gray-500 py-2">Sat</div>
+                    
+                    <!-- October 2025 -->
+                    <div class="text-center py-2 text-gray-400">29</div>
+                    <div class="text-center py-2 text-gray-400">30</div>
+                    <div class="text-center py-2 text-gray-400">1</div>
+                    <div class="text-center py-2 text-gray-400">2</div>
+                    <div class="text-center py-2 text-gray-400">3</div>
+                    <div class="text-center py-2 text-gray-400">4</div>
+                    <div class="text-center py-2 text-gray-400">5</div>
+                    
+                    <div class="text-center py-2 text-gray-400">6</div>
+                    <div class="text-center py-2 text-gray-400">7</div>
+                    <div class="text-center py-2 text-gray-400">8</div>
+                    <div class="text-center py-2 text-gray-400">9</div>
+                    <div class="text-center py-2 text-gray-400">10</div>
+                    <div class="text-center py-2 text-gray-400">11</div>
+                    <div class="text-center py-2 text-gray-400">12</div>
+                    
+                    <div class="text-center py-2 text-gray-400">13</div>
+                    <div class="text-center py-2 text-gray-400">14</div>
+                    <div class="text-center py-2 text-gray-400">15</div>
+                    <div class="text-center py-2 text-gray-400">16</div>
+                    <div class="text-center py-2 text-gray-400">17</div>
+                    <div class="text-center py-2 text-gray-400">18</div>
+                    <div class="text-center py-2 text-gray-400">19</div>
+                    
+                    <div class="text-center py-2 text-gray-400">20</div>
+                    <div class="text-center py-2 text-gray-400">21</div>
+                    <div class="text-center py-2 text-gray-400">22</div>
+                    <div class="text-center py-2 text-gray-400">23</div>
+                    <div class="text-center py-2 text-gray-400">24</div>
+                    <div class="text-center py-2 bg-blue-100 text-blue-800 rounded font-medium">25</div>
+                    <div class="text-center py-2 text-gray-400">26</div>
+                    
+                    <div class="text-center py-2 text-gray-400">27</div>
+                    <div class="text-center py-2 text-gray-400">28</div>
+                    <div class="text-center py-2 text-gray-400">29</div>
+                    <div class="text-center py-2 text-gray-400">30</div>
+                    <div class="text-center py-2 text-gray-400">31</div>
+                    <div class="text-center py-2 text-gray-400">1</div>
+                    <div class="text-center py-2 text-gray-400">2</div>
+                </div>
+                
+                <!-- Legend -->
+                <div class="mt-4 flex items-center justify-center space-x-4 text-xs">
+                    <div class="flex items-center space-x-1">
+                        <div class="w-3 h-3 bg-blue-100 rounded"></div>
+                        <span class="text-gray-600">Scheduled Infusion</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <div class="w-3 h-3 bg-green-100 rounded"></div>
+                        <span class="text-gray-600">Future Infusions (28-day cycle)</span>
+                    </div>
+                </div>
+                
+                <!-- Full Year Schedule -->
+                <div class="mt-4 border-t pt-4">
+                    <h5 class="font-medium text-gray-900 mb-2">Complete 2025 Schedule</h5>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div class="space-y-1">
+                            <div class="flex justify-between"><span>Oct 25</span><span class="text-blue-600">1st Infusion</span></div>
+                            <div class="flex justify-between"><span>Nov 22</span><span class="text-gray-500">2nd Infusion</span></div>
+                            <div class="flex justify-between"><span>Dec 20</span><span class="text-gray-500">3rd Infusion</span></div>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex justify-between"><span>Jan 17, 2026</span><span class="text-gray-500">4th Infusion</span></div>
+                            <div class="flex justify-between"><span>Feb 14, 2026</span><span class="text-gray-500">5th Infusion</span></div>
+                            <div class="flex justify-between"><span>Mar 14, 2026</span><span class="text-gray-500">6th Infusion</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Configuration -->
+    <div class="px-4 mt-4">
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 mb-4 border border-blue-200">
+            <div class="flex items-center space-x-2 mb-2">
+                <i data-lucide="phone" class="w-4 h-4 text-blue-600"></i>
+                <span class="text-sm font-medium text-blue-800">Contact Settings</span>
+            </div>
+            <div class="space-y-2">
+                <input type="tel" id="patientPhoneInput" placeholder="Your phone number (+1 555 123-4567)" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-600">Enter your phone number for WhatsApp integration</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Support Notice -->
+    <div class="px-4 mt-4">
+        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-3 mb-4 border border-purple-200">
+            <div class="flex items-center space-x-2 mb-2">
+                <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+                <span class="text-sm font-medium text-purple-800">AI Support Available</span>
+            </div>
+            <p class="text-xs text-gray-700">Get instant answers about MS, therapy, and side effects. Complex questions are routed to your Patient Services Rep.</p>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="px-4 mt-4">
+        <div class="grid grid-cols-1 gap-3">
+            <button id="aiSupportBtn" class="bg-purple-600 text-white py-3 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 hover:bg-purple-700 transition-colors">
+                <i data-lucide="bot" class="w-4 h-4"></i>
+                <span>Ask AI About MS & Therapy</span>
+            </button>
+            <button id="contactRepBtn" class="bg-green-500 text-white py-3 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2 hover:bg-green-600 transition-colors">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+                </svg>
+                <span>Contact Your Patient Services Rep</span>
+            </button>
+            <div class="grid grid-cols-2 gap-3">
+                <button class="bg-blue-600 text-white py-3 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Message Team</span>
+                </button>
+                <button class="bg-gray-100 text-gray-700 py-3 px-4 rounded-lg text-sm font-medium flex items-center justify-center space-x-2">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span>View Documents</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Resources -->
+    <div class="px-4 mt-6 mb-6">
+        <div class="bg-white rounded-xl shadow-lg p-4">
+            <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                <i data-lucide="heart" class="w-4 h-4 mr-2 text-red-600"></i>
+                Support Resources
+            </h3>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="phone" class="w-4 h-4 text-blue-600"></i>
+                        <div>
+                            <div class="text-sm font-medium">24/7 Support Line</div>
+                            <div class="text-xs text-gray-600">1-800-TYSABRI</div>
+                        </div>
+                    </div>
+                    <button class="text-blue-600 text-sm font-medium">Call</button>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="book-open" class="w-4 h-4 text-green-600"></i>
+                        <div>
+                            <div class="text-sm font-medium">MS Education</div>
+                            <div class="text-xs text-gray-600">Learn about your condition</div>
+                        </div>
+                    </div>
+                    <button class="text-green-600 text-sm font-medium">View</button>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center space-x-3">
+                        <i data-lucide="users" class="w-4 h-4 text-purple-600"></i>
+                        <div>
+                            <div class="text-sm font-medium">Patient Community</div>
+                            <div class="text-xs text-gray-600">Connect with others</div>
+                        </div>
+                    </div>
+                    <button class="text-purple-600 text-sm font-medium">Join</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Controls -->
+    <div class="fixed bottom-4 left-4 right-4 bg-white rounded-lg shadow-lg p-4 border">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-gray-700">Demo Controls</span>
+            <span class="text-xs text-gray-500">Step <span id="currentStep">3</span> of 12</span>
+        </div>
+        <div class="flex space-x-2">
+            <button id="prevStep" class="flex-1 bg-gray-100 text-gray-700 py-2 px-3 rounded text-sm font-medium">
+                Previous
+            </button>
+            <button id="nextStep" class="flex-1 bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium">
+                Next Step
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Lucide icons
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // Demo steps for patient view
+            const patientSteps = [
+                {
+                    step: 1,
+                    title: "MS Diagnosis",
+                    description: "Dr. Chen diagnosed MS and prescribed Tysabri",
+                    status: "completed",
+                    date: "Oct 20, 2025",
+                    time: "10:30 AM"
+                },
+                {
+                    step: 2,
+                    title: "Start Form Submitted",
+                    description: "Your doctor submitted your therapy start form",
+                    status: "completed",
+                    date: "Oct 20, 2025",
+                    time: "2:30 PM"
+                },
+                {
+                    step: 3,
+                    title: "Welcome Call",
+                    description: "Cindy from Patient Services will call you",
+                    status: "active",
+                    date: "Oct 21, 2025",
+                    time: "Expected morning"
+                },
+                {
+                    step: 4,
+                    title: "Nurse Education",
+                    description: "Learn about Tysabri and MS management",
+                    status: "pending",
+                    date: "TBD",
+                    time: "After welcome call"
+                },
+                {
+                    step: 5,
+                    title: "Infusion Site",
+                    description: "Choose your preferred infusion location",
+                    status: "pending",
+                    date: "TBD",
+                    time: "After education"
+                },
+                {
+                    step: 6,
+                    title: "Insurance & Benefits",
+                    description: "Verify coverage and financial assistance",
+                    status: "pending",
+                    date: "TBD",
+                    time: "In progress"
+                }
+            ];
+
+            let currentStepIndex = 2; // Start at step 3
+
+            // Update display
+            function updatePatientDisplay() {
+                const step = patientSteps[currentStepIndex];
+                document.getElementById('currentStep').textContent = step.step;
+                
+                // Update status cards
+                const statusCards = document.querySelectorAll('.step-completed, .step-active, .step-pending');
+                statusCards.forEach((card, index) => {
+                    card.className = 'p-3 rounded-lg border';
+                    if (index < currentStepIndex) {
+                        card.classList.add('step-completed');
+                    } else if (index === currentStepIndex) {
+                        card.classList.add('step-active');
+                    } else {
+                        card.classList.add('step-pending');
+                    }
+                });
+            }
+
+            // Event listeners
+            document.getElementById('nextStep').addEventListener('click', function() {
+                if (currentStepIndex < patientSteps.length - 1) {
+                    currentStepIndex++;
+                    updatePatientDisplay();
+                }
+            });
+
+            document.getElementById('prevStep').addEventListener('click', function() {
+                if (currentStepIndex > 0) {
+                    currentStepIndex--;
+                    updatePatientDisplay();
+                }
+            });
+
+            // Calendar functionality
+            document.getElementById('toggleCalendar').addEventListener('click', function() {
+                document.getElementById('miniCalendar').classList.add('hidden');
+                document.getElementById('fullCalendar').classList.remove('hidden');
+            });
+
+            document.getElementById('closeCalendar').addEventListener('click', function() {
+                document.getElementById('fullCalendar').classList.add('hidden');
+                document.getElementById('miniCalendar').classList.remove('hidden');
+            });
+
+            // Infusion date selection
+            const infusionButtons = document.querySelectorAll('.bg-blue-50');
+            infusionButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove previous selection
+                    infusionButtons.forEach(btn => {
+                        btn.classList.remove('bg-blue-200', 'border-blue-400');
+                        btn.classList.add('bg-blue-50', 'border-blue-200');
+                    });
+                    
+                    // Highlight selected
+                    this.classList.remove('bg-blue-50', 'border-blue-200');
+                    this.classList.add('bg-blue-200', 'border-blue-400');
+                    
+                    // Show confirmation
+                    const date = this.querySelector('.text-blue-800').textContent;
+                    alert(`Infusion scheduled for ${date}! Your Patient Services team will confirm this appointment.`);
+                });
+            });
+
+            // AI Support Integration for Patient
+            document.getElementById('aiSupportBtn').addEventListener('click', function() {
+                // Create interactive chat modal for patient
+                const chatModal = createPatientChatModal();
+                document.body.appendChild(chatModal);
+                
+                // Show modal
+                setTimeout(() => {
+                    chatModal.style.display = 'flex';
+                }, 100);
+            });
+
+            function createPatientChatModal() {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+                modal.style.display = 'none';
+                
+                const patientProfile = {
+                    name: "Sarah",
+                    age: 34,
+                    diagnosis: "Relapsing-Remitting MS",
+                    therapy: "Tysabri",
+                    diagnosisDate: "October 20, 2025",
+                    concerns: ["anxiety", "new diagnosis", "therapy expectations"],
+                    preferences: ["SMS notifications", "gradual information"]
+                };
+
+                const responses = {
+                    'ms_questions': [
+                        "I understand you're newly diagnosed with MS, Sarah. Multiple Sclerosis is when your immune system mistakenly attacks the protective covering of your nerves. Think of it like the insulation around electrical wires - when it's damaged, signals don't travel as smoothly.",
+                        "MS symptoms can vary widely from person to person. Some common ones include fatigue (which can be quite overwhelming), numbness or tingling in your limbs, vision changes, and sometimes difficulty with balance or coordination. What specific symptoms are you experiencing?",
+                        "The good news is that MS treatment has come a long way. With early treatment like Tysabri, many people with MS live active, fulfilling lives. Your neurologist chose Tysabri because it's very effective at reducing relapses and slowing disease progression."
+                    ],
+                    'therapy_questions': [
+                        "Tysabri works by keeping certain immune cells from crossing into your brain and spinal cord where they can cause damage. It's like having a security guard that prevents the 'bad' immune cells from getting to your nervous system.",
+                        "Most people tolerate Tysabri very well. You might experience some mild side effects like headache, fatigue, or a cold-like feeling after your infusion. These usually improve within a day or two. The serious side effect we monitor for is very rare but important to be aware of.",
+                        "Your infusions will be every 4 weeks (28 days). Each visit usually takes about 2-3 hours total - about an hour for the actual infusion, plus some observation time. Many patients bring a book, music, or even work on their laptops during the infusion."
+                    ],
+                    'lifestyle_questions': [
+                        "Exercise is actually one of the best things you can do for MS! Even gentle activities like walking, swimming, or yoga can help with fatigue, mood, and overall well-being. Start slowly - even 10-15 minutes a day can make a difference.",
+                        "There's no specific 'MS diet,' but many patients find that eating anti-inflammatory foods helps. Think Mediterranean-style eating - lots of fruits, vegetables, fish, and healthy fats. Vitamin D is also important - many MS patients are deficient, so your doctor might recommend supplements.",
+                        "Managing stress is crucial with MS because stress can trigger symptoms. Techniques like meditation, deep breathing, or even just taking regular breaks can help. Don't underestimate the power of talking to someone - whether it's a counselor, support group, or trusted friend."
+                    ],
+                    'general_support': [
+                        "Sarah, I want you to know that it's completely normal to feel overwhelmed right now. You've just received life-changing news, and it's okay to have mixed emotions. Many patients tell me they felt the same way at first.",
+                        "You're not alone in this journey. There's a whole community of people with MS who understand exactly what you're going through. Your Patient Services team is here 24/7 to support you - whether you have questions, concerns, or just need someone to talk to.",
+                        "Take things one step at a time. You don't have to understand everything about MS today. Focus on what you need to know right now - like your first infusion appointment. We'll be here to guide you through each step of your journey."
+                    ]
+                };
+                
+                modal.innerHTML = `
+                    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-4 rounded-t-xl">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-semibold">🤖 AI Assistant</h3>
+                                    <p class="text-sm opacity-90">Your personal MS & Tysabri support</p>
+                                </div>
+                                <button id="closePatientChatModal" class="text-white hover:text-gray-300 text-2xl">&times;</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Area -->
+                        <div class="flex-1 p-4 overflow-y-auto bg-gray-50" id="patientChatArea" style="max-height: 400px;">
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">AI</div>
+                                    <div class="bg-white rounded-lg p-3 shadow-sm max-w-xs">
+                                        <p class="text-sm text-gray-800">Hi Sarah! I'm your AI assistant for MS and Tysabri therapy support. I can provide instant answers about:</p>
+                                        <ul class="text-xs text-gray-600 mt-2 space-y-1">
+                                            <li>• MS disease education</li>
+                                            <li>• Therapy information</li>
+                                            <li>• Lifestyle tips</li>
+                                            <li>• General support</li>
+                                        </ul>
+                                        <p class="text-xs text-gray-600 mt-2">What would you like to know about?</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="p-4 bg-white border-t">
+                            <div class="grid grid-cols-2 gap-2 mb-3">
+                                <button class="patient-quick-action-btn bg-blue-100 text-blue-800 text-xs py-2 px-3 rounded-lg hover:bg-blue-200 transition-colors" data-category="ms_questions">MS Education</button>
+                                <button class="patient-quick-action-btn bg-green-100 text-green-800 text-xs py-2 px-3 rounded-lg hover:bg-green-200 transition-colors" data-category="therapy_questions">Therapy Info</button>
+                                <button class="patient-quick-action-btn bg-yellow-100 text-yellow-800 text-xs py-2 px-3 rounded-lg hover:bg-yellow-200 transition-colors" data-category="lifestyle_questions">Lifestyle Tips</button>
+                                <button class="patient-quick-action-btn bg-purple-100 text-purple-800 text-xs py-2 px-3 rounded-lg hover:bg-purple-200 transition-colors" data-category="general_support">General Support</button>
+                            </div>
+                            
+                            <!-- Input Area -->
+                            <div class="flex space-x-2">
+                                <input type="text" id="patientChatInput" placeholder="Ask me anything about MS or Tysabri..." 
+                                       class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                <button id="sendPatientMessage" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 transition-colors">
+                                    Send
+                                </button>
+                            </div>
+                            
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-xs text-gray-500">Available 24/7 for your questions</span>
+                                <button id="transferToPatientAgent" class="bg-green-600 text-white text-xs py-1 px-3 rounded-lg hover:bg-green-700 transition-colors">
+                                    Contact Cindy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add event listeners
+                const closeBtn = modal.querySelector('#closePatientChatModal');
+                const sendBtn = modal.querySelector('#sendPatientMessage');
+                const chatInput = modal.querySelector('#patientChatInput');
+                const quickActions = modal.querySelectorAll('.patient-quick-action-btn');
+                const transferBtn = modal.querySelector('#transferToPatientAgent');
+                const chatArea = modal.querySelector('#patientChatArea');
+                
+                closeBtn.addEventListener('click', () => {
+                    modal.style.display = 'none';
+                    document.body.removeChild(modal);
+                });
+                
+                // Quick action buttons
+                quickActions.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const category = btn.dataset.category;
+                        const response = responses[category][Math.floor(Math.random() * responses[category].length)];
+                        addPatientMessage('user', btn.textContent);
+                        setTimeout(() => {
+                            addPatientMessage('ai', response);
+                        }, 1000);
+                    });
+                });
+                
+                // Send message
+                const sendMessage = () => {
+                    const message = chatInput.value.trim();
+                    if (message) {
+                        addPatientMessage('user', message);
+                        chatInput.value = '';
+                        
+                        // Simulate AI thinking
+                        setTimeout(() => {
+                            const aiResponse = generatePatientAIResponse(message);
+                            addPatientMessage('ai', aiResponse);
+                        }, 1500);
+                    }
+                };
+                
+                sendBtn.addEventListener('click', sendMessage);
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') sendMessage();
+                });
+                
+                // Transfer to agent
+                transferBtn.addEventListener('click', () => {
+                    addPatientMessage('ai', "I'm connecting you with Cindy, your Patient Services Agent. She can help with Benefits Investigation, Prior Authorization, and Infusion scheduling.");
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        document.body.removeChild(modal);
+                        alert('Connecting you with Cindy Smith, your Patient Services Agent...');
+                        
+                        // Highlight the contact rep button
+                        const contactRepBtn = document.getElementById('contactRepBtn');
+                        contactRepBtn.classList.add('ring-4', 'ring-green-300', 'animate-pulse');
+                        setTimeout(() => {
+                            contactRepBtn.classList.remove('ring-4', 'ring-green-300', 'animate-pulse');
+                        }, 5000);
+                    }, 2000);
+                });
+                
+                function addPatientMessage(sender, message) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `flex items-start space-x-3 ${sender === 'user' ? 'justify-end' : ''}`;
+                    
+                    if (sender === 'user') {
+                        messageDiv.innerHTML = `
+                            <div class="bg-blue-600 text-white rounded-lg p-3 shadow-sm max-w-xs">
+                                <p class="text-sm">${message}</p>
+                            </div>
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">S</div>
+                        `;
+                    } else {
+                        messageDiv.innerHTML = `
+                            <div class="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">AI</div>
+                            <div class="bg-white rounded-lg p-3 shadow-sm max-w-xs">
+                                <p class="text-sm text-gray-800">${message}</p>
+                            </div>
+                        `;
+                    }
+                    
+                    chatArea.appendChild(messageDiv);
+                    chatArea.scrollTop = chatArea.scrollHeight;
+                }
+                
+                function generatePatientAIResponse(userMessage) {
+                    const message = userMessage.toLowerCase();
+                    
+                    // Personalized responses based on patient profile and specific questions
+                    if (message.includes('scared') || message.includes('afraid') || message.includes('worried') || message.includes('anxiety')) {
+                        return `I completely understand why you might feel scared. Being diagnosed with MS is overwhelming, and it's natural to worry about the future. Many patients tell me they felt the same way at first. The good news is that with treatments like Tysabri, most people with MS live very normal, active lives. Would you like to talk about what specific concerns are keeping you up at night?`;
+                    }
+                    
+                    if (message.includes('symptoms') || message.includes('fatigue') || message.includes('tired')) {
+                        return `Fatigue is one of the most common MS symptoms, and it can be really challenging. It's not just regular tiredness - it's more like having your battery drained even after a good night's sleep. Some patients find that scheduling rest periods, staying cool, and gentle exercise actually help with energy levels. Are you experiencing fatigue, and if so, what time of day is it worst?`;
+                    }
+                    
+                    if (message.includes('side effects') || message.includes('pml') || message.includes('risks')) {
+                        return `I'm glad you're asking about side effects - it shows you're being proactive about your health. Tysabri is generally very well tolerated. Most patients might have mild reactions like headache or feeling a bit under the weather after the infusion, but these usually pass quickly. The rare serious side effect we monitor for (PML) affects less than 1% of patients, and we have excellent screening tools to catch it early if it ever occurs.`;
+                    }
+                    
+                    if (message.includes('infusion') || message.includes('needle') || message.includes('iv')) {
+                        return `I know some people are nervous about infusions, but most patients find them much easier than expected. The nurses who do Tysabri infusions are experts - they do this all the time and know how to make you comfortable. The needle goes into your arm, and then you can relax for about an hour. Many patients bring books, work on laptops, or even take a nap. Some infusion centers even have reclining chairs and Netflix!`;
+                    }
+                    
+                    if (message.includes('work') || message.includes('job') || message.includes('career')) {
+                        return `Many people with MS continue working successfully throughout their careers. The key is being open with your employer about any accommodations you might need - things like flexible hours during infusion days, or a cooler workspace if heat affects your symptoms. Tysabri is actually great for working people because it's only once a month, so minimal disruption to your schedule.`;
+                    }
+                    
+                    if (message.includes('family') || message.includes('kids') || message.includes('children')) {
+                        return `MS doesn't have to change your family life in major ways. Many people with MS are wonderful parents and partners. It's important to be honest with your family about what you're going through - they want to support you. Kids are often more understanding than we give them credit for. You might find that being open about your MS actually brings your family closer together.`;
+                    }
+                    
+                    if (message.includes('future') || message.includes('prognosis') || message.includes('long term')) {
+                        return `I understand wanting to know what the future holds. The truth is, MS affects everyone differently, and with treatments like Tysabri, many people live decades without major disability. The key is starting treatment early (which you're doing!) and staying consistent with your therapy. Focus on what you can control - taking your medication, staying healthy, and maintaining a positive outlook.`;
+                    }
+                    
+                    if (message.includes('ms') || message.includes('multiple sclerosis')) {
+                        return `Multiple Sclerosis is when your immune system mistakenly attacks the protective covering around your nerves. Think of it like the insulation around electrical wires - when it gets damaged, the signals don't travel as smoothly. The good news is that your immune system is learning to recognize this mistake, and treatments like Tysabri help prevent further damage. What would you like to know more about - how it affects your body, or how the treatment works?`;
+                    }
+                    
+                    if (message.includes('therapy') || message.includes('tysabri') || message.includes('treatment')) {
+                        return `Tysabri is a really effective treatment for MS. It works by preventing certain immune cells from crossing into your brain and spinal cord where they can cause damage. It's like having a bouncer at the door of your nervous system - keeping the troublemakers out while letting the good guys do their job. Most people see a significant reduction in relapses within the first few months of treatment.`;
+                    }
+                    
+                    if (message.includes('exercise') || message.includes('gym') || message.includes('workout')) {
+                        return `Exercise is actually one of the best medicines for MS! It helps with fatigue, mood, balance, and overall well-being. You don't need to run marathons - even gentle activities like walking, swimming, or yoga can make a big difference. Start slow and listen to your body. Many patients find that regular exercise actually gives them more energy, not less. What kind of activities do you enjoy?`;
+                    }
+                    
+                    if (message.includes('diet') || message.includes('food') || message.includes('eating')) {
+                        return `While there's no specific "MS diet," many patients find that eating anti-inflammatory foods helps with their symptoms. Think Mediterranean-style eating - lots of fruits, vegetables, fish, nuts, and olive oil. Vitamin D is especially important for people with MS, so your doctor might recommend supplements. The key is eating a balanced, nutritious diet that makes you feel good.`;
+                    }
+                    
+                    if (message.includes('stress') || message.includes('anxiety') || message.includes('worry')) {
+                        return `Stress management is crucial with MS because stress can actually trigger symptoms. Different techniques work for different people - some like meditation or deep breathing, others prefer talking to friends, counseling, or even just taking regular breaks throughout the day. What usually helps you feel calmer? We can work on building those stress-management tools into your daily routine.`;
+                    }
+                    
+                    if (message.includes('support') || message.includes('help') || message.includes('alone')) {
+                        return `You're definitely not alone in this. There's a whole community of people with MS who understand exactly what you're going through. Your Patient Services team is here 24/7 to support you - whether you have medical questions, need help with insurance, or just want to talk to someone who understands. Many patients also find support groups helpful, either online or in person.`;
+                    }
+                    
+                    if (message.includes('insurance') || message.includes('cost') || message.includes('expensive')) {
+                        return `I know the cost of MS treatments can be concerning. The good news is that most insurance plans cover Tysabri, and we have programs to help with copays and other costs. Our Patient Services team specializes in helping patients navigate insurance and financial assistance programs. Don't let cost concerns prevent you from getting the treatment you need - let's talk about your specific situation.`;
+                    }
+                    
+                    // Default intelligent response
+                    return `That's a thoughtful question. I can help you with information about MS, Tysabri therapy, managing symptoms, lifestyle tips, or emotional support. Could you tell me more specifically what's on your mind? For example, are you wondering about side effects, how the infusion process works, or maybe how to talk to your family about your diagnosis?`;
+                }
+                
+                return modal;
+            }
+
+            // WhatsApp Integration for Patient
+            document.getElementById('contactRepBtn').addEventListener('click', function() {
+                // Get patient's phone number from input
+                const patientPhone = document.getElementById('patientPhoneInput').value.trim();
+                
+                if (!patientPhone) {
+                    alert('Please enter your phone number in the Contact Settings section above.');
+                    document.getElementById('patientPhoneInput').focus();
+                    return;
+                }
+                
+                // Clean and validate phone number
+                const cleanPatientPhone = patientPhone.replace(/\D/g, '');
+                if (cleanPatientPhone.length < 10) {
+                    alert('Please enter a valid phone number with at least 10 digits.');
+                    document.getElementById('patientPhoneInput').focus();
+                    return;
+                }
+                
+                // For demo purposes, use a demo agent number or ask user to provide one
+                const agentPhone = prompt('Please enter the Patient Services Agent phone number for WhatsApp contact:', '+1234567890');
+                if (!agentPhone) {
+                    alert('Agent phone number is required for WhatsApp contact.');
+                    return;
+                }
+                
+                const cleanAgentPhone = agentPhone.replace(/\D/g, '');
+                if (cleanAgentPhone.length < 10) {
+                    alert('Please enter a valid agent phone number with at least 10 digits.');
+                    return;
+                }
+                
+                // Open WhatsApp with pre-filled message from patient perspective
+                const message = encodeURIComponent(`Hi Cindy! This is Sarah Parker (Patient ID: SP-2025-001). I have some questions about my Tysabri therapy:
+
+• When will I receive my welcome call?
+• How do I schedule my first infusion?
+• What should I expect during the nurse education call?
+• Are there any side effects I should know about?
+• How do I access the mobile app?
+
+Thank you for your support! 💙`);
+                
+                const whatsappUrl = `https://wa.me/${cleanAgentPhone}?text=${message}`;
+                window.open(whatsappUrl, '_blank');
+                
+                // Show confirmation
+                this.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg><span>Opening WhatsApp...</span>';
+                
+                setTimeout(() => {
+                    this.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg><span>Contact Your Patient Services Rep</span>';
+                }, 3000);
+            });
+
+            // Initialize
+            updatePatientDisplay();
+        });
+    </script>
+</body>
+</html>

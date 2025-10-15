@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biogen Patient Services App</title>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); }
+        .typing-indicator {
+            animation: typing 1.5s infinite;
+        }
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div class="glass-effect rounded-2xl p-8 w-full max-w-md text-white">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold mb-2">Biogen Patient Services</h1>
+                <p class="text-blue-100">AI-Powered Healthcare Support</p>
+            </div>
+            
+            <div class="space-y-4">
+                <button onclick="login('patient')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                    <span>Login as Patient (Sarah Parker)</span>
+                </button>
+                
+                <button onclick="login('agent')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i data-lucide="headphones" class="w-5 h-5"></i>
+                    <span>Login as Agent (Cindy Smith)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center py-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <i data-lucide="heart" class="w-6 h-6 text-white"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-semibold text-gray-900">Biogen Patient Services</h1>
+                            <p class="text-sm text-gray-500" id="userInfo">Welcome back!</p>
+                        </div>
+                    </div>
+                    <button onclick="logout()" class="text-gray-500 hover:text-gray-700">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Patient Dashboard -->
+        <div id="patientDashboard" class="hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Contact Configuration -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6 border border-blue-200">
+                    <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i data-lucide="phone" class="w-5 h-5 mr-2 text-blue-600"></i>
+                        Contact Configuration
+                    </h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Phone Number</label>
+                            <input type="tel" id="patientPhone" placeholder="+1 (555) 123-4567" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-2">Enter your phone number for WhatsApp integration</p>
+                </div>
+
+                <!-- Welcome Section -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-6 border border-blue-200">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-lg">SP</span>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900">Welcome back, Sarah!</h2>
+                            <p class="text-gray-600">Relapsing-Remitting MS • Tysabri Therapy</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">Your next infusion is scheduled for <strong>October 25, 2025</strong>. We're here to support you every step of the way.</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <button onclick="contactAgent()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="message-circle" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Contact Your Rep</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Get help from Cindy</p>
+                    </button>
+                    
+                    <button onclick="openChatModal()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">AI Support</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Ask questions 24/7</p>
+                    </button>
+                    
+                    <button onclick="requestRide()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="car" class="w-4 h-4 text-orange-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Request Ride</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Transportation help</p>
+                    </button>
+                    
+                    <button onclick="scheduleInfusion()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="calendar" class="w-4 h-4 text-blue-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Schedule</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Manage appointments</p>
+                    </button>
+                </div>
+
+                <!-- Journey Tracker -->
+                <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                        Your Treatment Journey
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">MS Diagnosis</p>
+                                <p class="text-sm text-gray-600">October 20, 2025</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">Treatment Plan</p>
+                                <p class="text-sm text-gray-600">Tysabri approved</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i data-lucide="calendar" class="w-4 h-4 text-blue-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">First Infusion</p>
+                                <p class="text-sm text-gray-600">October 25, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Infusion Schedule -->
+                <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="calendar" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                        Infusion Schedule
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <button onclick="showNextAvailable()" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            Next Available Dates
+                        </button>
+                        <button onclick="toggleFullSchedule()" class="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">
+                            View Full Schedule
+                        </button>
+                    </div>
+                    <div id="scheduleContent" class="text-sm text-gray-600">
+                        Click "Next Available Dates" to see upcoming infusion appointments.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Agent Dashboard -->
+        <div id="agentDashboard" class="hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Demo Controls -->
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 mb-6 border border-purple-200">
+                    <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i data-lucide="play" class="w-5 h-5 mr-2 text-purple-600"></i>
+                        Demo Controls
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <button onclick="playDemo('step1')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 1: Diagnosis
+                        </button>
+                        <button onclick="playDemo('step2')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 2: Start Form
+                        </button>
+                        <button onclick="playDemo('step3')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 3: Welcome Call
+                        </button>
+                        <button onclick="playDemo('step4')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 4: Insurance
+                        </button>
+                        <button onclick="playDemo('step5')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 5: PA/BI
+                        </button>
+                        <button onclick="playDemo('step6')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 6: Scheduling
+                        </button>
+                        <button onclick="playDemo('step7')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 7: Education
+                        </button>
+                        <button onclick="playDemo('step8')" class="bg-purple-600 text-white py-2 px-3 rounded text-sm hover:bg-purple-700 transition-colors">
+                            Step 8: First Infusion
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Contact Configuration -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 mb-6 border border-blue-200">
+                    <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i data-lucide="phone" class="w-5 h-5 mr-2 text-blue-600"></i>
+                        Contact Configuration
+                    </h3>
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Patient Phone Number</label>
+                            <input type="tel" id="agentPatientPhone" placeholder="+1 (555) 123-4567" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Agent Phone Number</label>
+                            <input type="tel" id="agentPhone" placeholder="+1 (555) 987-6543" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-2">Enter real phone numbers for WhatsApp integration</p>
+                </div>
+
+                <!-- AI Triage System -->
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 mb-6 border border-purple-200">
+                    <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i data-lucide="brain" class="w-5 h-5 mr-2 text-purple-600"></i>
+                        AI Triage System
+                    </h3>
+                    <div class="text-sm text-gray-700 mb-3">
+                        <p class="mb-2">Calls are first handled by AI Agent for:</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li>MS disease education & management</li>
+                            <li>General therapy questions</li>
+                            <li>Side effect information</li>
+                            <li>Lifestyle & support resources</li>
+                        </ul>
+                        <p class="mt-2 text-purple-600 font-medium">Complex queries are routed to live PS agents</p>
+                    </div>
+                </div>
+
+                <!-- Vector Database & LLM Integration -->
+                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg p-4 mb-6 border border-emerald-200">
+                    <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
+                        <i data-lucide="database" class="w-5 h-5 mr-2 text-emerald-600"></i>
+                        AI & Data Integration
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">LLM Configuration</h4>
+                            <select id="llmProvider" onchange="updateLLMProvider()" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                                <option value="openai">OpenAI GPT-4</option>
+                                <option value="gemini">Google Gemini Pro</option>
+                                <option value="claude">Anthropic Claude</option>
+                                <option value="azure">Azure OpenAI</option>
+                                <option value="demo">Demo Mode (Simulated)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Vector Database</h4>
+                            <select id="vectorDb" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                                <option value="pinecone">Pinecone</option>
+                                <option value="weaviate">Weaviate</option>
+                                <option value="chroma">Chroma</option>
+                                <option value="demo">Demo Mode (Local)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <div id="apiKeySection" class="mb-3">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">API Key Configuration</h4>
+                            <div class="relative">
+                                <input type="password" id="apiKeyInput" placeholder="Enter your OpenAI API key (sk-...) - Optional for enhanced AI" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                                <div id="apiKeyStatus" class="absolute right-3 top-1/2 transform -translate-y-1/2 hidden">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-green-600"></i>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-1">Your API key is stored locally and never shared. Demo mode works without an API key!</p>
+                            <div id="apiKeyConfigured" class="hidden mt-2 p-2 bg-green-50 border border-green-200 rounded text-xs text-green-700">
+                                ✅ API key configured and ready to use!
+                            </div>
+                            <div id="demoModeActive" class="hidden mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
+                                🎯 Demo Mode Active - AI responses work without API key configuration!
+                            </div>
+                            <div id="realAIActive" class="mt-2 p-2 bg-green-50 border border-green-200 rounded text-xs text-green-700">
+                                🤖 Real AI Active - Powered by OpenAI GPT-4 for intelligent responses!
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button id="testLLM" onclick="openChatModal()" class="bg-emerald-600 text-white px-3 py-1 rounded text-sm hover:bg-emerald-700 transition-colors">
+                                Test LLM
+                            </button>
+                            <button id="viewVectorData" onclick="viewPatientData()" class="bg-teal-600 text-white px-3 py-1 rounded text-sm hover:bg-teal-700 transition-colors">
+                                View Patient Data
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard & Alerts -->
+                <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-4">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="bar-chart-3" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                        Dashboard & Alerts
+                    </h3>
+                    
+                    <!-- Key Metrics -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-blue-50 rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-blue-600" id="activePatients">12</div>
+                            <div class="text-xs text-gray-600">Active Patients</div>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-3 text-center">
+                            <div class="text-lg font-bold text-green-600" id="completedCalls">8</div>
+                            <div class="text-xs text-gray-600">Calls Today</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Alerts -->
+                    <div class="space-y-2 mb-4">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-2">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600"></i>
+                                <span class="text-sm font-medium text-red-800">2 Prior Auths Pending</span>
+                            </div>
+                        </div>
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-2">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="clock" class="w-4 h-4 text-yellow-600"></i>
+                                <span class="text-sm font-medium text-yellow-800">3 Infusions Scheduled</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reminders -->
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <h4 class="text-sm font-medium text-gray-700 mb-2">Today's Reminders</h4>
+                        <div class="space-y-1 text-xs text-gray-600">
+                            <div>• Follow up with Sarah Parker (2:00 PM)</div>
+                            <div>• Review John Smith's PA status</div>
+                            <div>• Schedule nurse education calls</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Welcome Section -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 mb-6 border border-green-200">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
+                            <span class="text-white font-semibold text-lg">CS</span>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-semibold text-gray-900">Welcome back, Cindy!</h2>
+                            <p class="text-gray-600">Patient Services Agent • Biogen</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700">You have <strong>3 active patients</strong> today. AI is handling routine questions while you focus on complex cases.</p>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <button onclick="contactPatient()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="phone" class="w-4 h-4 text-blue-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Contact Patient</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Call Sarah Parker</p>
+                    </button>
+                    
+                    <button onclick="openChatModal()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-900">Test AI</span>
+                        </div>
+                        <p class="text-sm text-gray-600">Try AI responses</p>
+                    </button>
+                </div>
+
+                <!-- Patient Queue -->
+                <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
+                        <i data-lucide="users" class="w-4 h-4 mr-2 text-indigo-600"></i>
+                        Active Patients
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <span class="text-blue-600 font-medium text-sm">SP</span>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-gray-900">Sarah Parker</p>
+                                    <p class="text-sm text-gray-600">New patient, first infusion Oct 25</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">High Priority</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-2xl h-[600px] flex flex-col">
+            <!-- Chat Header -->
+            <div class="flex items-center justify-between p-4 border-b">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-gray-900">AI Assistant</h3>
+                        <p class="text-sm text-gray-600">Ask me anything about MS or Tysabri</p>
+                    </div>
+                </div>
+                <button onclick="closeChatModal()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="px-4 py-2 border-b bg-gray-50">
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="handleQuickAction('find-centers')" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs hover:bg-blue-200 transition-colors">
+                        Find Centers
+                    </button>
+                    <button onclick="handleQuickAction('arrange-ride')" class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-xs hover:bg-orange-200 transition-colors">
+                        Arrange Ride
+                    </button>
+                    <button onclick="handleQuickAction('side-effects')" class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs hover:bg-red-200 transition-colors">
+                        Side Effects
+                    </button>
+                    <button onclick="handleQuickAction('emotional-support')" class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs hover:bg-purple-200 transition-colors">
+                        Emotional Support
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
+                <div class="flex items-start space-x-3">
+                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
+                    </div>
+                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                        <p class="text-sm text-gray-700">Hi! I'm your AI assistant. I can help you with questions about MS, Tysabri treatment, side effects, appointments, and more. What would you like to know?</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input -->
+            <div class="p-4 border-t">
+                <div class="flex space-x-2">
+                    <input type="text" id="chatInput" placeholder="Ask me anything..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    <button onclick="sendChatMessage()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Travel Modal -->
+    <div id="travelModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Request Transportation</h3>
+                <button onclick="closeTravelModal()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Infusion Center</label>
+                    <select id="infusionLocation" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Stanford Health Care">Stanford Health Care</option>
+                        <option value="Palo Alto Medical Foundation">Palo Alto Medical Foundation</option>
+                        <option value="El Camino Hospital">El Camino Hospital</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Pickup Address</label>
+                    <input type="text" id="pickupAddress" placeholder="123 Main St, Palo Alto, CA" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Appointment Time</label>
+                    <input type="datetime-local" id="appointmentTime" value="2025-10-25T10:00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <button onclick="requestUberRide()" class="w-full bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition-colors">
+                    Request Uber Ride
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRole = '';
+        let currentUser = '';
+
+        // Initialize Lucide icons and API key
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            
+            // Load saved API key
+            loadApiKey();
+            
+            // Add event listener for API key input
+            const apiKeyInput = document.getElementById('apiKeyInput');
+            if (apiKeyInput) {
+                apiKeyInput.addEventListener('input', saveApiKey);
+            }
+            
+            // Initialize LLM provider
+            updateLLMProvider();
+        });
+
+        // Login function
+        function login(role) {
+            currentRole = role;
+            currentUser = role === 'patient' ? 'Sarah Parker' : 'Cindy Smith';
+            
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            if (role === 'patient') {
+                document.getElementById('patientDashboard').classList.remove('hidden');
+                document.getElementById('userInfo').textContent = 'Patient • Sarah Parker';
+            } else {
+                document.getElementById('agentDashboard').classList.remove('hidden');
+                document.getElementById('userInfo').textContent = 'Agent • Cindy Smith';
+            }
+        }
+
+        // Logout function
+        function logout() {
+            currentRole = '';
+            currentUser = '';
+            
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('patientDashboard').classList.add('hidden');
+            document.getElementById('agentDashboard').classList.add('hidden');
+            closeChatModal();
+        }
+
+        // Chat modal functions
+        function openChatModal() {
+            document.getElementById('chatModal').classList.remove('hidden');
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').classList.add('hidden');
+        }
+
+        // Send chat message
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message) {
+                addMessage('user', message);
+                input.value = '';
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Generate AI response
+                const aiResponse = await generateAIResponse(message);
+                hideTypingIndicator();
+                addMessage('ai', aiResponse);
+            }
+        }
+
+        // Add message to chat
+        function addMessage(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex items-start space-x-3 ${sender === 'user' ? 'justify-end' : ''}`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs">
+                        <p class="text-sm">${message}</p>
+                    </div>
+                    <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span class="text-blue-600 font-medium text-xs">U</span>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
+                    </div>
+                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                        <div class="text-sm text-gray-700">${formatMessage(message)}</div>
+                    </div>
+                `;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Re-initialize Lucide icons for new elements
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        }
+
+        // Show typing indicator
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex items-start space-x-3';
+            typingDiv.innerHTML = `
+                <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
+                    <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
+                    <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-indicator"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-indicator" style="animation-delay: 0.1s"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-indicator" style="animation-delay: 0.2s"></div>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Hide typing indicator
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        // Format message with basic markdown
+        function formatMessage(message) {
+            return message
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Handle quick actions
+        function handleQuickAction(action) {
+            const messages = {
+                'find-centers': 'Can you help me find infusion centers near me?',
+                'arrange-ride': 'I need help arranging transportation to my appointment',
+                'side-effects': 'What side effects should I expect from Tysabri?',
+                'emotional-support': 'I\'m feeling overwhelmed and need emotional support'
+            };
+            
+            if (messages[action]) {
+                document.getElementById('chatInput').value = messages[action];
+                sendChatMessage();
+            }
+        }
+
+        // Real LLM Integration
+        let currentLLMProvider = 'openai'; // Default to OpenAI for real AI responses
+        let apiKey = '';
+
+        // ADD YOUR OPENAI API KEY HERE - Replace with your actual key
+        const DEFAULT_API_KEY = 'sk-proj-YOUR-ACTUAL-OPENAI-API-KEY-HERE'; // Replace this with your real API key
+
+        // Load API key from localStorage or use default
+        function loadApiKey() {
+            const savedKey = localStorage.getItem('biogen_api_key');
+            if (savedKey && savedKey.length > 20 && savedKey.startsWith('sk-')) {
+                apiKey = savedKey;
+                document.getElementById('apiKeyInput').value = savedKey;
+                currentLLMProvider = 'openai';
+                showApiKeyStatus(apiKey);
+            } else if (DEFAULT_API_KEY && DEFAULT_API_KEY !== 'sk-proj-YOUR-ACTUAL-OPENAI-API-KEY-HERE') {
+                // Use the default API key for external users
+                apiKey = DEFAULT_API_KEY;
+                document.getElementById('apiKeyInput').value = DEFAULT_API_KEY;
+                currentLLMProvider = 'openai';
+                document.getElementById('llmProvider').value = 'openai';
+                localStorage.setItem('biogen_api_key', DEFAULT_API_KEY);
+                showApiKeyStatus(apiKey);
+                updateLLMProvider();
+            } else {
+                // Fallback to demo mode if no API key provided
+                currentLLMProvider = 'demo';
+                document.getElementById('llmProvider').value = 'demo';
+                updateLLMProvider();
+            }
+        }
+
+        // Show API key status indicators
+        function showApiKeyStatus(key) {
+            const apiKeyStatus = document.getElementById('apiKeyStatus');
+            const apiKeyConfigured = document.getElementById('apiKeyConfigured');
+            
+            if (key && key.startsWith('sk-') && key.length > 20) {
+                if (apiKeyStatus) apiKeyStatus.classList.remove('hidden');
+                if (apiKeyConfigured) apiKeyConfigured.classList.remove('hidden');
+            } else {
+                if (apiKeyStatus) apiKeyStatus.classList.add('hidden');
+                if (apiKeyConfigured) apiKeyConfigured.classList.add('hidden');
+            }
+        }
+
+        // Save API key to localStorage
+        function saveApiKey() {
+            const keyInput = document.getElementById('apiKeyInput');
+            const apiKeyStatus = document.getElementById('apiKeyStatus');
+            const apiKeyConfigured = document.getElementById('apiKeyConfigured');
+            
+            if (keyInput) {
+                apiKey = keyInput.value.trim();
+                localStorage.setItem('biogen_api_key', apiKey);
+                
+                // Show visual indicators if key is valid
+                if (apiKey && apiKey.startsWith('sk-') && apiKey.length > 20) {
+                    if (apiKeyStatus) apiKeyStatus.classList.remove('hidden');
+                    if (apiKeyConfigured) apiKeyConfigured.classList.remove('hidden');
+                } else {
+                    if (apiKeyStatus) apiKeyStatus.classList.add('hidden');
+                    if (apiKeyConfigured) apiKeyConfigured.classList.add('hidden');
+                }
+            }
+        }
+
+        // Update LLM provider
+        function updateLLMProvider() {
+            const provider = document.getElementById('llmProvider').value;
+            currentLLMProvider = provider;
+            
+            const apiKeyInput = document.getElementById('apiKeyInput');
+            const apiKeySection = document.getElementById('apiKeySection');
+            const demoModeActive = document.getElementById('demoModeActive');
+            
+            if (provider === 'demo') {
+                apiKeySection.style.display = 'block'; // Show section but indicate demo mode
+                if (demoModeActive) demoModeActive.classList.remove('hidden');
+                if (apiKeyInput) apiKeyInput.placeholder = 'Enter your OpenAI API key (sk-...) - Optional for enhanced AI';
+            } else {
+                if (demoModeActive) demoModeActive.classList.add('hidden');
+                apiKeySection.style.display = 'block';
+                const placeholders = {
+                    'openai': 'Enter your OpenAI API key (sk-...)',
+                    'gemini': 'Enter your Google API key',
+                    'claude': 'Enter your Anthropic API key',
+                    'azure': 'Enter your Azure OpenAI API key'
+                };
+                apiKeyInput.placeholder = placeholders[provider] || 'Enter your API key';
+            }
+        }
+
+        // Generate AI response using real LLM
+        async function generateAIResponse(userMessage) {
+            try {
+                // Check if we're in demo mode
+                if (currentLLMProvider === 'demo') {
+                    return generateDemoResponse(userMessage);
+                }
+
+                // Check if API key is provided
+                if (!apiKey) {
+                    return `Please configure your API key in the settings above to use the AI assistant. You can get an API key from OpenAI, Google, or Anthropic.`;
+                }
+
+                // Get user context
+                const context = getCurrentUserContext();
+                
+                // Create the prompt for the LLM
+                const systemPrompt = `You are an AI assistant for Biogen Patient Services, specifically helping patients with Multiple Sclerosis (MS) who are on Tysabri therapy. You are empathetic, knowledgeable, and supportive.
+
+Patient Context:
+- Name: ${context.name}
+- Role: ${context.role}
+- Diagnosis: ${context.diagnosis}
+- Therapy: ${context.therapy}
+- Diagnosis Date: ${context.diagnosisDate}
+- Next Infusion: ${context.nextInfusion}
+- Location: ${context.location}
+- Current Date: ${new Date().toLocaleDateString()}
+
+Your role is to:
+1. Answer questions about MS, Tysabri treatment, side effects, appointments, and lifestyle
+2. Provide emotional support and reassurance
+3. Help with practical matters like transportation, insurance, and scheduling
+4. Be conversational and natural, like a knowledgeable friend who happens to be an expert
+5. Always prioritize patient safety and recommend contacting healthcare providers for medical concerns
+6. Keep responses concise but helpful (2-4 sentences typically)
+
+Important guidelines:
+- Be warm and empathetic
+- Use the patient's name naturally in conversation
+- Don't provide specific medical advice - refer to healthcare providers for that
+- Be encouraging about treatment and prognosis
+- Offer practical help when possible
+- If you don't know something, admit it and suggest who might know`;
+
+                let response;
+                
+                switch (currentLLMProvider) {
+                    case 'openai':
+                        response = await callOpenAI(userMessage, systemPrompt);
+                        break;
+                    case 'gemini':
+                        response = await callGemini(userMessage, systemPrompt);
+                        break;
+                    case 'claude':
+                        response = await callClaude(userMessage, systemPrompt);
+                        break;
+                    default:
+                        response = await callOpenAI(userMessage, systemPrompt);
+                }
+
+                return response;
+
+            } catch (error) {
+                console.error('LLM API Error:', error);
+                
+                // Fallback response if API fails
+                const userName = currentUser.split(' ')[0];
+                return `I apologize, but I'm experiencing a technical issue right now and can't process your question properly. Please try asking again in a moment, or if you need immediate assistance, please contact your Patient Services Agent Cindy at the number in your dashboard. I'm here to help with questions about your MS treatment, ${userName}.`;
+            }
+        }
+
+        // OpenAI API call
+        async function callOpenAI(userMessage, systemPrompt) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4',
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: userMessage }
+                    ],
+                    max_tokens: 300,
+                    temperature: 0.7,
+                    presence_penalty: 0.1,
+                    frequency_penalty: 0.1
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`OpenAI API request failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.choices[0].message.content.trim();
+        }
+
+        // Gemini API call
+        async function callGemini(userMessage, systemPrompt) {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: `${systemPrompt}\n\nPatient question: ${userMessage}`
+                        }]
+                    }]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Gemini API request failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        // Claude API call
+        async function callClaude(userMessage, systemPrompt) {
+            const response = await fetch('https://api.anthropic.com/v1/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-api-key': apiKey,
+                    'anthropic-version': '2023-06-01'
+                },
+                body: JSON.stringify({
+                    model: 'claude-3-sonnet-20240229',
+                    max_tokens: 300,
+                    messages: [
+                        { role: 'user', content: `${systemPrompt}\n\nPatient question: ${userMessage}` }
+                    ]
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Claude API request failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.content[0].text;
+        }
+
+        // Enhanced demo mode fallback for external users
+        function generateDemoResponse(userMessage) {
+            const userName = currentUser.split(' ')[0];
+            const message = userMessage.toLowerCase().trim();
+            
+            // Personal questions
+            if (message.includes('what is my name') || message.includes('my name')) {
+                return `Your name is ${currentUser}. I'm here to help you with your Tysabri treatment journey.`;
+            }
+            
+            if (message.includes('who am i') || message.includes('who are you talking to')) {
+                return `I'm talking to ${currentUser}. You're a patient starting Tysabri treatment for MS. How can I help you today?`;
+            }
+            
+            if (message.includes('how are you') || message.includes('how do you feel')) {
+                return `I'm doing well, thank you for asking! I'm here and ready to help you with any questions about your MS treatment or Tysabri therapy. How are you feeling today, ${userName}?`;
+            }
+            
+            // Medical questions
+            if (message.includes('what is tysabri') || message.includes('tysabri')) {
+                return `Tysabri (natalizumab) is a medication used to treat relapsing-remitting multiple sclerosis. It's given as an IV infusion every 28 days and helps reduce MS inflammation and relapses. You'll be starting this treatment on October 25, 2025. Do you have any specific questions about how it works?`;
+            }
+            
+            if (message.includes('side effects') || message.includes('side effect')) {
+                return `Common side effects of Tysabri can include headache, fatigue, nausea, and sometimes mild flu-like symptoms, especially in the first few infusions. Most people tolerate it well, and side effects usually improve over time. Your healthcare team will monitor you closely for any concerns. Are you worried about any particular side effects?`;
+            }
+            
+            if (message.includes('headache') || message.includes('head pain')) {
+                return `Headaches can happen with Tysabri, especially after infusions. You can usually take acetaminophen (Tylenol) for relief. Stay hydrated and rest in a cool, dark room if needed. Most infusion-related headaches improve within 24-48 hours. Is this something you're experiencing?`;
+            }
+            
+            // Appointment questions
+            if (message.includes('when is my appointment') || message.includes('when is my infusion') || message.includes('appointment')) {
+                return `Your next infusion is scheduled for October 25, 2025. After that, you'll have infusions every 28 days. I can help you schedule future appointments or reschedule if needed. Would you like me to help you with anything specific about your appointment?`;
+            }
+            
+            if (message.includes('where is my appointment') || message.includes('location') || message.includes('where')) {
+                return `Your infusion will be at a center in the Palo Alto area. There are several options including Stanford Health Care, Palo Alto Medical Foundation, and El Camino Hospital. I can help you find the closest one to your location or arrange transportation if needed. Where would be most convenient for you?`;
+            }
+            
+            // Transportation
+            if (message.includes('transportation') || message.includes('ride') || message.includes('uber') || message.includes('how do i get there')) {
+                return `I can help you arrange transportation to your appointments! We can coordinate Uber or Lyft rides, medical transportation, or help you coordinate with family or friends. Just let me know your address and I can set up a ride for your October 25th appointment. Would you like me to help arrange that now?`;
+            }
+            
+            // Emotional support
+            if (message.includes('worried') || message.includes('anxious') || message.includes('scared') || message.includes('nervous')) {
+                return `It's completely normal to feel worried or anxious about starting a new treatment, especially with a new MS diagnosis. Many people feel this way. Tysabri is a very effective treatment, and your healthcare team will monitor you closely. You're taking the right steps by getting treatment early. Is there something specific that's worrying you? I'm here to listen and help.`;
+            }
+            
+            // Insurance/Cost
+            if (message.includes('insurance') || message.includes('cost') || message.includes('payment')) {
+                return `I can help you navigate insurance and costs for your Tysabri treatment. Most insurance plans cover Tysabri, and there are also patient assistance programs available through Biogen. We'll work on getting prior authorization and can check your specific coverage. Do you have questions about your insurance plan?`;
+            }
+            
+            // Family
+            if (message.includes('family') || message.includes('kids') || message.includes('children')) {
+                return `Talking to family about MS can be challenging. It's important to be honest but also reassuring. For children, keep explanations age-appropriate and emphasize that you're getting the best treatment available. For your partner, open communication is key. Many families find support groups helpful too. Is there something specific about talking to your family that you'd like help with?`;
+            }
+            
+            // Work
+            if (message.includes('work') || message.includes('job') || message.includes('employment')) {
+                return `Most people with MS continue to work successfully, especially with early treatment like you're getting. You have rights under the ADA for workplace accommodations if needed, like flexible scheduling for appointments. The key is pacing yourself and communicating with your employer about any needs. What kind of work do you do?`;
+            }
+            
+            // Greetings
+            if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return `Hello ${userName}! I'm your AI assistant for your Tysabri treatment journey. I can help you with questions about MS, your treatment, appointments, side effects, or anything else you're curious about. What would you like to know?`;
+            }
+            
+            if (message.includes('thank you') || message.includes('thanks')) {
+                return `You're very welcome, ${userName}! I'm glad I could help. Is there anything else you'd like to know about your treatment or MS?`;
+            }
+            
+            if (message.includes('goodbye') || message.includes('bye') || message.includes('see you later')) {
+                return `Goodbye, ${userName}! Feel free to come back anytime if you have questions about your Tysabri treatment. Take care!`;
+            }
+            
+            // General fallback - more intelligent
+            if (message.includes('?') || message.includes('what') || message.includes('how') || message.includes('why') || message.includes('when') || message.includes('where')) {
+                return `That's a great question, ${userName}. I want to make sure I give you the most accurate and helpful information. Could you provide a bit more detail about what specifically you'd like to know? I can help with questions about MS, Tysabri treatment, appointments, side effects, lifestyle, family, work, or any other concerns you might have.`;
+            }
+            
+            // Final fallback
+            return `I understand you're asking about "${userMessage}", ${userName}. I'm your AI assistant for your Tysabri treatment journey. I can help you with questions about MS, your medication, appointments, side effects, lifestyle, family, work, or anything else on your mind. Could you tell me more about what you'd like to know? I'm here to support you.`;
+        }
+
+
+        function getCurrentUserContext() {
+            return {
+                role: currentRole,
+                name: currentUser,
+                diagnosis: "Relapsing-Remitting MS",
+                therapy: "Tysabri",
+                diagnosisDate: "October 20, 2025",
+                nextInfusion: "October 25, 2025",
+                location: "Palo Alto, CA",
+                concerns: ["anxiety", "new diagnosis", "therapy expectations"],
+                preferences: ["SMS notifications", "gradual information"],
+                lastInteraction: new Date().toISOString()
+            };
+        }
+
+        // Patient-specific functions
+        function contactAgent() {
+            const patientPhone = document.getElementById('patientPhone').value.trim();
+            if (!patientPhone) {
+                alert('Please enter your phone number first in the Contact Configuration section.');
+                return;
+            }
+            
+            const cleanPhone = patientPhone.replace(/\D/g, '');
+            if (cleanPhone.length < 10) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+            
+            const agentPhone = prompt('Please enter Cindy\'s phone number for WhatsApp contact:', '+1234567890');
+            if (agentPhone) {
+                const cleanAgentPhone = agentPhone.replace(/\D/g, '');
+                const message = encodeURIComponent(`Hi Cindy! This is Sarah Parker (Patient ID: SP-2025-001). I have some questions about my Tysabri therapy. Thank you for your support! 💙`);
+                const whatsappUrl = `https://wa.me/${cleanAgentPhone}?text=${message}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+
+        function scheduleInfusion() {
+            alert('Infusion scheduling feature would integrate with your healthcare provider\'s system to book appointments.');
+        }
+
+        function requestRide() {
+            document.getElementById('travelModal').classList.remove('hidden');
+        }
+
+        function closeTravelModal() {
+            document.getElementById('travelModal').classList.add('hidden');
+        }
+
+        function requestUberRide() {
+            const location = document.getElementById('infusionLocation').value;
+            const address = document.getElementById('pickupAddress').value;
+            const time = document.getElementById('appointmentTime').value;
+            
+            if (!address) {
+                alert('Please enter your pickup address.');
+                return;
+            }
+            
+            // Simulate Uber API integration
+            alert(`Uber ride requested!\n\nFrom: ${address}\nTo: ${location}\nTime: ${time}\n\nYou'll receive a confirmation text shortly.`);
+            closeTravelModal();
+        }
+
+        function showNextAvailable() {
+            const content = document.getElementById('scheduleContent');
+            content.innerHTML = `
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center p-2 bg-blue-50 rounded">
+                        <span class="font-medium">October 25, 2025</span>
+                        <span class="text-sm text-gray-600">10:00 AM</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-blue-50 rounded">
+                        <span class="font-medium">November 22, 2025</span>
+                        <span class="text-sm text-gray-600">2:00 PM</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-blue-50 rounded">
+                        <span class="font-medium">December 20, 2025</span>
+                        <span class="text-sm text-gray-600">11:00 AM</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleFullSchedule() {
+            const content = document.getElementById('scheduleContent');
+            content.innerHTML = `
+                <div class="text-sm">
+                    <p class="mb-2 font-medium">Your Annual Infusion Schedule (Every 28 Days):</p>
+                    <div class="grid grid-cols-2 gap-2 text-xs">
+                        <div>Oct 25, 2025</div>
+                        <div>Nov 22, 2025</div>
+                        <div>Dec 20, 2025</div>
+                        <div>Jan 17, 2026</div>
+                        <div>Feb 14, 2026</div>
+                        <div>Mar 14, 2026</div>
+                        <div>Apr 11, 2026</div>
+                        <div>May 9, 2026</div>
+                        <div>Jun 6, 2026</div>
+                        <div>Jul 4, 2026</div>
+                        <div>Aug 1, 2026</div>
+                        <div>Aug 29, 2026</div>
+                        <div>Sep 26, 2026</div>
+                        <div>Oct 24, 2026</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Agent-specific functions
+        function playDemo(step) {
+            const steps = {
+                'step1': 'Step 1: Sarah visits neurologist → MS diagnosis → Tysabri prescribed',
+                'step2': 'Step 2: HCP submits Start Form → Salesforce Health Cloud creates patient record',
+                'step3': 'Step 3: Cindy makes welcome call → AI handles routine questions',
+                'step4': 'Step 4: Insurance verification → Benefits investigation initiated',
+                'step5': 'Step 5: Prior Authorization → Biogen assistance program enrollment',
+                'step6': 'Step 6: Infusion scheduling → October 25, 2025 appointment confirmed',
+                'step7': 'Step 7: Nurse education → Treatment preparation and expectations',
+                'step8': 'Step 8: First infusion → Treatment begins successfully'
+            };
+            
+            alert(steps[step] || 'Demo step not found');
+        }
+
+        function viewPatientData() {
+            const patientData = `📊 Patient Longitudinal Data:
+
+👤 Sarah Parker (SP-2025-001):
+• Total Interactions: 8
+• Last Contact: Oct 21, 2025
+• Sentiment Trend: Improving (+15%)
+• Key Topics: MS education, therapy anxiety, infusion scheduling
+• Risk Factors: High anxiety, new diagnosis
+• Success Metrics: 85% satisfaction, 90% adherence
+
+📈 Interaction History:
+1. Oct 20: Initial diagnosis call (Anxiety: High)
+2. Oct 21: Welcome call (Anxiety: Medium)
+3. Oct 22: Nurse education scheduled
+4. Oct 25: First infusion scheduled
+
+🎯 AI Insights:
+• Patient responds well to empathetic communication
+• Prefers SMS notifications over calls
+• Benefits from gradual information delivery
+• Strong family support system
+
+🔮 Predictive Analytics:
+• Adherence Risk: Low (15%)
+• Satisfaction Score: 92%
+• Next Best Action: Schedule nurse education call`;
+            
+            alert(patientData);
+        }
+
+        function contactPatient() {
+            const agentPatientPhone = document.getElementById('agentPatientPhone').value.trim();
+            if (!agentPatientPhone) {
+                alert('Please enter patient phone number first in the Contact Configuration section.');
+                return;
+            }
+            
+            const cleanPhone = agentPatientPhone.replace(/\D/g, '');
+            if (cleanPhone.length < 10) {
+                alert('Please enter a valid patient phone number.');
+                return;
+            }
+            
+            const message = encodeURIComponent(`Hi Sarah! This is Cindy from Biogen Patient Services. I'm calling to welcome you to our Tysabri support program. How are you feeling today? We're here to support you every step of the way! 💙`);
+            const whatsappUrl = `https://wa.me/${cleanPhone}?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function viewDashboard() {
+            alert('Advanced analytics dashboard would show:\n\n• Patient satisfaction metrics\n• Call volume trends\n• AI response effectiveness\n• Agent performance analytics\n• Predictive insights');
+        }
+
+        // Allow Enter key to send messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        sendChatMessage();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
