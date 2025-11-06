@@ -3,526 +3,960 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biogen Patient Services</title>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Soleno Medical Affairs Europe</title>
+    <meta name="description" content="Soleno Therapeutics Medical Affairs Europe – scientific resources, congress updates, publications, and GDPR-compliant medical information for EU healthcare professionals.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.1); }
-        .typing-indicator {
-            animation: typing 1.5s infinite;
+        :root {
+            --primary: #0059a9;
+            --primary-dark: #003f7a;
+            --accent: #00a7d6;
+            --neutral-100: #f8fbff;
+            --neutral-200: #eef3fb;
+            --neutral-400: #a2b3c5;
+            --neutral-600: #425466;
+            --neutral-800: #1e2a36;
+            --border-radius-lg: 20px;
         }
-        @keyframes typing {
-            0%, 60%, 100% { opacity: 0.3; }
-            30% { opacity: 1; }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Source Sans Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--neutral-800);
+            background: white;
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(18, 67, 117, 0.08);
+        }
+
+        .top-banner {
+            background: var(--neutral-800);
+            color: white;
+            font-size: 0.875rem;
+            text-align: center;
+            padding: 0.6rem 1.5rem;
+        }
+
+        .nav {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.5rem;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            letter-spacing: 0.04em;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(165deg, var(--accent), var(--primary));
+            display: grid;
+            place-items: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            font-weight: 600;
+            color: var(--neutral-600);
+        }
+
+        .nav-links a:hover,
+        .nav-links a:focus {
+            color: var(--primary-dark);
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            padding: 0.7rem 1.4rem;
+            border-radius: 999px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .cta-button:hover,
+        .cta-button:focus {
+            background: var(--primary-dark);
+        }
+
+        main {
+            overflow: hidden;
+        }
+
+        .hero {
+            background: linear-gradient(145deg, rgba(0, 89, 169, 0.94), rgba(0, 167, 214, 0.85)), url('https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1500&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5.5rem 1.5rem 4.5rem;
+        }
+
+        .hero-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2rem;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.16);
+            padding: 0.4rem 1.1rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 4vw, 3.2rem);
+            margin: 0.6rem 0;
+            line-height: 1.2;
+            letter-spacing: -0.014em;
+        }
+
+        .hero p {
+            max-width: 660px;
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .hero-actions .outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: white;
+        }
+
+        section {
+            padding: 4rem 1.5rem;
+        }
+
+        .section-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            margin-bottom: 2rem;
+        }
+
+        .section-title span {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .section-title h2 {
+            margin: 0.6rem 0 0;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            color: var(--neutral-800);
+        }
+
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 1.8rem;
+            border: 1px solid rgba(0, 46, 81, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 51, 102, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover,
+        .card:focus-within {
+            transform: translateY(-6px);
+            box-shadow: 0 26px 50px rgba(0, 51, 102, 0.12);
+        }
+
+        .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: var(--neutral-200);
+            display: grid;
+            place-items: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+        }
+
+        .card h3 {
+            margin: 0 0 0.6rem;
+            font-size: 1.25rem;
+            color: var(--primary-dark);
+        }
+
+        .card p {
+            margin: 0 0 1.2rem;
+            color: var(--neutral-600);
+        }
+
+        .card .link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .highlight-banner {
+            background: var(--neutral-100);
+            border-radius: var(--border-radius-lg);
+            padding: 2.4rem;
+            border: 1px solid rgba(0, 46, 81, 0.08);
+            display: grid;
+            gap: 1.1rem;
+        }
+
+        .highlight-banner strong {
+            color: var(--primary-dark);
+        }
+
+        .two-column {
+            display: grid;
+            gap: 2.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        .list {
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .list li {
+            background: rgba(0, 89, 169, 0.08);
+            border-radius: 12px;
+            padding: 0.85rem 1.1rem;
+            color: var(--neutral-800);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid rgba(0, 46, 81, 0.1);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: var(--neutral-200);
+            color: var(--neutral-800);
+            font-weight: 600;
+        }
+
+        .table th,
+        .table td {
+            text-align: left;
+            padding: 1rem 1.2rem;
+        }
+
+        .table tbody tr:nth-child(even) {
+            background: rgba(0, 96, 160, 0.05);
+        }
+
+        .privacy-panel {
+            background: linear-gradient(150deg, rgba(0, 89, 169, 0.08), rgba(0, 167, 214, 0.16));
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+        }
+
+        .privacy-panel h3 {
+            margin-top: 0;
+            color: var(--primary-dark);
+        }
+
+        .toggles {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            border: 1px solid rgba(0, 46, 81, 0.12);
+        }
+
+        .toggle button {
+            position: relative;
+            width: 46px;
+            height: 26px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(65, 92, 120, 0.3);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .toggle button::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .toggle button.active {
+            background: var(--primary);
+        }
+
+        .toggle button.active::after {
+            transform: translateX(18px);
+        }
+
+        form {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--neutral-600);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 46, 81, 0.16);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        textarea {
+            min-height: 140px;
+        }
+
+        .checkbox {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .checkbox input {
+            width: 1.1rem;
+            height: 1.1rem;
+            margin-top: 0.2rem;
+        }
+
+        footer {
+            background: var(--neutral-800);
+            color: white;
+            padding: 3rem 1.5rem 2.4rem;
+        }
+
+        .footer-inner {
+            max-width: 1180px;
+            margin: 0 auto;
+            display: grid;
+            gap: 1.2rem;
+            font-size: 0.92rem;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .footer-links a:hover,
+        .footer-links a:focus {
+            color: white;
+        }
+
+        .cookie-banner {
+            position: fixed;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 18px;
+            padding: 1.5rem;
+            box-shadow: 0 22px 44px rgba(0, 56, 102, 0.18);
+            border: 1px solid rgba(0, 46, 81, 0.08);
+            max-width: min(92vw, 520px);
+            z-index: 9999;
+            display: none;
+        }
+
+        .cookie-banner.active {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .cookie-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .secondary {
+            background: rgba(0, 89, 169, 0.12);
+            color: var(--primary-dark);
+        }
+
+        .secondary:hover,
+        .secondary:focus {
+            background: rgba(0, 89, 169, 0.2);
+        }
+
+        .small {
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 840px) {
+            .nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+            }
+
+            .hero {
+                padding-top: 4.5rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 580px) {
+            .cookie-actions {
+                flex-direction: column;
+            }
+
+            .toggle {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.6rem;
+            }
+
+            footer {
+                font-size: 0.85rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Login Screen -->
-    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4">
-        <div class="glass-effect rounded-2xl p-8 w-full max-w-md text-white">
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold mb-2">Biogen Patient Services</h1>
-                <p class="text-blue-100">AI-Powered Healthcare Support</p>
-            </div>
-            
-            <div class="space-y-4">
-                <button onclick="login('patient')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
-                    <i data-lucide="user" class="w-5 h-5"></i>
-                    <span>Login as Patient (Sarah Parker)</span>
-                </button>
-                
-                <button onclick="login('agent')" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2">
-                    <i data-lucide="headphones" class="w-5 h-5"></i>
-                    <span>Login as Agent (Cindy Smith)</span>
-                </button>
-            </div>
+<body>
+    <header>
+        <div class="top-banner" role="note">
+            This resource hub is intended for healthcare professionals practising within the European Economic Area and the United Kingdom only.
         </div>
-    </div>
+        <nav class="nav" aria-label="Primary">
+            <a class="logo" href="#top">
+                <span class="logo-icon" aria-hidden="true">S</span>
+                <span>Soleno Medical Affairs Europe</span>
+            </a>
+            <div class="nav-links">
+                <a href="#medical-content">Medical Content</a>
+                <a href="#congress-library">Congress Library</a>
+                <a href="#publications">Publications</a>
+                <a href="#msl">Locate MSL</a>
+                <a href="#privacy-center">Privacy Centre</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <button class="cta-button" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'});">Submit an Enquiry</button>
+        </nav>
+    </header>
 
-    <!-- Main App -->
-    <div id="mainApp" class="hidden">
-        <!-- Header -->
-        <header class="bg-white shadow-sm border-b">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center py-4">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <i data-lucide="heart" class="w-6 h-6 text-white"></i>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-semibold text-gray-900">Biogen Patient Services</h1>
-                            <p class="text-sm text-gray-500" id="userInfo">Welcome back!</p>
-                        </div>
-                    </div>
-                    <button onclick="logout()" class="text-gray-500 hover:text-gray-700">
-                        <i data-lucide="log-out" class="w-5 h-5"></i>
-                    </button>
+    <main id="top">
+        <section class="hero" aria-labelledby="hero-heading">
+            <div class="hero-inner">
+                <span class="hero-tag" aria-label="European region verified">Europe · HCP Access</span>
+                <h1 id="hero-heading">Welcome to Soleno Therapeutics Medical Affairs Europe</h1>
+                <p>
+                    Access evidence-based scientific information, congress updates, and data-driven resources supporting the clinical evaluation of Soleno Therapeutics’ investigational therapies, including diazoxide choline controlled-release (DCCR) for people living with rare metabolic and endocrine disorders.
+                </p>
+                <div class="hero-actions">
+                    <button class="cta-button" onclick="document.getElementById('medical-content').scrollIntoView({behavior: 'smooth'});">Explore Medical Content</button>
+                    <button class="cta-button outline" onclick="document.getElementById('privacy-center').scrollIntoView({behavior: 'smooth'});">Review EU Privacy Practices</button>
                 </div>
             </div>
-        </header>
+        </section>
 
-        <!-- Patient Dashboard -->
-        <div id="patientDashboard" class="hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <!-- Welcome Section -->
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 mb-6 border border-blue-200">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-                            <span class="text-white font-semibold text-lg">SP</span>
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-semibold text-gray-900">Welcome back, Sarah!</h2>
-                            <p class="text-gray-600">Relapsing-Remitting MS • Tysabri Therapy</p>
-                        </div>
+        <section id="medical-content" aria-labelledby="section-medical-content">
+            <div class="section-inner">
+                <div class="section-title">
+                    <span>Scientific resources</span>
+                    <h2 id="section-medical-content">Curated content for EU healthcare professionals</h2>
+                </div>
+                <div class="grid grid-cols-3" role="list">
+                    <article class="card" role="listitem">
+                        <div class="card-icon" aria-hidden="true">📘</div>
+                        <h3>Medical Content</h3>
+                        <p>Download peer-reviewed posters, disease state slide decks, and Soleno-authored educational materials tailored for European clinical practice.</p>
+                        <a class="link" href="#medical-content">Browse library →</a>
+                    </article>
+                    <article class="card" role="listitem" id="congress-library">
+                        <div class="card-icon" aria-hidden="true">🏛️</div>
+                        <h3>Congress Library</h3>
+                        <p>Review highlights from 2024 European Society for Paediatric Endocrinology and International Prader-Willi Syndrome Organisation scientific sessions.</p>
+                        <a class="link" href="#congress">View congress archive →</a>
+                    </article>
+                    <article class="card" role="listitem" id="publications">
+                        <div class="card-icon" aria-hidden="true">📑</div>
+                        <h3>Publications</h3>
+                        <p>Access open-access manuscripts, abstracts, and real-world evidence analyses examining the impact of DCCR on hyperphagia, metabolic control, and growth parameters.</p>
+                        <a class="link" href="#latest-publications">See latest publications →</a>
+                    </article>
+                    <article class="card" role="listitem" id="msl">
+                        <div class="card-icon" aria-hidden="true">🧭</div>
+                        <h3>Locate Your MSL</h3>
+                        <p>Find regional Medical Science Liaison contacts across the EU, UK, and Switzerland for tailored scientific exchange.</p>
+                        <a class="link" href="#msl-directory">View regional contacts →</a>
+                    </article>
+                    <article class="card" role="listitem">
+                        <div class="card-icon" aria-hidden="true">💡</div>
+                        <h3>Medical Grants</h3>
+                        <p>Learn how to submit investigator-initiated research and independent medical education proposals aligned with European compliance frameworks.</p>
+                        <a class="link" href="#grants">Grant application guidance →</a>
+                    </article>
+                    <article class="card" role="listitem">
+                        <div class="card-icon" aria-hidden="true">✉️</div>
+                        <h3>Contact Med Info</h3>
+                        <p>Request detailed product information, safety updates, or clarification of data directly from the Soleno Medical Information team.</p>
+                        <a class="link" href="#contact">Submit a query →</a>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="congress" aria-labelledby="section-congress">
+            <div class="section-inner two-column">
+                <div>
+                    <div class="section-title">
+                        <span>European congress highlights</span>
+                        <h2 id="section-congress">Featured presentations</h2>
                     </div>
-                    <p class="text-gray-700">Your next infusion is scheduled for <strong>October 25, 2025</strong>. We're here to support you every step of the way.</p>
+                    <div class="highlight-banner">
+                        <strong>European Society for Paediatric Endocrinology 2024</strong>
+                        <p>DCCR therapy demonstrated clinically meaningful reductions in hyperphagia scores and supported improvements in metabolic markers among adolescents with Prader-Willi syndrome in a long-term open-label extension (OLE) analysis.</p>
+                        <p class="small">Key endpoints included changes in Hyperphagia Questionnaire for Clinical Trials (HQ-CT) total score, fasting insulin, and body composition assessed via DXA scans. Data reflect interim findings; DCCR is an investigational therapy not yet approved in the EU.</p>
+                    </div>
                 </div>
-
-                <!-- Quick Actions -->
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <button onclick="openChatModal()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
-                            </div>
-                            <span class="font-medium text-gray-900">AI Support</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Ask questions 24/7</p>
-                    </button>
-                    
-                    <button onclick="contactAgent()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                                <i data-lucide="message-circle" class="w-4 h-4 text-green-600"></i>
-                            </div>
-                            <span class="font-medium text-gray-900">Contact Your Rep</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Get help from Cindy</p>
-                    </button>
+                <div>
+                    <table class="table" aria-describedby="section-congress">
+                        <thead>
+                            <tr>
+                                <th scope="col">Event</th>
+                                <th scope="col">Session</th>
+                                <th scope="col">Availability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ESPE 2024 · Copenhagen</td>
+                                <td>DCCR OLE Metabolic Outcomes</td>
+                                <td>Slides · Poster PDF · Audio</td>
+                            </tr>
+                            <tr>
+                                <td>IPWSO 2024 · Limerick</td>
+                                <td>Behavioural Impact of DCCR</td>
+                                <td>Poster PDF · Summary Brief</td>
+                            </tr>
+                            <tr>
+                                <td>ENDO 2025 · Madrid</td>
+                                <td>Upcoming: EU Real-World Registry</td>
+                                <td>Register interest</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
+        </section>
 
-                <!-- Journey Tracker -->
-                <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
-                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center">
-                        <i data-lucide="map-pin" class="w-4 h-4 mr-2 text-indigo-600"></i>
-                        Your Treatment Journey
-                    </h3>
-                    <div class="space-y-4">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+        <section id="latest-publications" aria-labelledby="section-publications">
+            <div class="section-inner two-column">
+                <div>
+                    <div class="section-title">
+                        <span>Peer-reviewed insights</span>
+                        <h2 id="section-publications">Recent publications</h2>
+                    </div>
+                    <div class="grid" style="gap: 1rem;">
+                        <article class="card" style="box-shadow: none; border-style: dashed;">
+                            <h3>DCCR in Prader-Willi syndrome: 52-week data</h3>
+                            <p>Journal of Clinical Endocrinology & Metabolism · 2024</p>
+                            <p class="small">Explores long-term efficacy signals and safety monitoring requirements including glucose modulation and edema management strategies.</p>
+                        </article>
+                        <article class="card" style="box-shadow: none; border-style: dashed;">
+                            <h3>Metabolic phenotyping of rare syndromic obesity</h3>
+                            <p>Orphanet Journal of Rare Diseases · 2023</p>
+                            <p class="small">Highlights the importance of multi-system assessments and multidisciplinary care models across European centres of excellence.</p>
+                        </article>
+                    </div>
+                </div>
+                <div>
+                    <div class="section-title">
+                        <span>On-demand medical education</span>
+                        <h2>Digital programmes</h2>
+                    </div>
+                    <ul class="list">
+                        <li>
+                            Webinar: Optimising transition from paediatric to adult care for individuals with Prader-Willi syndrome (EU CPD accredited).
+                        </li>
+                        <li>
+                            Interactive module: Managing cardiometabolic risk factors in rare endocrine disorders – includes downloadable checklists for EU clinics.
+                        </li>
+                        <li>
+                            Podcast series: Conversations with European KOLs on evolving endpoints for appetite regulation therapies.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="privacy-center" aria-labelledby="section-privacy">
+            <div class="section-inner two-column">
+                <div>
+                    <div class="section-title">
+                        <span>Data protection</span>
+                        <h2 id="section-privacy">European privacy commitments</h2>
+                    </div>
+                    <div class="privacy-panel">
+                        <h3>GDPR-aligned processing</h3>
+                        <p>Soleno Therapeutics (UK) Ltd acts as the data controller for personal data collected through this website. We process limited professional information to verify healthcare professional status, respond to unsolicited medical inquiries, and manage congress resource access. Data is stored within the EU/UK on ISO 27001-certified infrastructure.</p>
+                        <p>We do not transfer personal data outside the EEA/UK without appropriate safeguards (Standard Contractual Clauses or UK International Data Transfer Agreement). Aggregate analytics are generated using privacy-enhanced measurement that suppresses individual identifiers.</p>
+                        <ul class="list">
+                            <li>Data minimisation: only professional contact details required.</li>
+                            <li>Retention: enquiry records retained for 3 years unless earlier deletion is requested.</li>
+                            <li>Rights: access, rectification, objection, restriction, portability, and erasure can be exercised via privacy@soleno.life.</li>
+                            <li>Pharmacovigilance: safety information is handled under separate statutory retention rules.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="section-title">
+                        <span>Preference management</span>
+                        <h2>Cookie & consent controls</h2>
+                    </div>
+                    <div class="toggles" aria-live="polite">
+                        <div class="toggle">
+                            <div>
+                                <strong>Strictly Necessary</strong>
+                                <p class="small">Required for security, load balancing, and storing your consent choices. Always active.</p>
                             </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-900">MS Diagnosis</p>
-                                <p class="text-sm text-gray-600">October 20, 2025</p>
-                            </div>
+                            <button type="button" class="active" data-category="necessary" aria-pressed="true" disabled>On</button>
                         </div>
-                        
-                        <div class="flex items-center space-x-4">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i>
+                        <div class="toggle">
+                            <div>
+                                <strong>Analytics</strong>
+                                <p class="small">Privacy-centred analytics with IP truncation and aggregated usage reporting.</p>
                             </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-900">Treatment Plan</p>
-                                <p class="text-sm text-gray-600">Tysabri approved</p>
-                            </div>
+                            <button type="button" data-category="analytics" aria-pressed="false" onclick="togglePreference('analytics', this)">Off</button>
                         </div>
-                        
-                        <div class="flex items-center space-x-4">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                <i data-lucide="calendar" class="w-4 h-4 text-blue-600"></i>
+                        <div class="toggle">
+                            <div>
+                                <strong>Experience Personalisation</strong>
+                                <p class="small">Saves your congress interests and preferred language for future visits.</p>
                             </div>
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-900">First Infusion</p>
-                                <p class="text-sm text-gray-600">October 25, 2025</p>
-                            </div>
+                            <button type="button" data-category="personalisation" aria-pressed="false" onclick="togglePreference('personalisation', this)">Off</button>
                         </div>
+                        <button class="cta-button" type="button" onclick="savePreferences()">Save preferences</button>
+                        <p class="small">You may revisit these controls anytime via the “Cookie Settings” link in the footer.</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Agent Dashboard -->
-        <div id="agentDashboard" class="hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <!-- Welcome Section -->
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-6 mb-6 border border-green-200">
-                    <div class="flex items-center space-x-3 mb-4">
-                        <div class="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center">
-                            <span class="text-white font-semibold text-lg">CS</span>
-                        </div>
-                        <div>
-                            <h2 class="text-xl font-semibold text-gray-900">Welcome back, Cindy!</h2>
-                            <p class="text-gray-600">Patient Services Agent • Biogen</p>
-                        </div>
-                    </div>
-                    <p class="text-gray-700">You have <strong>3 active patients</strong> today. AI is handling routine questions while you focus on complex cases.</p>
+        <section id="msl-directory" aria-labelledby="section-msl">
+            <div class="section-inner">
+                <div class="section-title">
+                    <span>Scientific exchange</span>
+                    <h2 id="section-msl">Regional Medical Science Liaisons</h2>
                 </div>
-
-                <!-- AI Configuration -->
-                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg p-4 mb-6 border border-emerald-200">
-                    <h3 class="font-semibold text-gray-900 mb-3 flex items-center">
-                        <i data-lucide="database" class="w-5 h-5 mr-2 text-emerald-600"></i>
-                        AI Configuration
-                    </h3>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                        <div>
-                            <h4 class="text-sm font-medium text-gray-700 mb-2">LLM Provider</h4>
-                            <select id="llmProvider" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                                <option value="openai">OpenAI GPT-4</option>
-                                <option value="gemini">Google Gemini Pro</option>
-                                <option value="claude">Anthropic Claude</option>
-                                <option value="demo">Demo Mode</option>
-                            </select>
-                        </div>
-                        <div class="flex items-end">
-                            <button onclick="testAI()" class="w-full bg-emerald-600 text-white px-3 py-2 rounded text-sm hover:bg-emerald-700 transition-colors">
-                                Test AI Connection
-                            </button>
-                        </div>
-                    </div>
-                    <div id="aiStatus" class="text-sm text-gray-600">
-                        Click "Test AI Connection" to check status
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <button onclick="openChatModal()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                                <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
-                            </div>
-                            <span class="font-medium text-gray-900">Test AI</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Try AI responses</p>
-                    </button>
-                    
-                    <button onclick="viewPatientData()" class="bg-white rounded-xl p-4 shadow-sm border hover:shadow-md transition-shadow text-left">
-                        <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                                <i data-lucide="users" class="w-4 h-4 text-blue-600"></i>
-                            </div>
-                            <span class="font-medium text-gray-900">View Patient Data</span>
-                        </div>
-                        <p class="text-sm text-gray-600">Patient insights</p>
-                    </button>
+                <div class="grid grid-cols-3">
+                    <article class="card">
+                        <h3>Central Europe</h3>
+                        <p>Ana Müller, PharmD<br>Germany · Austria · Switzerland<br><a class="link" href="mailto:ana.mueller@soleno.life">ana.mueller@soleno.life</a></p>
+                        <p class="small">Focus: Prader-Willi syndrome and rare endocrine disorders. Languages: German, English.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Southern Europe</h3>
+                        <p>Luca Conti, MD<br>Italy · Spain · Portugal<br><a class="link" href="mailto:luca.conti@soleno.life">luca.conti@soleno.life</a></p>
+                        <p class="small">Provides tailored support for metabolic clinics and investigator-initiated research proposals.</p>
+                    </article>
+                    <article class="card">
+                        <h3>Northern Europe & UK</h3>
+                        <p>Aoife Gallagher, PhD<br>Ireland · UK · Nordics<br><a class="link" href="mailto:aoife.gallagher@soleno.life">aoife.gallagher@soleno.life</a></p>
+                        <p class="small">Expertise in rare disease clinical trial design and patient pathway optimisation.</p>
+                    </article>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Chat Modal -->
-    <div id="chatModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl w-full max-w-2xl h-[600px] flex flex-col">
-            <!-- Chat Header -->
-            <div class="flex items-center justify-between p-4 border-b">
-                <div class="flex items-center space-x-3">
-                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                        <i data-lucide="brain" class="w-4 h-4 text-purple-600"></i>
+        <section id="grants" aria-labelledby="section-grants">
+            <div class="section-inner two-column">
+                <div>
+                    <div class="section-title">
+                        <span>Support for education</span>
+                        <h2 id="section-grants">Medical grants & investigator-initiated research</h2>
+                    </div>
+                    <p>Soleno Medical Affairs Europe welcomes submission of proposals that advance scientific understanding of DCCR, rare metabolic diseases, and comprehensive care pathways. Each request is assessed by a cross-functional review committee to ensure alignment with ethical standards and local regulations (EFPIA, ABPI, MedTech Europe).</p>
+                    <ul class="list">
+                        <li>Independent Medical Education: funding for accredited symposia or enduring materials.</li>
+                        <li>Investigator-Initiated Research: observational studies, registries, or small interventional trials.</li>
+                        <li>Patient Advocacy Collaboration: evidence-based educational initiatives supporting caregivers.</li>
+                    </ul>
+                </div>
+                <div class="card" style="align-self: start;">
+                    <h3>Submission considerations</h3>
+                    <ul class="list">
+                        <li>Clearly defined scientific objectives and methodology.</li>
+                        <li>Budget detail compliant with fair market value principles.</li>
+                        <li>Data privacy safeguards for participant data (pseudonymisation, secure transfer).</li>
+                        <li>Transparency: investigators retain publication rights; Soleno requests acknowledgement of support.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" aria-labelledby="section-contact">
+            <div class="section-inner two-column">
+                <div>
+                    <div class="section-title">
+                        <span>Medical information</span>
+                        <h2 id="section-contact">Submit an enquiry</h2>
+                    </div>
+                    <p>Use the form to request scientific clarification, submit safety information, or seek support for congress materials. Please avoid sharing patient-identifiable data. Required fields are kept to the minimum needed to process your enquiry. Responses are typically provided within two business days.</p>
+                    <p class="small"><strong>Pharmacovigilance:</strong> Report suspected adverse reactions immediately via <a href="mailto:safety@soleno.life">safety@soleno.life</a>. Safety reports are processed under separate regulatory timelines.</p>
+                </div>
+                <form aria-describedby="contact">
+                    <div>
+                        <label for="first-name">First name (optional)</label>
+                        <input id="first-name" name="first-name" autocomplete="given-name" placeholder="Ana" type="text">
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900">AI Assistant</h3>
-                        <p class="text-sm text-gray-600">Ask me anything about MS or Tysabri</p>
+                        <label for="last-name">Last name</label>
+                        <input id="last-name" name="last-name" autocomplete="family-name" placeholder="Kowalska" type="text" required>
                     </div>
-                </div>
-                <button onclick="closeChatModal()" class="text-gray-400 hover:text-gray-600">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
+                    <div>
+                        <label for="email">Professional email</label>
+                        <input id="email" name="email" type="email" autocomplete="work email" placeholder="name@hospital.eu" required>
+                    </div>
+                    <div>
+                        <label for="country">Country of practice</label>
+                        <select id="country" name="country" required>
+                            <option value="">Select your country</option>
+                            <option>Austria</option>
+                            <option>Belgium</option>
+                            <option>Denmark</option>
+                            <option>Finland</option>
+                            <option>France</option>
+                            <option>Germany</option>
+                            <option>Ireland</option>
+                            <option>Italy</option>
+                            <option>Netherlands</option>
+                            <option>Norway</option>
+                            <option>Poland</option>
+                            <option>Portugal</option>
+                            <option>Spain</option>
+                            <option>Sweden</option>
+                            <option>Switzerland</option>
+                            <option>United Kingdom</option>
+                            <option>Other EEA</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="message">How can we help?</label>
+                        <textarea id="message" name="message" placeholder="Please provide your medical information request, including reference to the data or congress material of interest." required></textarea>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="hcp-confirm" required>
+                        <label for="hcp-confirm">I confirm that I am a healthcare professional practising within the EEA, UK, or Switzerland.</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="consent" required>
+                        <label for="consent">I consent to Soleno Therapeutics processing my personal data to address this enquiry in accordance with the Medical Affairs Privacy Notice.</label>
+                    </div>
+                    <div class="checkbox">
+                        <input type="checkbox" id="updates">
+                        <label for="updates">I would like to receive optional updates on new data releases. You may withdraw consent at any time.</label>
+                    </div>
+                    <button type="submit" class="cta-button">Send enquiry</button>
+                    <p class="small">A confirmation email outlining your rights and our retention schedule will be sent automatically.</p>
+                </form>
             </div>
+        </section>
+    </main>
 
-            <!-- Chat Messages -->
-            <div id="chatMessages" class="flex-1 overflow-y-auto p-4 space-y-4">
-                <div class="flex items-start space-x-3">
-                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
-                        <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
-                    </div>
-                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                        <p class="text-sm text-gray-700">Hi! I'm your AI assistant. I can help you with questions about MS, Tysabri treatment, side effects, appointments, and more. What would you like to know?</p>
-                    </div>
-                </div>
+    <footer>
+        <div class="footer-inner">
+            <div>
+                © <span id="year"></span> Soleno Therapeutics Medical Affairs Europe. All rights reserved.
             </div>
+            <div class="footer-links">
+                <a href="#privacy-center">Privacy Notice</a>
+                <a href="#grants">Grant Policy</a>
+                <a href="#msl-directory">MSL Directory</a>
+                <a href="#contact">Contact Medical Information</a>
+                <a href="#" onclick="openCookieSettings(event)">Cookie Settings</a>
+            </div>
+            <p class="small">Soleno Medical Affairs Europe operates in accordance with EFPIA Disclosure Code requirements. Scientific materials are intended solely for healthcare professionals. Investigational products are not yet approved within the EU/UK; access is provided for educational purposes only.</p>
+        </div>
+    </footer>
 
-            <!-- Chat Input -->
-            <div class="p-4 border-t">
-                <div class="flex space-x-2">
-                    <input type="text" id="chatInput" placeholder="Ask me anything..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
-                    <button onclick="sendChatMessage()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                        <i data-lucide="send" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
+    <div class="cookie-banner" id="cookie-banner" role="dialog" aria-live="polite" aria-modal="false">
+        <div>
+            <strong>We respect your privacy</strong>
+            <p class="small">We use strictly necessary cookies to operate this site. With your permission, we may also use analytics and personalisation cookies to improve your experience. You can update your choices at any time.</p>
+        </div>
+        <div class="cookie-actions">
+            <button class="cta-button secondary" type="button" onclick="rejectOptional()">Reject optional cookies</button>
+            <button class="cta-button secondary" type="button" onclick="document.getElementById('privacy-center').scrollIntoView({behavior: 'smooth'});">Manage preferences</button>
+            <button class="cta-button" type="button" onclick="acceptAll()">Accept all cookies</button>
         </div>
     </div>
 
     <script>
-        let currentRole = '';
-        let currentUser = '';
-        let authToken = '';
+        const preferenceDefaults = {
+            analytics: false,
+            personalisation: false
+        };
 
-        // Initialize Lucide icons
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        });
+        const preferenceKey = 'soleno-eu-cookie-preferences-v1';
 
-        // Login function
-        async function login(role) {
+        function loadPreferences() {
             try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ role })
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    authToken = data.token;
-                    currentRole = role;
-                    currentUser = data.user.name;
-                    
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('mainApp').classList.remove('hidden');
-                    
-                    if (role === 'patient') {
-                        document.getElementById('patientDashboard').classList.remove('hidden');
-                        document.getElementById('userInfo').textContent = 'Patient • Sarah Parker';
-                    } else {
-                        document.getElementById('agentDashboard').classList.remove('hidden');
-                        document.getElementById('userInfo').textContent = 'Agent • Cindy Smith';
-                    }
-                }
+                const saved = JSON.parse(localStorage.getItem(preferenceKey));
+                return saved ? { ...preferenceDefaults, ...saved } : { ...preferenceDefaults };
             } catch (error) {
-                console.error('Login error:', error);
-                alert('Login failed. Please try again.');
+                console.warn('Unable to parse stored preferences:', error);
+                return { ...preferenceDefaults };
             }
         }
 
-        // Logout function
-        function logout() {
-            currentRole = '';
-            currentUser = '';
-            authToken = '';
-            
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('patientDashboard').classList.add('hidden');
-            document.getElementById('agentDashboard').classList.add('hidden');
-            closeChatModal();
+        function applyPreferences(preferences) {
+            Object.entries(preferences).forEach(([category, enabled]) => {
+                const button = document.querySelector(`button[data-category="${category}"]`);
+                if (!button) return;
+                button.classList.toggle('active', enabled);
+                button.setAttribute('aria-pressed', String(enabled));
+                button.textContent = enabled ? 'On' : 'Off';
+            });
         }
 
-        // Chat modal functions
-        function openChatModal() {
-            document.getElementById('chatModal').classList.remove('hidden');
+        function togglePreference(category, button) {
+            const prefs = loadPreferences();
+            prefs[category] = !prefs[category];
+            applyPreferences(prefs);
+            localStorage.setItem(preferenceKey, JSON.stringify(prefs));
         }
 
-        function closeChatModal() {
-            document.getElementById('chatModal').classList.add('hidden');
+        function savePreferences() {
+            const prefs = {};
+            document.querySelectorAll('[data-category]').forEach(btn => {
+                prefs[btn.dataset.category] = btn.classList.contains('active');
+            });
+            localStorage.setItem(preferenceKey, JSON.stringify(prefs));
+            hideBanner();
         }
 
-        // Send chat message
-        async function sendChatMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (message) {
-                addMessage('user', message);
-                input.value = '';
-                
-                // Show typing indicator
-                showTypingIndicator();
-                
-                try {
-                    const provider = document.getElementById('llmProvider')?.value || 'demo';
-                    const response = await fetch('/api/ai/chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authToken}`
-                        },
-                        body: JSON.stringify({ 
-                            message, 
-                            provider,
-                            context: {
-                                diagnosis: "Relapsing-Remitting MS",
-                                therapy: "Tysabri",
-                                diagnosisDate: "October 20, 2025",
-                                nextInfusion: "October 25, 2025",
-                                location: "Palo Alto, CA"
-                            }
-                        })
-                    });
+        function acceptAll() {
+            const prefs = { analytics: true, personalisation: true };
+            applyPreferences(prefs);
+            localStorage.setItem(preferenceKey, JSON.stringify(prefs));
+            hideBanner();
+        }
 
-                    const data = await response.json();
-                    hideTypingIndicator();
-                    
-                    if (data.response) {
-                        addMessage('ai', data.response);
-                    } else {
-                        addMessage('ai', 'I apologize, but I encountered an error. Please try again.');
-                    }
-                } catch (error) {
-                    console.error('Chat error:', error);
-                    hideTypingIndicator();
-                    addMessage('ai', 'I apologize, but I encountered an error. Please try again.');
-                }
+        function rejectOptional() {
+            const prefs = { analytics: false, personalisation: false };
+            applyPreferences(prefs);
+            localStorage.setItem(preferenceKey, JSON.stringify(prefs));
+            hideBanner();
+        }
+
+        function hideBanner() {
+            document.getElementById('cookie-banner').classList.remove('active');
+        }
+
+        function openCookieSettings(event) {
+            event.preventDefault();
+            document.getElementById('cookie-banner').classList.add('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const year = document.getElementById('year');
+            if (year) {
+                year.textContent = new Date().getFullYear();
             }
-        }
 
-        // Add message to chat
-        function addMessage(sender, message) {
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `flex items-start space-x-3 ${sender === 'user' ? 'justify-end' : ''}`;
-            
-            if (sender === 'user') {
-                messageDiv.innerHTML = `
-                    <div class="bg-blue-600 text-white rounded-lg p-3 max-w-xs">
-                        <p class="text-sm">${message}</p>
-                    </div>
-                    <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span class="text-blue-600 font-medium text-xs">U</span>
-                    </div>
-                `;
-            } else {
-                messageDiv.innerHTML = `
-                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
-                        <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
-                    </div>
-                    <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                        <div class="text-sm text-gray-700">${formatMessage(message)}</div>
-                    </div>
-                `;
-            }
-            
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // Re-initialize Lucide icons for new elements
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
-        }
+            const prefs = loadPreferences();
+            applyPreferences(prefs);
 
-        // Show typing indicator
-        function showTypingIndicator() {
-            const chatMessages = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'typingIndicator';
-            typingDiv.className = 'flex items-start space-x-3';
-            typingDiv.innerHTML = `
-                <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
-                    <i data-lucide="brain" class="w-3 h-3 text-purple-600"></i>
-                </div>
-                <div class="bg-gray-100 rounded-lg p-3 max-w-xs">
-                    <div class="flex space-x-1">
-                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-indicator"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-indicator" style="animation-delay: 0.1s"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-indicator" style="animation-delay: 0.2s"></div>
-                    </div>
-                </div>
-            `;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Hide typing indicator
-        function hideTypingIndicator() {
-            const typingIndicator = document.getElementById('typingIndicator');
-            if (typingIndicator) {
-                typingIndicator.remove();
-            }
-        }
-
-        // Format message with basic markdown
-        function formatMessage(message) {
-            return message
-                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                .replace(/\n/g, '<br>');
-        }
-
-        // Test AI connection
-        async function testAI() {
-            const statusDiv = document.getElementById('aiStatus');
-            const provider = document.getElementById('llmProvider').value;
-            
-            statusDiv.innerHTML = 'Testing AI connection...';
-            
-            try {
-                const response = await fetch(`/api/ai/test?provider=${provider}`, {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    statusDiv.innerHTML = `✅ ${data.provider} AI is working! Response: "${data.response}"`;
-                    statusDiv.className = 'text-sm text-green-600';
-                } else {
-                    statusDiv.innerHTML = `❌ ${data.provider} AI test failed: ${data.error}`;
-                    statusDiv.className = 'text-sm text-red-600';
-                }
-            } catch (error) {
-                statusDiv.innerHTML = `❌ Connection test failed: ${error.message}`;
-                statusDiv.className = 'text-sm text-red-600';
-            }
-        }
-
-        // Contact agent
-        function contactAgent() {
-            alert('WhatsApp integration would connect you with your Patient Services Agent Cindy Smith.');
-        }
-
-        // View patient data
-        async function viewPatientData() {
-            try {
-                const response = await fetch('/api/patients/data/patient_001', {
-                    headers: {
-                        'Authorization': `Bearer ${authToken}`
-                    }
-                });
-
-                const data = await response.json();
-                const patient = data.patient;
-                
-                const patientInfo = `📊 Patient Data:
-
-👤 ${patient.name} (${patient.id}):
-• Diagnosis: ${patient.diagnosis}
-• Therapy: ${patient.therapy}
-• Next Infusion: ${patient.nextInfusion}
-• Adherence: ${patient.adherence}%
-• Satisfaction: ${patient.satisfaction}%
-• Total Interactions: ${patient.totalInteractions}
-• Sentiment Trend: ${patient.sentimentTrend}
-
-🎯 Risk Factors: ${patient.riskFactors.join(', ')}`;
-                
-                alert(patientInfo);
-            } catch (error) {
-                console.error('Patient data error:', error);
-                alert('Failed to load patient data.');
-            }
-        }
-
-        // Allow Enter key to send messages
-        document.addEventListener('DOMContentLoaded', function() {
-            const chatInput = document.getElementById('chatInput');
-            if (chatInput) {
-                chatInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        sendChatMessage();
-                    }
-                });
+            // Show banner if no consent stored
+            if (!localStorage.getItem(preferenceKey)) {
+                document.getElementById('cookie-banner').classList.add('active');
             }
         });
     </script>
