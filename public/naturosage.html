@@ -32,12 +32,15 @@
           <option value="openai">Provider: OpenAI</option>
         </select>
       </div>
-      <div class="mt-3 flex gap-3">
+      <div class="mt-3 flex flex-wrap gap-3">
         <button id="startButton" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700">
           Start Assessment
         </button>
         <button id="sourceButton" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-200">
           Check Materia Medica Source Status
+        </button>
+        <button id="rebuildVectorButton" class="bg-amber-100 text-amber-900 px-4 py-2 rounded-lg hover:bg-amber-200">
+          Build / Rebuild Vector DB
         </button>
       </div>
       <p id="sessionInfo" class="text-sm text-slate-600 mt-3"></p>
@@ -117,6 +120,19 @@
       try {
         setResult('Loading source status...');
         const data = await getJson('/api/naturosage/sources');
+        setResult(data);
+      } catch (error) {
+        setResult({ error: error.message });
+      }
+    });
+
+    document.getElementById('rebuildVectorButton').addEventListener('click', async () => {
+      try {
+        setResult('Building vector database (this may take a while on first run)...');
+        const data = await getJson('/api/naturosage/sources/rebuild-vector', {
+          method: 'POST',
+          body: JSON.stringify({ forceRebuild: true })
+        });
         setResult(data);
       } catch (error) {
         setResult({ error: error.message });

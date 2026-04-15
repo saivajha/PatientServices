@@ -81,6 +81,31 @@ By default, the backend reads the following PDF files:
 
 If your files are elsewhere, set `MATERIA_MEDICA_PATHS` in `.env` as a comma-separated list.
 
+### Vector database for quick retrieval
+
+NaturoSage now supports a persistent local vector database (open-source stack) for fast semantic lookup:
+
+- **Vector store**: `vectra` (disk-backed local index)
+- **Embeddings**: `@huggingface/transformers` via local model inference
+- **Default embedding model**: `Xenova/all-MiniLM-L6-v2`
+
+Environment options:
+
+- `MATERIA_MEDICA_ENABLE_VECTOR=true`
+- `MATERIA_MEDICA_VECTOR_DIR=.vectordb/materia-medica`
+- `MATERIA_MEDICA_EMBEDDING_MODEL=Xenova/all-MiniLM-L6-v2`
+
+Build/rebuild vector DB:
+
+- API: `POST /api/naturosage/sources/rebuild-vector`
+- UI button on `/naturosage`: **Build / Rebuild Vector DB**
+
+Retrieval behavior:
+
+1. Vector retrieval (semantic + BM25 hybrid) when index is available.
+2. Keyword fallback if vector retrieval is unavailable.
+3. Warnings are returned in API responses for transparency.
+
 ### MedLlama integration
 
 Configure a MedLlama endpoint using OpenAI-compatible chat completion API semantics:

@@ -46,6 +46,25 @@ class NaturoSageController {
     }
   }
 
+  async rebuildVectorIndex(req, res) {
+    try {
+      const { forceRebuild = true } = req.body || {};
+      const result = await materiaMedicaService.buildVectorIndex({
+        forceRebuild: Boolean(forceRebuild)
+      });
+      res.json({
+        success: true,
+        vectorIndex: result
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Failed to rebuild vector index.',
+        message: error.message
+      });
+    }
+  }
+
   async startAssessment(req, res) {
     try {
       this.cleanupExpiredSessions();
@@ -534,6 +553,7 @@ class NaturoSageController {
         ? assessment.redFlags.slice(0, 8).map((item) => String(item))
         : fallback.redFlags,
       safetyDisclaimer: String(assessment.safetyDisclaimer || fallback.safetyDisclaimer),
+      retrievalMode: retrieval.retrievalMode || 'keyword',
       citations: retrieval.passages.map((passage) => ({
         citation: passage.citation,
         sourcePath: passage.sourcePath,
