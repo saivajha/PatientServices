@@ -57,6 +57,77 @@ The app uses OpenAI GPT-4 for intelligent responses. API keys are configured sec
 ### **Environment Variables**
 - `OPENAI_API_KEY` - Your OpenAI API key (configured in Streamlit Cloud)
 
+## 🌿 NaturoSage (Homoeopathy) Workflow
+
+This repository now includes a dedicated NaturoSage web workflow designed for:
+
+1. **Constitution discovery** (hydrogenoid / oxygenoid / mixed),
+2. **Symptom differentiation**,
+3. **Provisional diagnosis + possible homoeopathic remedies** grounded in Materia Medica sources.
+
+### Access
+
+- UI: `http://localhost:3000/naturosage`
+- API base: `/api/naturosage`
+
+### Required source documents
+
+By default, the backend reads the following PDF files:
+
+- `/Applications/HomeoSage/MateriaMedica/MateriaMedicaVol1.pdf`
+- `/Applications/HomeoSage/MateriaMedica/MateriaMedicaVol2.pdf`
+- `/Applications/HomeoSage/MateriaMedica/MateriaMedicaVol3.pdf`
+- `/Applications/HomeoSage/MateriaMedica/MateriaMedicaVol4.pdf`
+
+If your files are elsewhere, set `MATERIA_MEDICA_PATHS` in `.env` as a comma-separated list.
+
+### Vector database for quick retrieval
+
+NaturoSage now supports a persistent local vector database (open-source stack) for fast semantic lookup:
+
+- **Vector store**: `vectra` (disk-backed local index)
+- **Embeddings**: `@huggingface/transformers` via local model inference
+- **Default embedding model**: `Xenova/all-MiniLM-L6-v2`
+
+Environment options:
+
+- `MATERIA_MEDICA_ENABLE_VECTOR=true`
+- `MATERIA_MEDICA_VECTOR_DIR=.vectordb/materia-medica`
+- `MATERIA_MEDICA_EMBEDDING_MODEL=Xenova/all-MiniLM-L6-v2`
+
+Build/rebuild vector DB:
+
+- API: `POST /api/naturosage/sources/rebuild-vector`
+- UI button on `/naturosage`: **Build / Rebuild Vector DB**
+
+Retrieval behavior:
+
+1. Vector retrieval (semantic + BM25 hybrid) when index is available.
+2. Keyword fallback if vector retrieval is unavailable.
+3. Warnings are returned in API responses for transparency.
+
+### MedLlama integration
+
+Configure a MedLlama endpoint using OpenAI-compatible chat completion API semantics:
+
+- `MEDLLAMA_BASE_URL` (example: `http://localhost:11434/v1`)
+- `MEDLLAMA_API_KEY` (set to `not-required` when local endpoint does not need auth)
+- `MEDLLAMA_MODEL` (example: `medllama`)
+
+If MedLlama is unavailable, NaturoSage automatically falls back to OpenAI (when configured), then deterministic fallback behavior with clear warnings.
+
+### NaturoSage API sequence
+
+1. `POST /api/naturosage/assessment/start`
+2. `POST /api/naturosage/assessment/constitution`
+3. `POST /api/naturosage/assessment/symptoms`
+4. `GET /api/naturosage/assessment/:sessionId` (optional state fetch)
+5. `GET /api/naturosage/sources` (document load status + warnings)
+
+### Safety note
+
+NaturoSage output is an educational assistant response. It is **not** a substitute for licensed clinical diagnosis or prescribing decisions.
+
 ## 📱 User Roles
 
 ### **Patient (Sarah Parker)**

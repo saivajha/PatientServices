@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NaturoSage - Homoeopathy Assessment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 min-h-screen">
+  <main class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+    <header class="mb-6">
+      <h1 class="text-3xl font-bold text-slate-900">NaturoSage</h1>
+      <p class="text-slate-600 mt-2">
+        Guided constitution and symptom assessment with MedLlama-ready backend and Materia Medica grounded retrieval.
+      </p>
+    </header>
+
+    <section class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm mb-5">
+      <h2 class="text-xl font-semibold text-slate-900 mb-3">1) Start a New Assessment</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <input id="patientName" class="border border-slate-300 rounded-lg px-3 py-2" placeholder="Patient name">
+        <input id="patientAge" type="number" class="border border-slate-300 rounded-lg px-3 py-2" placeholder="Age">
+        <select id="patientSex" class="border border-slate-300 rounded-lg px-3 py-2">
+          <option value="unspecified">Sex: Unspecified</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="other">Other</option>
+        </select>
+        <select id="provider" class="border border-slate-300 rounded-lg px-3 py-2">
+          <option value="auto">Provider: Auto</option>
+          <option value="medllama">Provider: MedLlama</option>
+          <option value="openai">Provider: OpenAI</option>
+        </select>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <button id="startButton" class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700">
+          Start Assessment
+        </button>
+        <button id="sourceButton" class="bg-slate-100 text-slate-700 px-4 py-2 rounded-lg hover:bg-slate-200">
+          Check Materia Medica Source Status
+        </button>
+        <button id="rebuildVectorButton" class="bg-amber-100 text-amber-900 px-4 py-2 rounded-lg hover:bg-amber-200">
+          Build / Rebuild Vector DB
+        </button>
+      </div>
+      <p id="sessionInfo" class="text-sm text-slate-600 mt-3"></p>
+    </section>
+
+    <section class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm mb-5">
+      <h2 class="text-xl font-semibold text-slate-900 mb-3">2) Constitution Questions</h2>
+      <div id="constitutionQuestions" class="space-y-4 text-slate-800"></div>
+      <button id="constitutionSubmit" class="hidden mt-4 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+        Submit Constitution Answers
+      </button>
+    </section>
+
+    <section class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm mb-5">
+      <h2 class="text-xl font-semibold text-slate-900 mb-3">3) Symptom Questions</h2>
+      <div id="symptomQuestions" class="space-y-4 text-slate-800"></div>
+      <button id="symptomSubmit" class="hidden mt-4 bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700">
+        Submit Symptom Answers
+      </button>
+    </section>
+
+    <section class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+      <h2 class="text-xl font-semibold text-slate-900 mb-3">4) Provisional Assessment & Remedies</h2>
+      <pre id="result" class="text-sm bg-slate-900 text-slate-100 rounded-lg p-4 overflow-auto min-h-[180px]"></pre>
+    </section>
+  </main>
+
+  <script>
+    let currentSessionId = '';
+    let currentProvider = 'auto';
+
+    const resultNode = document.getElementById('result');
+    const sessionNode = document.getElementById('sessionInfo');
+
+    function setResult(content) {
+      resultNode.textContent = typeof content === 'string'
+        ? content
+        : JSON.stringify(content, null, 2);
+    }
+
+    function renderQuestions(containerId, questions, prefix) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      questions.forEach((question, index) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'space-y-2';
+        wrapper.innerHTML = `
+          <label class="block font-medium">${index + 1}. ${question}</label>
+          <textarea id="${prefix}-${index}" class="w-full border border-slate-300 rounded-lg p-2" rows="2" placeholder="Answer here..."></textarea>
+        `;
+        container.appendChild(wrapper);
+      });
+    }
+
+    function collectAnswers(prefix, count) {
+      const answers = [];
+      for (let i = 0; i < count; i += 1) {
+        const value = document.getElementById(`${prefix}-${i}`)?.value?.trim() || '';
+        answers.push(value);
+      }
+      return answers;
+    }
+
+    async function getJson(url, options = {}) {
+      const response = await fetch(url, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Request failed');
+      }
+      return data;
+    }
+
+    document.getElementById('sourceButton').addEventListener('click', async () => {
+      try {
+        setResult('Loading source status...');
+        const data = await getJson('/api/naturosage/sources');
+        setResult(data);
+      } catch (error) {
+        setResult({ error: error.message });
+      }
+    });
+
+    document.getElementById('rebuildVectorButton').addEventListener('click', async () => {
+      try {
+        setResult('Building vector database (this may take a while on first run)...');
+        const data = await getJson('/api/naturosage/sources/rebuild-vector', {
+          method: 'POST',
+          body: JSON.stringify({ forceRebuild: true })
+        });
+        setResult(data);
+      } catch (error) {
+        setResult({ error: error.message });
+      }
+    });
+
+    document.getElementById('startButton').addEventListener('click', async () => {
+      try {
+        const payload = {
+          patientName: document.getElementById('patientName').value || 'Anonymous User',
+          patientAge: Number(document.getElementById('patientAge').value) || null,
+          patientSex: document.getElementById('patientSex').value,
+          provider: document.getElementById('provider').value
+        };
+        currentProvider = payload.provider;
+
+        setResult('Starting assessment...');
+        const data = await getJson('/api/naturosage/assessment/start', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        currentSessionId = data.sessionId;
+        sessionNode.textContent = `Session: ${data.sessionId} | Stage: ${data.stage} | Provider: ${data.providerUsed}`;
+
+        renderQuestions('constitutionQuestions', data.questions, 'constitution-answer');
+        document.getElementById('constitutionSubmit').classList.remove('hidden');
+        document.getElementById('symptomQuestions').innerHTML = '';
+        document.getElementById('symptomSubmit').classList.add('hidden');
+        setResult(data);
+      } catch (error) {
+        setResult({ error: error.message });
+      }
+    });
+
+    document.getElementById('constitutionSubmit').addEventListener('click', async () => {
+      try {
+        if (!currentSessionId) {
+          throw new Error('Start an assessment first.');
+        }
+        const constitutionCount = document.querySelectorAll('[id^="constitution-answer-"]').length;
+        const answers = collectAnswers('constitution-answer', constitutionCount);
+
+        setResult('Submitting constitution answers...');
+        const data = await getJson('/api/naturosage/assessment/constitution', {
+          method: 'POST',
+          body: JSON.stringify({
+            sessionId: currentSessionId,
+            provider: currentProvider,
+            answers
+          })
+        });
+
+        renderQuestions('symptomQuestions', data.questions, 'symptom-answer');
+        document.getElementById('symptomSubmit').classList.remove('hidden');
+        sessionNode.textContent = `Session: ${currentSessionId} | Stage: ${data.stage} | Provider: ${data.providerUsed}`;
+        setResult(data);
+      } catch (error) {
+        setResult({ error: error.message });
+      }
+    });
+
+    document.getElementById('symptomSubmit').addEventListener('click', async () => {
+      try {
+        if (!currentSessionId) {
+          throw new Error('Start an assessment first.');
+        }
+        const symptomCount = document.querySelectorAll('[id^="symptom-answer-"]').length;
+        const answers = collectAnswers('symptom-answer', symptomCount);
+
+        setResult('Submitting symptom answers...');
+        const data = await getJson('/api/naturosage/assessment/symptoms', {
+          method: 'POST',
+          body: JSON.stringify({
+            sessionId: currentSessionId,
+            provider: currentProvider,
+            answers
+          })
+        });
+
+        sessionNode.textContent = `Session: ${currentSessionId} | Stage: ${data.stage} | Provider: ${data.providerUsed}`;
+        setResult(data);
+      } catch (error) {
+        setResult({ error: error.message });
+      }
+    });
+
+    setResult('NaturoSage ready. Start by checking source status, then start an assessment.');
+  </script>
+</body>
+</html>

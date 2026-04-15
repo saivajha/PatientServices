@@ -7,11 +7,30 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const medllamaOrigin = process.env.MEDLLAMA_BASE_URL
+  ? (() => {
+    try {
+      return new URL(process.env.MEDLLAMA_BASE_URL).origin;
+    } catch (error) {
+      return null;
+    }
+  })()
+  : null;
+const connectSrc = [
+  "'self'",
+  'https://api.openai.com',
+  'https://generativelanguage.googleapis.com',
+  'https://api.anthropic.com'
+];
+if (medllamaOrigin) {
+  connectSrc.push(medllamaOrigin);
+}
 
 // Import routes
 const aiRoutes = require('./routes/ai');
 const authRoutes = require('./routes/auth');
 const patientRoutes = require('./routes/patients');
+const naturosageRoutes = require('./routes/naturosage');
 
 // Security middleware
 app.use(helmet({
@@ -22,7 +41,7 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://unpkg.com"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://unpkg.com"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://api.openai.com", "https://generativelanguage.googleapis.com", "https://api.anthropic.com"]
+      connectSrc
     }
   }
 }));
@@ -52,6 +71,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/ai', aiRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
+app.use('/api/naturosage', naturosageRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -60,6 +80,11 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development'
   });
+});
+
+// NaturoSage UI page
+app.get('/naturosage', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'naturosage.html'));
 });
 
 // Serve React app in production
