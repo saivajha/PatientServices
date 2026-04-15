@@ -1,26 +1,27 @@
 class PatientController {
-  
-  // Get patient data
+
   async getPatientData(req, res) {
     try {
       const { patientId } = req.params;
-      
-      // Demo patient data
+
       const patientData = {
         id: patientId,
-        name: 'Sarah Parker',
-        diagnosis: 'Relapsing-Remitting MS',
-        therapy: 'Tysabri',
-        diagnosisDate: 'October 20, 2025',
-        nextInfusion: 'October 25, 2025',
-        location: 'Palo Alto, CA',
+        name: 'Ravi Sharma',
+        age: 42,
+        gender: 'Male',
+        chiefComplaint: 'Chronic digestive issues',
+        constitution: 'Lycopodium',
+        currentRemedies: ['Lycopodium 200C', 'Nux Vomica 30C'],
+        location: 'New Delhi, India',
         status: 'Active',
-        adherence: 95,
-        satisfaction: 92,
-        riskFactors: ['High anxiety', 'New diagnosis'],
-        lastInteraction: new Date().toISOString(),
-        totalInteractions: 8,
-        sentimentTrend: '+15%'
+        improvementScore: 72,
+        lastVisit: new Date().toISOString(),
+        totalConsultations: 6,
+        timeline: [
+          { date: '2025-09-01', event: 'First consultation', notes: 'Constitution assessment done' },
+          { date: '2025-09-15', event: 'Follow-up', notes: 'Lycopodium 200C prescribed' },
+          { date: '2025-10-01', event: 'Progress review', notes: '40% improvement in bloating' }
+        ]
       };
 
       res.json({ patient: patientData });
@@ -30,41 +31,22 @@ class PatientController {
     }
   }
 
-  // Get patient schedule
   async getPatientSchedule(req, res) {
     try {
       const { patientId } = req.params;
-      
-      // Demo schedule data
+
       const schedule = {
         patientId,
         nextAppointment: {
-          date: '2025-10-25',
+          date: '2025-11-15',
           time: '10:00 AM',
-          location: 'Stanford Health Care',
-          type: 'Tysabri Infusion',
-          duration: '2 hours'
+          location: 'NaturoSage Clinic, New Delhi',
+          type: 'Follow-up Consultation',
+          duration: '30 minutes'
         },
         upcomingAppointments: [
-          {
-            date: '2025-11-22',
-            time: '2:00 PM',
-            location: 'Palo Alto Medical Foundation',
-            type: 'Tysabri Infusion'
-          },
-          {
-            date: '2025-12-20',
-            time: '11:00 AM',
-            location: 'Stanford Health Care',
-            type: 'Tysabri Infusion'
-          }
-        ],
-        annualSchedule: [
-          '2025-10-25', '2025-11-22', '2025-12-20',
-          '2026-01-17', '2026-02-14', '2026-03-14',
-          '2026-04-11', '2026-05-09', '2026-06-06',
-          '2026-07-04', '2026-08-01', '2026-08-29',
-          '2026-09-26', '2026-10-24'
+          { date: '2025-12-15', time: '10:00 AM', location: 'NaturoSage Clinic', type: 'Monthly Follow-up' },
+          { date: '2026-01-15', time: '11:00 AM', location: 'NaturoSage Clinic', type: 'Monthly Follow-up' }
         ]
       };
 
@@ -75,15 +57,13 @@ class PatientController {
     }
   }
 
-  // Update patient information
   async updatePatient(req, res) {
     try {
       const { patientId } = req.params;
       const updates = req.body;
-      
-      // In a real app, this would update the database
-      res.json({ 
-        success: true, 
+
+      res.json({
+        success: true,
         message: 'Patient information updated successfully',
         patientId,
         updates
@@ -94,39 +74,34 @@ class PatientController {
     }
   }
 
-  // Get patient interactions history
   async getPatientInteractions(req, res) {
     try {
       const { patientId } = req.params;
-      
-      // Demo interaction history
+
       const interactions = [
         {
           id: 'int_001',
-          date: '2025-10-20',
-          type: 'Initial Diagnosis Call',
-          duration: '45 minutes',
-          sentiment: 'High Anxiety',
-          topics: ['MS education', 'treatment options', 'anxiety management'],
-          agent: 'Dr. Sarah Chen'
+          date: '2025-09-01',
+          type: 'Initial Consultation',
+          duration: '60 minutes',
+          notes: 'Constitution assessment: Lycopodium. Chief complaint: chronic bloating and gas worse 4-8 PM.',
+          practitioner: 'Dr. Meera Joshi'
         },
         {
           id: 'int_002',
-          date: '2025-10-21',
-          type: 'Welcome Call',
+          date: '2025-09-15',
+          type: 'Follow-up',
           duration: '30 minutes',
-          sentiment: 'Medium Anxiety',
-          topics: ['treatment plan', 'appointment scheduling', 'support resources'],
-          agent: 'Cindy Smith'
+          notes: 'Started Lycopodium 200C. Advised dietary changes — avoid beans, cabbage.',
+          practitioner: 'Dr. Meera Joshi'
         },
         {
           id: 'int_003',
-          date: '2025-10-22',
-          type: 'AI Chat',
-          duration: '15 minutes',
-          sentiment: 'Positive',
-          topics: ['side effects', 'appointment questions', 'transportation'],
-          agent: 'AI Assistant'
+          date: '2025-10-01',
+          type: 'AI Symptom Check',
+          duration: '10 minutes',
+          notes: 'Patient used NaturoSage AI to check new symptom: mild headache. Suggested Bryonia 30C as adjunct.',
+          practitioner: 'NaturoSage AI'
         }
       ];
 

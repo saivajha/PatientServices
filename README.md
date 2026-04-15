@@ -1,134 +1,83 @@
-# 🏥 Patient Services - AI Powered Patient Support System
+# 🌿 NaturoSage - AI-Powered Homeopathy Assistant
 
-A sophisticated, AI-powered patient support platform designed for Biogen's Tysabri therapy patients with Multiple Sclerosis (MS).
+A comprehensive AI-powered homeopathy platform featuring constitution detection, symptom checking, diagnosis analysis, and homeopathic medicine prescription.
 
-## ✨ Features
+## Features
 
-### 🤖 **AI-Powered Support**
-- **Real OpenAI GPT-4 Integration** - Intelligent, contextual responses
-- **Patient-Specific Context** - Personalized conversations
-- **Professional Medical Responses** - Healthcare-focused AI assistance
-- **Emotional Support** - Empathetic AI interactions
+### 🧬 Constitution Detector
+- Questionnaire-based homeopathic constitution assessment
+- Identifies primary and secondary constitutional types
+- Covers 8 major constitutions: Calcarea Carb, Phosphorus, Sulphur, Lycopodium, Natrum Mur, Pulsatilla, Nux Vomica, Arsenicum Album
 
-### 👥 **Dual Dashboard System**
-- **Patient Dashboard** - Treatment journey, AI chat, appointment management
-- **Agent Dashboard** - Patient queue, metrics, AI testing tools
-- **Role-Based Access** - Secure login for different user types
+### 🔍 Symptom Checker
+- Multi-system symptom selection (Head & Mind, Respiratory, Digestive, Musculoskeletal, Skin, General)
+- Modality tracking (what makes symptoms better/worse)
+- Symptom totality analysis
 
-### 🎨 **Professional Design**
-- **Biogen Brand Colors** - Professional healthcare aesthetic
-- **Elegant Typography** - Modern Inter font family
-- **Responsive Design** - Works on all devices
-- **Smooth Animations** - Professional user experience
+### 📋 Diagnosis
+- Repertory-based remedy matching using symptom totality
+- Ranked remedy suggestions with match scores
+- Constitutional correlation
 
-### 📊 **Advanced Features**
-- **Treatment Journey Tracker** - Visual progress monitoring
-- **Real-time Metrics** - Patient and agent performance data
-- **WhatsApp Integration** - Direct communication channels
-- **Transportation Assistance** - Ride scheduling support
+### 💊 Prescription
+- Detailed remedy information with potency guidelines
+- Dosage schedules for acute, subacute, and chronic conditions
+- Alternative remedy suggestions
+- Important homeopathic guidelines
 
-## 🚀 Quick Start
+### 🤖 AI Chat (NaturoSage AI)
+- OpenAI GPT-4 powered conversational assistant
+- Homeopathic knowledge base with demo fallback mode
+- Quick question shortcuts
 
-### **For External Users**
-Simply visit the deployed app - no setup required!
+### 📚 Materia Medica
+- Searchable database of 15+ key homeopathic remedies
+- Key symptoms, modalities, potency, and indications
 
-### **For Local Development**
+## Quick Start
+
+### Streamlit App (Primary)
 ```bash
-# Clone the repository
-git clone <your-repo-url>
-cd PatientServices
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Run locally
 streamlit run streamlit_app.py
 ```
+Open http://localhost:8501
 
-## 🔧 Configuration
+### Express.js Server (Secondary)
+```bash
+npm install
+npm run dev
+```
+Open http://localhost:3000
 
-### **API Key Setup**
-The app uses OpenAI GPT-4 for intelligent responses. API keys are configured securely through Streamlit Cloud secrets.
+## Configuration
 
-### **Environment Variables**
-- `OPENAI_API_KEY` - Your OpenAI API key (configured in Streamlit Cloud)
+### Optional: OpenAI API Key
+Set `OPENAI_API_KEY` as an environment variable for real AI responses. Without it, the app works fully in demo mode with built-in homeopathic knowledge.
 
-## 📱 User Roles
+## User Roles
 
-### **Patient (Sarah Parker)**
-- View treatment journey progress
-- Chat with AI about MS and Tysabri
-- Schedule appointments
-- Request transportation
-- Contact patient services
+### Patient (Ravi Sharma)
+- Run through the healing journey: Constitution → Symptoms → Diagnosis → Prescription
+- Chat with NaturoSage AI about homeopathy
+- Browse Materia Medica
 
-### **Agent (Cindy Smith)**
-- Monitor patient queue
-- View dashboard metrics
-- Test AI responses
-- Manage patient interactions
-- Access comprehensive patient data
+### Practitioner (Dr. Meera Joshi)
+- View patient records and consultation history
+- Test AI configurations across providers
+- Monitor practice metrics
 
-## 🎯 Use Cases
+## Tech Stack
 
-### **For Patients**
-- **Treatment Education** - Learn about MS and Tysabri therapy
-- **Appointment Management** - Schedule and track infusions
-- **Emotional Support** - Get encouragement and reassurance
-- **Practical Help** - Transportation and logistics assistance
+- **Frontend (Primary)**: Streamlit (Python)
+- **Frontend (Secondary)**: Express.js + Tailwind CSS
+- **AI**: OpenAI GPT-4 (with demo fallback)
+- **Deployment**: Streamlit Cloud / Heroku
 
-### **For Healthcare Providers**
-- **Patient Monitoring** - Track patient progress and satisfaction
-- **AI Assistance** - Let AI handle routine questions
-- **Performance Metrics** - Monitor call volume and outcomes
-- **Quality Assurance** - Test AI responses and patient interactions
+## Disclaimer
 
-## 🛠️ Technical Stack
-
-- **Frontend**: Streamlit (Python web framework)
-- **AI**: OpenAI GPT-4 API
-- **Styling**: Custom CSS with Biogen branding
-- **Deployment**: Streamlit Cloud
-- **Security**: Environment variable management
-
-## 📊 Demo Data
-
-The app includes realistic demo data for:
-- Patient profiles and treatment histories
-- Agent metrics and performance data
-- AI conversation examples
-- Treatment journey progressions
-
-## 🔒 Security & Privacy
-
-- **Secure API Key Management** - Keys stored in Streamlit Cloud secrets
-- **No Data Persistence** - Chat history not stored permanently
-- **HIPAA Considerations** - Designed with healthcare privacy in mind
-- **Environment Isolation** - Separate development and production environments
-
-## 🎨 Design Philosophy
-
-- **Healthcare-First** - Designed specifically for medical applications
-- **User-Centric** - Intuitive interfaces for both patients and providers
-- **Professional Aesthetic** - Biogen brand colors and modern typography
-- **Accessibility** - Mobile-responsive and accessible design
-
-## 🚀 Deployment
-
-This app is deployed on Streamlit Cloud with:
-- **Automatic Updates** - Deploys from GitHub repository
-- **Global CDN** - Fast loading worldwide
-- **SSL Security** - HTTPS encryption
-- **Scalable Infrastructure** - Handles multiple concurrent users
-
-## 📞 Support
-
-For technical support or questions about the Patient Services platform, please contact your Patient Services representative.
+NaturoSage is an educational tool. Always consult a qualified homeopathic practitioner for actual treatment decisions.
 
 ---
 
-**Built with ❤️ for Biogen Patient Services**
+**Built with 🌿 by the NaturoSage Team**

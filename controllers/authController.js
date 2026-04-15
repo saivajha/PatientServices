@@ -1,48 +1,44 @@
 const jwt = require('jsonwebtoken');
 
 class AuthController {
-  
-  // Demo login (no real authentication for demo purposes)
+
   async login(req, res) {
     try {
       const { role } = req.body;
-      
-      // Demo users
+
       const demoUsers = {
         patient: {
           id: 'patient_001',
-          name: 'Sarah Parker',
+          name: 'Ravi Sharma',
           role: 'patient',
-          email: 'sarah.parker@example.com',
-          diagnosis: 'Relapsing-Remitting MS',
-          therapy: 'Tysabri',
-          diagnosisDate: 'October 20, 2025',
-          nextInfusion: 'October 25, 2025',
-          location: 'Palo Alto, CA'
+          email: 'ravi.sharma@example.com',
+          age: 42,
+          gender: 'Male',
+          chiefComplaint: 'Chronic digestive issues',
+          location: 'New Delhi, India'
         },
-        agent: {
-          id: 'agent_001',
-          name: 'Cindy Smith',
-          role: 'agent',
-          email: 'cindy.smith@biogen.com',
-          department: 'Patient Services',
-          experience: '5 years',
-          specializations: ['MS Treatment', 'Tysabri Support', 'Patient Education']
+        practitioner: {
+          id: 'practitioner_001',
+          name: 'Dr. Meera Joshi',
+          role: 'practitioner',
+          email: 'dr.meera@naturosage.com',
+          department: 'Homeopathic Medicine',
+          experience: '12 years',
+          specializations: ['Constitutional Prescribing', 'Chronic Disease Management', 'Pediatric Homeopathy']
         }
       };
 
       if (!role || !demoUsers[role]) {
-        return res.status(400).json({ error: 'Invalid role. Use "patient" or "agent"' });
+        return res.status(400).json({ error: 'Invalid role. Use "patient" or "practitioner"' });
       }
 
       const user = demoUsers[role];
-      
-      // Generate JWT token
+
       const token = jwt.sign(
-        { 
-          userId: user.id, 
+        {
+          userId: user.id,
           role: user.role,
-          name: user.name 
+          name: user.name
         },
         process.env.JWT_SECRET || 'demo-secret-key',
         { expiresIn: '24h' }
@@ -66,23 +62,17 @@ class AuthController {
     }
   }
 
-  // Logout
   async logout(req, res) {
-    // In a real app, you might blacklist the token
     res.json({ success: true, message: 'Logged out successfully' });
   }
 
-  // Get current user info
   async getCurrentUser(req, res) {
     try {
-      // This would normally extract user from JWT token
-      // For demo purposes, we'll return basic info
-      const user = req.user || { 
-        id: 'demo_user', 
-        name: 'Demo User', 
-        role: 'demo' 
+      const user = req.user || {
+        id: 'demo_user',
+        name: 'Demo User',
+        role: 'demo'
       };
-      
       res.json({ user });
     } catch (error) {
       console.error('Get current user error:', error);

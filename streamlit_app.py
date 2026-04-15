@@ -5,113 +5,90 @@ from datetime import datetime, timedelta
 import json
 import urllib.parse
 
-# Helper function for generating appointments
-def generate_appointments(start_date_str="2025-10-25", count=6):
-    """Generate a list of appointment dates spaced 28 days apart"""
-    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
-    appointments = []
-    for i in range(count):
-        appointment_date = start_date + timedelta(days=28 * i)
-        appointments.append(appointment_date.strftime("%Y-%m-%d"))
-    return appointments
-
 # Page configuration
 st.set_page_config(
-    page_title="Patient Services",
-    page_icon="🏥",
+    page_title="NaturoSage - Homeopathy Assistant",
+    page_icon="🌿",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS with Biogen brand colors and elegant styling
+# Custom CSS with NaturoSage brand colors (natural greens/earth tones)
 st.markdown("""
 <style>
-    /* Import Biogen font */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    /* Global styles */
+
     .stApp {
         font-family: 'Inter', sans-serif;
     }
-    
-    /* Main header with Biogen blue gradient - Mobile optimized */
+
     .main-header {
-        background: linear-gradient(135deg, #003366 0%, #0066cc 50%, #0080ff 100%);
+        background: linear-gradient(135deg, #2d5a27 0%, #4a8c3f 50%, #6ab04c 100%);
         padding: 1.5rem 1rem;
         border-radius: 10px;
         color: white;
         text-align: center;
         margin-bottom: 1rem;
-        box-shadow: 0 4px 16px rgba(0, 102, 204, 0.2);
+        box-shadow: 0 4px 16px rgba(74, 140, 63, 0.3);
         border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     .main-header h1 {
         font-size: 1.8rem;
         font-weight: 700;
         margin-bottom: 0.25rem;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
-    
+
     .main-header p {
         font-size: 1rem;
         font-weight: 300;
         opacity: 0.9;
         margin: 0;
     }
-    
-    /* Mobile responsive adjustments */
+
     @media (max-width: 768px) {
         .main-header {
             padding: 1rem 0.75rem;
             margin-bottom: 0.75rem;
         }
-        
-        .main-header h1 {
-            font-size: 1.5rem;
-        }
-        
-        .main-header p {
-            font-size: 0.9rem;
-        }
+        .main-header h1 { font-size: 1.5rem; }
+        .main-header p { font-size: 0.9rem; }
     }
-    
-    /* Patient card with elegant blue gradient - Compact */
+
     .user-card {
-        background: linear-gradient(135deg, #e6f3ff 0%, #cce7ff 50%, #b3d9ff 100%);
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
         padding: 1rem;
         border-radius: 10px;
-        color: #003366;
+        color: #1b5e20;
         margin-bottom: 0.75rem;
-        border-left: 5px solid #0066cc;
-        box-shadow: 0 4px 16px rgba(0, 102, 204, 0.1);
+        border-left: 5px solid #2e7d32;
+        box-shadow: 0 4px 16px rgba(46, 125, 50, 0.1);
     }
-    
-    .user-card h2 {
-        color: #003366;
+
+    .user-card h2, .user-card h3 {
+        color: #1b5e20;
         font-weight: 600;
         margin-bottom: 0.5rem;
         font-size: 1.2rem;
     }
-    
-    /* Agent card with professional green gradient - Compact */
-    .agent-card {
-        background: linear-gradient(135deg, #f0f8f0 0%, #e0f0e0 50%, #d0e8d0 100%);
+
+    .practitioner-card {
+        background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 50%, #ffcc80 100%);
         padding: 1rem;
         border-radius: 10px;
-        color: #2d5a2d;
+        color: #e65100;
         margin-bottom: 0.75rem;
-        border-left: 5px solid #4a7c4a;
-        box-shadow: 0 4px 16px rgba(74, 124, 74, 0.1);
+        border-left: 5px solid #ef6c00;
+        box-shadow: 0 4px 16px rgba(239, 108, 0, 0.1);
     }
-    
-    .agent-card h2 {
-        color: #2d5a2d;
+
+    .practitioner-card h2, .practitioner-card h3 {
+        color: #e65100;
         font-weight: 600;
         margin-bottom: 1rem;
     }
-    
-    /* Chat messages with Biogen styling */
+
     .chat-message {
         padding: 1.25rem;
         border-radius: 15px;
@@ -119,222 +96,398 @@ st.markdown("""
         font-size: 1rem;
         line-height: 1.6;
     }
-    
+
     .user-message {
-        background: linear-gradient(135deg, #0066cc 0%, #0080ff 100%);
+        background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
         color: white;
         margin-left: 25%;
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
     }
-    
+
     .ai-message {
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        background: linear-gradient(135deg, #f1f8e9 0%, #ffffff 100%);
         color: #333;
         margin-right: 25%;
-        border: 2px solid #e6f3ff;
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+        border: 2px solid #c8e6c9;
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.1);
     }
-    
-    /* Metric cards with Biogen styling */
+
     .metric-card {
         background: white;
         padding: 1.5rem;
         border-radius: 15px;
-        box-shadow: 0 4px 20px rgba(0, 102, 204, 0.1);
+        box-shadow: 0 4px 20px rgba(46, 125, 50, 0.1);
         text-align: center;
         margin: 0.75rem;
-        border: 1px solid #e6f3ff;
+        border: 1px solid #e8f5e9;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    
+
     .metric-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
+        box-shadow: 0 8px 25px rgba(46, 125, 50, 0.15);
     }
-    
+
     .metric-card h3 {
-        color: #0066cc;
+        color: #2e7d32;
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
     }
-    
+
     .metric-card p {
         color: #666;
         font-weight: 500;
         margin: 0;
     }
-    
-    /* Sidebar styling */
-    .css-1d391kg {
-        background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-    }
-    
-    /* Button styling */
+
     .stButton > button {
-        background: linear-gradient(135deg, #0066cc 0%, #0080ff 100%);
+        background: linear-gradient(135deg, #2e7d32 0%, #43a047 100%);
         color: white;
         border: none;
         border-radius: 10px;
         padding: 0.75rem 1.5rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
     }
-    
+
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+        box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
     }
-    
-    /* Input styling */
+
     .stTextInput > div > div > input {
-        border: 2px solid #e6f3ff;
+        border: 2px solid #c8e6c9;
         border-radius: 10px;
         padding: 0.75rem;
         font-size: 1rem;
     }
-    
+
     .stTextInput > div > div > input:focus {
-        border-color: #0066cc;
-        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        border-color: #2e7d32;
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
     }
-    
-    /* Select box styling */
-    .stSelectbox > div > div {
-        border: 2px solid #e6f3ff;
-        border-radius: 10px;
-    }
-    
-    /* Success/Error messages */
-    .stSuccess {
-        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-        border: 1px solid #4a7c4a;
-        border-radius: 10px;
-    }
-    
-    .stError {
-        background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
-        border: 1px solid #dc3545;
-        border-radius: 10px;
-    }
-    
-    /* Journey tracker styling */
-    .journey-step {
-        background: linear-gradient(135deg, #e6f3ff 0%, #f0f8ff 100%);
-        border: 2px solid #0066cc;
-        border-radius: 10px;
-        padding: 0.75rem;
+
+    .constitution-card {
+        background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+        border: 2px solid #9c27b0;
+        border-radius: 12px;
+        padding: 1rem;
         margin: 0.5rem 0;
         text-align: center;
     }
-    
-    /* Quick action buttons */
-    .quick-action {
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        border: 2px solid #e6f3ff;
-        border-radius: 15px;
-        padding: 1.5rem;
-        text-align: center;
-        transition: all 0.3s ease;
-        cursor: pointer;
+
+    .remedy-card {
+        background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+        border: 2px solid #4caf50;
+        border-radius: 12px;
+        padding: 1rem;
+        margin: 0.5rem 0;
     }
-    
-    .quick-action:hover {
-        border-color: #0066cc;
-        background: linear-gradient(135deg, #e6f3ff 0%, #f0f8ff 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 102, 204, 0.15);
+
+    .symptom-tag {
+        display: inline-block;
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 4px 12px;
+        border-radius: 20px;
+        margin: 2px;
+        font-size: 0.85rem;
+        border: 1px solid #a5d6a7;
     }
-    
-    /* Mobile-specific improvements */
+
+    .diagnosis-box {
+        background: linear-gradient(135deg, #fff8e1 0%, #fff3e0 100%);
+        border: 2px solid #ff9800;
+        border-radius: 12px;
+        padding: 1.25rem;
+        margin: 0.75rem 0;
+    }
+
     @media (max-width: 768px) {
-        .stApp {
-            padding: 0.5rem;
-        }
-        
-        .user-card, .agent-card {
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .metric-card {
-            padding: 1rem;
-            margin: 0.5rem;
-        }
-        
-        .journey-step {
-            padding: 1rem;
-            margin: 0.5rem 0;
-        }
-        
-        .chat-message {
-            padding: 1rem;
-            margin: 0.5rem 0;
-        }
-        
-        .user-message {
-            margin-left: 15%;
-        }
-        
-        .ai-message {
-            margin-right: 15%;
-        }
-        
-        /* Sidebar improvements for mobile */
-        .css-1d391kg {
-            padding: 0.5rem;
-        }
-        
-        /* Button improvements for mobile */
-        .stButton > button {
-            padding: 0.75rem 1rem;
-            font-size: 14px;
-        }
-        
-        /* Input improvements for mobile */
-        .stTextInput > div > div > input {
-            padding: 0.75rem;
-            font-size: 16px; /* Prevents zoom on iOS */
-        }
-        
-        /* Date input improvements for mobile */
-        .stDateInput > div > div > input {
-            padding: 0.75rem;
-            font-size: 16px;
-        }
+        .stApp { padding: 0.5rem; }
+        .user-card, .practitioner-card { padding: 1rem; margin-bottom: 1rem; }
+        .metric-card { padding: 1rem; margin: 0.5rem; }
+        .chat-message { padding: 1rem; margin: 0.5rem 0; }
+        .user-message { margin-left: 15%; }
+        .ai-message { margin-right: 15%; }
+        .stButton > button { padding: 0.75rem 1rem; font-size: 14px; }
+        .stTextInput > div > div > input { padding: 0.75rem; font-size: 16px; }
     }
 </style>
 """, unsafe_allow_html=True)
 
+# --- Homeopathic Knowledge Base ---
+
+CONSTITUTIONS = {
+    "Calcarea Carbonica": {
+        "body_type": "Stocky, tendency to gain weight easily",
+        "temperament": "Cautious, methodical, anxious about health",
+        "thermal": "Chilly, dislikes cold and damp weather",
+        "food_cravings": "Eggs, sweets, cold drinks, starchy food",
+        "food_aversions": "Meat, milk (may cause upset)",
+        "key_features": ["Sweats easily on head/neck at night", "Slow but steady", "Fear of heights and illness", "Craves routine and security"],
+        "color": "#5c6bc0"
+    },
+    "Phosphorus": {
+        "body_type": "Tall, slender, fine-featured",
+        "temperament": "Open, sympathetic, sociable, impressionable",
+        "thermal": "Warm-blooded but chilly when ill",
+        "food_cravings": "Cold drinks, ice cream, salt, spicy food",
+        "food_aversions": "Warm food and drinks, fish",
+        "key_features": ["Bleeds easily", "Sensitive to light/sound/odors", "Fears thunderstorms and being alone", "Thirsty for cold water"],
+        "color": "#ef5350"
+    },
+    "Sulphur": {
+        "body_type": "Lean or round, often stooped posture",
+        "temperament": "Intellectual, philosophical, untidy",
+        "thermal": "Very warm, aggravated by heat",
+        "food_cravings": "Sweets, spicy food, alcohol, fats",
+        "food_aversions": "Eggs, milk",
+        "key_features": ["Burning sensations", "Skin complaints", "Worse from bathing", "Hot feet at night — sticks feet out of covers"],
+        "color": "#ffa726"
+    },
+    "Lycopodium": {
+        "body_type": "Thin upper body, may have bloated abdomen",
+        "temperament": "Intellectual but insecure, bossy at home, timid outside",
+        "thermal": "Warm but dislikes stuffy rooms",
+        "food_cravings": "Warm drinks, sweets, oysters",
+        "food_aversions": "Onions, oysters (sometimes), cold food",
+        "key_features": ["Right-sided complaints", "Worse 4-8 PM", "Digestive bloating and gas", "Fear of public speaking"],
+        "color": "#66bb6a"
+    },
+    "Natrum Muriaticum": {
+        "body_type": "Lean, often pear-shaped",
+        "temperament": "Reserved, serious, holds grudges, dislikes consolation",
+        "thermal": "Aggravated by sun and heat",
+        "food_cravings": "Salt, bread, sour foods",
+        "food_aversions": "Slimy food, fat, bread sometimes",
+        "key_features": ["Grief and suppressed emotions", "Headaches from sun", "Lips dry and cracked", "Worse from consolation"],
+        "color": "#42a5f5"
+    },
+    "Pulsatilla": {
+        "body_type": "Soft, plump, fair complexion",
+        "temperament": "Gentle, weepy, changeable moods, craves affection",
+        "thermal": "Warm-blooded, worse in warm rooms",
+        "food_cravings": "Rich food, butter, cream (but feels worse after)",
+        "food_aversions": "Fats, warm food, pork",
+        "key_features": ["Symptoms constantly changing", "Better in open air", "Thirstless even with fever", "Weeps easily, wants sympathy"],
+        "color": "#ec407a"
+    },
+    "Nux Vomica": {
+        "body_type": "Lean, wiry, tense",
+        "temperament": "Driven, competitive, irritable, workaholic",
+        "thermal": "Very chilly, sensitive to drafts",
+        "food_cravings": "Stimulants (coffee, spicy food, alcohol), rich food",
+        "food_aversions": "Food in general when stressed",
+        "key_features": ["Digestive issues from overindulgence", "Worse in morning", "Irritable and impatient", "Spasms and cramping"],
+        "color": "#8d6e63"
+    },
+    "Arsenicum Album": {
+        "body_type": "Thin, refined, anxious appearance",
+        "temperament": "Anxious, restless, fastidious, perfectionist",
+        "thermal": "Very chilly, craves warmth",
+        "food_cravings": "Warm drinks, sips of water, sour things",
+        "food_aversions": "Cold food and drink",
+        "key_features": ["Burning pains relieved by warmth", "Restless especially at night (12-2 AM)", "Fear of death and disease", "Wants everything in order"],
+        "color": "#78909c"
+    }
+}
+
+SYMPTOM_CATEGORIES = {
+    "Head & Mind": ["Headache", "Migraine", "Vertigo", "Memory issues", "Anxiety", "Depression", "Insomnia", "Brain fog", "Irritability", "Fear/Phobia"],
+    "Respiratory": ["Cough (dry)", "Cough (productive)", "Asthma", "Nasal congestion", "Sinusitis", "Sneezing", "Sore throat", "Shortness of breath", "Wheezing"],
+    "Digestive": ["Acidity", "Bloating", "Constipation", "Diarrhea", "Nausea", "Vomiting", "Loss of appetite", "Food intolerance", "Heartburn", "Flatulence"],
+    "Musculoskeletal": ["Back pain", "Joint pain", "Arthritis", "Muscle cramps", "Stiffness", "Sciatica", "Neck pain", "Rheumatism"],
+    "Skin": ["Eczema", "Acne", "Psoriasis", "Urticaria (hives)", "Itching", "Warts", "Hair loss", "Fungal infection", "Dry skin", "Boils"],
+    "General": ["Fatigue", "Fever", "Weight gain", "Weight loss", "Weakness", "Swelling", "Burning sensations", "Numbness", "Cold extremities", "Excessive sweating"]
+}
+
+HOMEO_MATERIA_MEDICA = {
+    "Aconitum Napellus": {
+        "common_name": "Monkshood",
+        "key_symptoms": ["Sudden onset", "High fever", "Anxiety/fear", "Restlessness", "Dry cough"],
+        "modalities": {"worse": "Cold wind, night, fright", "better": "Open air, rest"},
+        "potency": "30C",
+        "indications": "Sudden acute conditions from cold/fright; panic attacks; early stages of fever/inflammation"
+    },
+    "Arnica Montana": {
+        "common_name": "Leopard's Bane",
+        "key_symptoms": ["Trauma/bruising", "Soreness", "Muscle pain", "Fatigue", "Says they are fine when not"],
+        "modalities": {"worse": "Touch, motion, damp", "better": "Lying down, rest"},
+        "potency": "30C or 200C",
+        "indications": "Physical trauma, post-surgery recovery, muscle soreness, overexertion"
+    },
+    "Belladonna": {
+        "common_name": "Deadly Nightshade",
+        "key_symptoms": ["Sudden high fever", "Red hot face", "Throbbing headache", "Dilated pupils", "Delirium"],
+        "modalities": {"worse": "Light, noise, jarring, afternoon", "better": "Dark room, rest, semi-erect"},
+        "potency": "30C",
+        "indications": "Acute fever with redness and heat; throbbing headache; sore throat with red tonsils"
+    },
+    "Bryonia Alba": {
+        "common_name": "Wild Hops",
+        "key_symptoms": ["Worse from any motion", "Dry mucous membranes", "Thirst for large quantities", "Irritable", "Stitching pains"],
+        "modalities": {"worse": "Motion, warmth, morning", "better": "Pressure, rest, cold applications"},
+        "potency": "30C",
+        "indications": "Dry painful cough; arthritis worse on movement; headache from constipation"
+    },
+    "Rhus Toxicodendron": {
+        "common_name": "Poison Ivy",
+        "key_symptoms": ["Restlessness", "Stiffness on first motion", "Better continued motion", "Joint pain", "Skin eruptions with blisters"],
+        "modalities": {"worse": "Cold/damp, rest, beginning motion", "better": "Warmth, continued motion, rubbing"},
+        "potency": "30C",
+        "indications": "Arthritis/joint stiffness; herpes; sprains and strains; restless legs"
+    },
+    "Nux Vomica": {
+        "common_name": "Poison Nut",
+        "key_symptoms": ["Digestive complaints", "Irritability", "Oversensitive", "Spasms", "Hangover-like symptoms"],
+        "modalities": {"worse": "Morning, cold, stimulants, anger", "better": "Warmth, rest, evening"},
+        "potency": "30C",
+        "indications": "Digestive disorders from overindulgence; insomnia from mental overwork; constipation with ineffectual urging"
+    },
+    "Pulsatilla Nigricans": {
+        "common_name": "Wind Flower",
+        "key_symptoms": ["Changeable symptoms", "Weepy", "Thirstless", "Thick bland discharges", "Craves open air"],
+        "modalities": {"worse": "Warm rooms, evening, rich food", "better": "Open air, gentle motion, cold applications"},
+        "potency": "30C",
+        "indications": "Hormonal issues; shifting pains; ear infections in children; digestive upset from rich food"
+    },
+    "Sulphur": {
+        "common_name": "Brimstone",
+        "key_symptoms": ["Burning pains", "Itchy skin worse from heat", "Hot feet at night", "Untidy", "Morning diarrhea"],
+        "modalities": {"worse": "Heat, bathing, standing, 11 AM", "better": "Dry warm weather, open air"},
+        "potency": "30C or 200C",
+        "indications": "Chronic skin conditions; burning sensations; when well-selected remedies fail to act"
+    },
+    "Arsenicum Album": {
+        "common_name": "White Arsenic",
+        "key_symptoms": ["Anxiety/restlessness", "Burning pains better from warmth", "Thirst for sips", "Fastidious", "Weakness"],
+        "modalities": {"worse": "Cold, midnight to 2 AM, alone", "better": "Warmth, company, hot drinks"},
+        "potency": "30C",
+        "indications": "Food poisoning; anxiety with restlessness; asthma worse at night; burning diarrhea"
+    },
+    "Lycopodium Clavatum": {
+        "common_name": "Club Moss",
+        "key_symptoms": ["Right-sided symptoms", "4-8 PM aggravation", "Bloating after eating", "Lack of confidence", "Craves warm drinks"],
+        "modalities": {"worse": "4-8 PM, warm rooms, right side", "better": "Warm drinks, motion, open air"},
+        "potency": "30C or 200C",
+        "indications": "Digestive disorders with bloating; liver complaints; kidney stones; performance anxiety"
+    },
+    "Natrum Muriaticum": {
+        "common_name": "Table Salt",
+        "key_symptoms": ["Grief", "Worse from consolation", "Craves salt", "Sun headache", "Cold sores on lips"],
+        "modalities": {"worse": "Sun, heat, consolation, 10 AM", "better": "Open air, cold bathing, sweating"},
+        "potency": "200C",
+        "indications": "Depression from grief; migraines from sun; chronic sinusitis; eczema at hairline"
+    },
+    "Calcarea Carbonica": {
+        "common_name": "Carbonate of Lime",
+        "key_symptoms": ["Sweats on head at night", "Chilly", "Craves eggs", "Slow development", "Anxiety about health"],
+        "modalities": {"worse": "Cold/damp, exertion, full moon", "better": "Dry weather, lying on painful side"},
+        "potency": "200C",
+        "indications": "Slow metabolism; bone/teeth problems; childhood growth issues; recurrent colds"
+    },
+    "Phosphorus": {
+        "common_name": "Phosphorus",
+        "key_symptoms": ["Bleeding tendency", "Thirst for cold water", "Sensitive to everything", "Sociable", "Fears thunderstorms"],
+        "modalities": {"worse": "Evening, cold, lying on left side", "better": "Cold food/drink, sleep, rubbing"},
+        "potency": "30C or 200C",
+        "indications": "Nosebleeds; pneumonia; hepatitis; anxiety with desire for company; easy bruising"
+    },
+    "Ignatia Amara": {
+        "common_name": "St. Ignatius Bean",
+        "key_symptoms": ["Grief/loss", "Sighing", "Lump in throat", "Contradictory symptoms", "Emotional sensitivity"],
+        "modalities": {"worse": "Morning, grief, tobacco, coffee", "better": "Deep breathing, eating, change of position"},
+        "potency": "30C or 200C",
+        "indications": "Acute grief; emotional shock; nervous headache; hiccough; insomnia from emotional upset"
+    },
+    "Sepia Officinalis": {
+        "common_name": "Cuttlefish Ink",
+        "key_symptoms": ["Hormonal imbalance", "Indifference to family", "Bearing-down sensation", "Irritable", "Better from vigorous exercise"],
+        "modalities": {"worse": "Cold, before menses, afternoon", "better": "Exercise, warmth, after sleep"},
+        "potency": "30C or 200C",
+        "indications": "Hormonal disorders; PMS; menopausal symptoms; morning sickness; postpartum depression"
+    }
+}
+
+SYMPTOM_TO_REMEDIES = {
+    "Headache": ["Belladonna", "Bryonia Alba", "Natrum Muriaticum", "Nux Vomica"],
+    "Migraine": ["Natrum Muriaticum", "Lycopodium Clavatum", "Phosphorus", "Sepia Officinalis"],
+    "Vertigo": ["Phosphorus", "Pulsatilla Nigricans", "Bryonia Alba"],
+    "Anxiety": ["Arsenicum Album", "Aconitum Napellus", "Phosphorus", "Calcarea Carbonica"],
+    "Depression": ["Natrum Muriaticum", "Ignatia Amara", "Sepia Officinalis", "Sulphur"],
+    "Insomnia": ["Nux Vomica", "Arsenicum Album", "Ignatia Amara", "Phosphorus"],
+    "Irritability": ["Nux Vomica", "Lycopodium Clavatum", "Sepia Officinalis"],
+    "Cough (dry)": ["Aconitum Napellus", "Bryonia Alba", "Phosphorus"],
+    "Cough (productive)": ["Pulsatilla Nigricans", "Sulphur", "Calcarea Carbonica"],
+    "Asthma": ["Arsenicum Album", "Phosphorus", "Pulsatilla Nigricans"],
+    "Nasal congestion": ["Pulsatilla Nigricans", "Natrum Muriaticum", "Calcarea Carbonica"],
+    "Sinusitis": ["Natrum Muriaticum", "Pulsatilla Nigricans", "Lycopodium Clavatum"],
+    "Sore throat": ["Belladonna", "Lycopodium Clavatum", "Phosphorus"],
+    "Acidity": ["Nux Vomica", "Arsenicum Album", "Lycopodium Clavatum"],
+    "Bloating": ["Lycopodium Clavatum", "Nux Vomica", "Pulsatilla Nigricans"],
+    "Constipation": ["Nux Vomica", "Bryonia Alba", "Sulphur", "Lycopodium Clavatum"],
+    "Diarrhea": ["Arsenicum Album", "Phosphorus", "Sulphur"],
+    "Nausea": ["Nux Vomica", "Arsenicum Album", "Ignatia Amara", "Sepia Officinalis"],
+    "Back pain": ["Rhus Toxicodendron", "Bryonia Alba", "Nux Vomica"],
+    "Joint pain": ["Rhus Toxicodendron", "Bryonia Alba", "Calcarea Carbonica"],
+    "Arthritis": ["Rhus Toxicodendron", "Bryonia Alba", "Sulphur"],
+    "Muscle cramps": ["Nux Vomica", "Rhus Toxicodendron", "Arnica Montana"],
+    "Stiffness": ["Rhus Toxicodendron", "Bryonia Alba", "Calcarea Carbonica"],
+    "Sciatica": ["Rhus Toxicodendron", "Bryonia Alba", "Lycopodium Clavatum"],
+    "Eczema": ["Sulphur", "Natrum Muriaticum", "Arsenicum Album"],
+    "Acne": ["Sulphur", "Pulsatilla Nigricans", "Nux Vomica"],
+    "Psoriasis": ["Sulphur", "Arsenicum Album", "Lycopodium Clavatum"],
+    "Urticaria (hives)": ["Arsenicum Album", "Pulsatilla Nigricans", "Sulphur"],
+    "Itching": ["Sulphur", "Arsenicum Album", "Rhus Toxicodendron"],
+    "Hair loss": ["Phosphorus", "Natrum Muriaticum", "Lycopodium Clavatum", "Sepia Officinalis"],
+    "Fatigue": ["Phosphorus", "Arsenicum Album", "Calcarea Carbonica", "Sepia Officinalis"],
+    "Fever": ["Aconitum Napellus", "Belladonna", "Arsenicum Album"],
+    "Weight gain": ["Calcarea Carbonica", "Lycopodium Clavatum", "Sulphur"],
+    "Weakness": ["Arsenicum Album", "Phosphorus", "Calcarea Carbonica"],
+    "Burning sensations": ["Arsenicum Album", "Sulphur", "Phosphorus"],
+    "Excessive sweating": ["Calcarea Carbonica", "Phosphorus", "Sulphur"],
+    "Fear/Phobia": ["Aconitum Napellus", "Arsenicum Album", "Phosphorus", "Calcarea Carbonica"],
+    "Brain fog": ["Lycopodium Clavatum", "Phosphorus", "Calcarea Carbonica"],
+    "Memory issues": ["Lycopodium Clavatum", "Phosphorus", "Calcarea Carbonica"],
+    "Sneezing": ["Natrum Muriaticum", "Arsenicum Album", "Pulsatilla Nigricans"],
+    "Shortness of breath": ["Arsenicum Album", "Phosphorus", "Pulsatilla Nigricans"],
+    "Wheezing": ["Arsenicum Album", "Phosphorus", "Pulsatilla Nigricans"],
+    "Vomiting": ["Arsenicum Album", "Nux Vomica", "Ignatia Amara"],
+    "Loss of appetite": ["Nux Vomica", "Ignatia Amara", "Sepia Officinalis"],
+    "Food intolerance": ["Nux Vomica", "Lycopodium Clavatum", "Pulsatilla Nigricans"],
+    "Heartburn": ["Nux Vomica", "Arsenicum Album", "Phosphorus"],
+    "Flatulence": ["Lycopodium Clavatum", "Nux Vomica", "Sulphur"],
+    "Neck pain": ["Rhus Toxicodendron", "Bryonia Alba", "Calcarea Carbonica"],
+    "Rheumatism": ["Rhus Toxicodendron", "Bryonia Alba", "Sulphur"],
+    "Warts": ["Calcarea Carbonica", "Lycopodium Clavatum", "Sulphur"],
+    "Fungal infection": ["Sulphur", "Arsenicum Album", "Sepia Officinalis"],
+    "Dry skin": ["Arsenicum Album", "Sulphur", "Natrum Muriaticum"],
+    "Boils": ["Sulphur", "Belladonna", "Arsenicum Album"],
+    "Weight loss": ["Arsenicum Album", "Phosphorus", "Natrum Muriaticum"],
+    "Swelling": ["Bryonia Alba", "Rhus Toxicodendron", "Pulsatilla Nigricans"],
+    "Numbness": ["Phosphorus", "Rhus Toxicodendron", "Calcarea Carbonica"],
+    "Cold extremities": ["Arsenicum Album", "Calcarea Carbonica", "Phosphorus"],
+}
+
 # Initialize OpenAI client
 def init_openai():
-    # Try to get API key from environment variable first
     api_key = os.getenv('OPENAI_API_KEY')
-    
-    # If not found in environment, try Streamlit secrets
     if not api_key:
         try:
             api_key = st.secrets['openai']['api_key']
-        except:
+        except Exception:
             pass
-    
-    if not api_key:
-        st.error("⚠️ OpenAI API key not found. Please set the OPENAI_API_KEY environment variable or configure it in Streamlit secrets.")
-        return None
-    
-    try:
-        # Test the API key with a simple call
-        from openai import OpenAI
-        client = OpenAI(api_key=api_key)
-        # Don't make an actual API call here, just validate the key format
-        if not api_key.startswith('sk-proj-'):
-            st.error("⚠️ Invalid API key format. Please check your OpenAI API key.")
-            return None
-        return True
-    except Exception as e:
-        st.error(f"Error initializing OpenAI: {e}")
-        return None
+    if api_key:
+        try:
+            from openai import OpenAI
+            client = OpenAI(api_key=api_key)
+            return client
+        except Exception:
+            pass
+    return None
 
 # Initialize session state
 if 'user_role' not in st.session_state:
@@ -343,827 +496,642 @@ if 'user_name' not in st.session_state:
     st.session_state.user_name = None
 if 'chat_history' not in st.session_state:
     st.session_state.chat_history = []
-if 'openai_initialized' not in st.session_state:
-    st.session_state.openai_initialized = False
+if 'constitution_result' not in st.session_state:
+    st.session_state.constitution_result = None
+if 'selected_symptoms' not in st.session_state:
+    st.session_state.selected_symptoms = []
+if 'diagnosis_result' not in st.session_state:
+    st.session_state.diagnosis_result = None
+if 'prescription_result' not in st.session_state:
+    st.session_state.prescription_result = None
 
-# Patient context data
 PATIENT_CONTEXT = {
-    "name": "Sarah Parker",
+    "name": "Ravi Sharma",
     "role": "patient",
-    "diagnosis": "Relapsing-Remitting MS",
-    "therapy": "Tysabri",
-    "diagnosisDate": "October 20, 2025",
-    "nextInfusion": "October 25, 2025",
-    "location": "Palo Alto, CA"
+    "age": 42,
+    "gender": "Male",
+    "chief_complaint": "Chronic digestive issues",
+    "location": "New Delhi, India"
 }
 
-AGENT_CONTEXT = {
-    "name": "Cindy Smith",
-    "role": "agent",
-    "department": "Patient Services",
-    "experience": "5 years",
-    "specializations": ["MS Treatment", "Tysabri Support", "Patient Education"]
+PRACTITIONER_CONTEXT = {
+    "name": "Dr. Meera Joshi",
+    "role": "practitioner",
+    "department": "Homeopathic Medicine",
+    "experience": "12 years",
+    "specializations": ["Constitutional Prescribing", "Chronic Disease Management", "Pediatric Homeopathy"]
 }
 
-# AI Response Generation
+
 def generate_ai_response(message, user_context, provider="openai"):
-    """Generate AI response using OpenAI or fallback to demo mode"""
-    
-    # Try OpenAI first if available
-    if provider == "openai" and init_openai():
+    client = init_openai()
+    if client:
         try:
-            # Get API key from environment or secrets
-            api_key = os.getenv('OPENAI_API_KEY')
-            if not api_key:
-                try:
-                    api_key = st.secrets['openai']['api_key']
-                except:
-                    return generate_demo_response(message, user_context)
-            
-            system_prompt = f"""You are an AI assistant for Biogen Patient Services, specifically helping patients with Multiple Sclerosis (MS) who are on Tysabri therapy. You are empathetic, knowledgeable, and supportive.
+            system_prompt = f"""You are NaturoSage, an AI-powered Homeopathy Assistant. You are knowledgeable in classical homeopathy, materia medica, repertory, and the principles of similimum.
 
-Patient Context:
+User Context:
 - Name: {user_context['name']}
 - Role: {user_context['role']}
-- Diagnosis: {user_context.get('diagnosis', 'Relapsing-Remitting MS')}
-- Therapy: {user_context.get('therapy', 'Tysabri')}
-- Diagnosis Date: {user_context.get('diagnosisDate', 'October 20, 2025')}
-- Next Infusion: {user_context.get('nextInfusion', 'October 25, 2025')}
-- Location: {user_context.get('location', 'Palo Alto, CA')}
 - Current Date: {datetime.now().strftime('%B %d, %Y')}
 
 Your role is to:
-1. Answer questions about MS, Tysabri treatment, side effects, appointments, and lifestyle
-2. Provide emotional support and reassurance
-3. Help with practical matters like transportation, insurance, and scheduling
-4. Be conversational and natural, like a knowledgeable friend who happens to be an expert
-5. Always prioritize patient safety and recommend contacting healthcare providers for medical concerns
-6. Keep responses concise but helpful (2-4 sentences typically)
+1. Help users understand their homeopathic constitution
+2. Assist with symptom analysis using homeopathic repertory principles
+3. Suggest possible homeopathic remedies based on symptom totality
+4. Explain remedy pictures, modalities, and potency guidelines
+5. Educate about homeopathic principles (Law of Similars, Minimum Dose, Single Remedy)
+6. Always recommend consulting a qualified homeopathic practitioner for actual treatment
 
 Important guidelines:
-- Be warm and empathetic
-- Use the patient's name naturally in conversation
-- Don't provide specific medical advice - refer to healthcare providers for that
-- Be encouraging about treatment and prognosis
-- Offer practical help when possible
-- If you don't know something, admit it and suggest who might know"""
+- Always emphasize that AI suggestions are educational and not a substitute for professional consultation
+- Use proper homeopathic terminology (modalities, miasms, potency, etc.)
+- Consider the totality of symptoms, not just individual symptoms
+- Be warm, empathetic, and supportive
+- Explain concepts in simple language when speaking to patients"""
 
-            from openai import OpenAI
-            client = OpenAI(api_key=api_key)
             response = client.chat.completions.create(
                 model="gpt-4",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": message}
                 ],
-                max_tokens=300,
+                max_tokens=500,
                 temperature=0.7
             )
-            
             return response.choices[0].message.content.strip()
-            
         except Exception as e:
-            st.warning(f"OpenAI API error: {e}. Using demo mode instead.")
+            st.warning(f"OpenAI API error: {e}. Using demo mode.")
             return generate_demo_response(message, user_context)
-    
-    # Fallback to demo mode
     return generate_demo_response(message, user_context)
 
+
 def generate_demo_response(message, user_context):
-    """Generate demo response for when OpenAI is not available"""
     user_name = user_context['name'].split(' ')[0]
     lower_message = message.lower().strip()
-    
-    # Personal questions
-    if 'what is my name' in lower_message or 'my name' in lower_message:
-        return f"Your name is {user_context['name']}. I'm here to help you with your Tysabri treatment journey."
-    
-    if 'who am i' in lower_message:
-        return f"I'm talking to {user_context['name']}. You're a patient starting Tysabri treatment for MS. How can I help you today?"
-    
-    # Medical questions
-    if 'what is tysabri' in lower_message or 'tysabri' in lower_message:
-        return f"Tysabri (natalizumab) is a medication used to treat relapsing-remitting multiple sclerosis. It's given as an IV infusion every 28 days and helps reduce MS inflammation and relapses. You'll be starting this treatment on October 25, 2025. Do you have any specific questions about how it works?"
-    
-    if 'side effects' in lower_message:
-        return f"Common side effects of Tysabri can include headache, fatigue, nausea, and sometimes mild flu-like symptoms, especially in the first few infusions. Most people tolerate it well, and side effects usually improve over time. Your healthcare team will monitor you closely for any concerns. Are you worried about any particular side effects?"
-    
-    if 'headache' in lower_message:
-        return f"Headaches can happen with Tysabri, especially after infusions. You can usually take acetaminophen (Tylenol) for relief. Stay hydrated and rest in a cool, dark room if needed. Most infusion-related headaches improve within 24-48 hours. Is this something you're experiencing?"
-    
-    # Appointment questions
-    if 'appointment' in lower_message or 'when is my infusion' in lower_message:
-        return f"Your next infusion is scheduled for October 25, 2025. After that, you'll have infusions every 28 days. I can help you schedule future appointments or reschedule if needed. Would you like me to help you with anything specific about your appointment?"
-    
-    # Transportation
-    if 'transportation' in lower_message or 'ride' in lower_message:
-        return f"I can help you arrange transportation to your appointments! We can coordinate Uber or Lyft rides, medical transportation, or help you coordinate with family or friends. Just let me know your address and I can set up a ride for your October 25th appointment. Would you like me to help arrange that now?"
-    
-    # Emotional support
-    if any(word in lower_message for word in ['worried', 'anxious', 'scared', 'nervous']):
-        return f"It's completely normal to feel worried or anxious about starting a new treatment, especially with a new MS diagnosis. Many people feel this way. Tysabri is a very effective treatment, and your healthcare team will monitor you closely. You're taking the right steps by getting treatment early. Is there something specific that's worrying you? I'm here to listen and help."
-    
-    # Greetings
-    if any(word in lower_message for word in ['hello', 'hi', 'hey']):
-        return f"Hello {user_name}! I'm your AI assistant for your Tysabri treatment journey. I can help you with questions about MS, your treatment, appointments, side effects, or anything else you're curious about. What would you like to know?"
-    
-    if 'thank you' in lower_message or 'thanks' in lower_message:
-        return f"You're very welcome, {user_name}! I'm glad I could help. Is there anything else you'd like to know about your treatment or MS?"
-    
-    # General fallback
-    if any(word in lower_message for word in ['?', 'what', 'how', 'why', 'when', 'where']):
-        return f"That's a great question, {user_name}. I want to make sure I give you the most accurate and helpful information. Could you provide a bit more detail about what specifically you'd like to know? I can help with questions about MS, Tysabri treatment, appointments, side effects, lifestyle, family, work, or any other concerns you might have."
-    
-    # Final fallback
-    return f"I understand you're asking about \"{message}\", {user_name}. I'm your AI assistant for your Tysabri treatment journey. I can help you with questions about MS, your medication, appointments, side effects, lifestyle, family, work, or anything else on your mind. Could you tell me more about what you'd like to know? I'm here to support you."
 
-# Main App
+    if 'constitution' in lower_message:
+        return f"Great question, {user_name}! In homeopathy, your constitution is your unique physical, mental, and emotional makeup. It helps determine your constitutional remedy — the remedy that matches your overall pattern, not just individual symptoms. Use the Constitution Detector in the sidebar to discover yours!"
+
+    if 'potency' in lower_message or 'dose' in lower_message:
+        return f"{user_name}, potency selection is crucial in homeopathy. Lower potencies (6C, 12C) are used for acute physical conditions, 30C for general acute/chronic use, and higher potencies (200C, 1M) for deep constitutional treatment. Always start lower and move higher based on response. A qualified practitioner can guide you on the right potency."
+
+    if 'arnica' in lower_message:
+        return f"Arnica Montana is one of the most popular homeopathic remedies! It's the go-to for physical trauma, bruising, muscle soreness, and post-surgical recovery. Key symptom: the patient says 'I'm fine' even when clearly not. Use 30C for acute injuries, repeat as needed. It's also great for overexertion."
+
+    if any(word in lower_message for word in ['anxiety', 'anxious', 'worry', 'fear']):
+        return f"{user_name}, several homeopathic remedies address anxiety. Aconitum for sudden panic/fear, Arsenicum Album for restless anxiety worse at midnight, Phosphorus for anxiety about health with desire for company, and Calcarea Carbonica for worry about security. The specific remedy depends on your unique symptom picture and constitution."
+
+    if any(word in lower_message for word in ['skin', 'eczema', 'rash', 'itch']):
+        return f"Skin conditions respond well to homeopathy, {user_name}. Key remedies include Sulphur (burning, itching worse from heat/bathing), Arsenicum Album (dry, scaly, burning better from warmth), Graphites (oozing, sticky discharges), and Natrum Muriaticum (dry eczema at hairline). Constitutional treatment often gives the best long-term results for chronic skin issues."
+
+    if any(word in lower_message for word in ['digest', 'stomach', 'bloat', 'acid', 'gas']):
+        return f"Digestive complaints are very common in homeopathic practice, {user_name}. Top remedies include Nux Vomica (overindulgence, irritability), Lycopodium (bloating 4-8 PM, right-sided), Pulsatilla (worse from rich/fatty food), and Arsenicum (burning pains, food poisoning). Try our Symptom Checker to get a personalized analysis!"
+
+    if any(word in lower_message for word in ['hello', 'hi', 'hey']):
+        return f"Hello {user_name}! 🌿 I'm NaturoSage, your Homeopathy Assistant. I can help you understand homeopathic constitutions, check symptoms, explore remedies, and learn about this gentle healing system. What would you like to explore today?"
+
+    if 'thank' in lower_message:
+        return f"You're welcome, {user_name}! Remember, homeopathy treats the whole person, not just the disease. Feel free to explore the Constitution Detector, Symptom Checker, or ask me anything about homeopathic remedies. 🌿"
+
+    if any(word in lower_message for word in ['what is homeopathy', 'homeopathy']):
+        return f"Homeopathy is a natural system of medicine founded by Dr. Samuel Hahnemann in the late 18th century. It's based on the principle 'Similia Similibus Curentur' — Like Cures Like. A substance that causes symptoms in a healthy person can cure similar symptoms in a sick person when given in highly diluted form. It's gentle, non-toxic, and treats the whole person — mind, body, and emotions."
+
+    if any(c in lower_message for c in ['?', 'what', 'how', 'why', 'when', 'which']):
+        return f"That's a thoughtful question, {user_name}. I can help with information about homeopathic remedies, constitutions, symptom analysis, potency selection, and general homeopathic principles. Could you share more details so I can give you the most relevant guidance?"
+
+    return f"I understand you're asking about \"{message}\", {user_name}. I'm NaturoSage, your Homeopathy Assistant. I can help with constitution analysis, symptom checking, remedy suggestions, and homeopathic education. Try using our specialized tools in the menu, or ask me a specific question about homeopathy!"
+
+
+def determine_constitution(answers):
+    scores = {name: 0 for name in CONSTITUTIONS}
+
+    body_map = {
+        "Stocky / tendency to gain weight": ["Calcarea Carbonica"],
+        "Tall and slender": ["Phosphorus"],
+        "Lean / wiry / tense": ["Nux Vomica", "Arsenicum Album"],
+        "Soft / plump": ["Pulsatilla"],
+        "Average build": ["Lycopodium", "Sulphur", "Natrum Muriaticum"]
+    }
+    for const in body_map.get(answers.get("body_type", ""), []):
+        scores[const] = scores.get(const, 0) + 2
+
+    temp_map = {
+        "Very chilly — hate cold weather": ["Calcarea Carbonica", "Arsenicum Album", "Nux Vomica"],
+        "Warm-blooded — dislike heat": ["Sulphur", "Pulsatilla"],
+        "Mixed — affected by both extremes": ["Phosphorus", "Natrum Muriaticum", "Lycopodium"]
+    }
+    for const in temp_map.get(answers.get("thermal", ""), []):
+        scores[const] = scores.get(const, 0) + 2
+
+    food_map = {
+        "Eggs, dairy, starchy food": ["Calcarea Carbonica"],
+        "Cold drinks, ice cream, salt": ["Phosphorus"],
+        "Spicy food, stimulants, alcohol": ["Nux Vomica", "Sulphur"],
+        "Rich food, butter, cream": ["Pulsatilla"],
+        "Salt and sour foods": ["Natrum Muriaticum"],
+        "Warm drinks, sweets": ["Lycopodium", "Arsenicum Album"]
+    }
+    for const in food_map.get(answers.get("food_craving", ""), []):
+        scores[const] = scores.get(const, 0) + 2
+
+    temperament_map = {
+        "Cautious, anxious, methodical": ["Calcarea Carbonica"],
+        "Open, sociable, sympathetic": ["Phosphorus"],
+        "Intellectual, philosophical, untidy": ["Sulphur"],
+        "Driven, competitive, irritable": ["Nux Vomica"],
+        "Reserved, serious, holds grudges": ["Natrum Muriaticum"],
+        "Gentle, weepy, changeable moods": ["Pulsatilla"],
+        "Anxious, restless, perfectionist": ["Arsenicum Album"],
+        "Intellectual but insecure": ["Lycopodium"]
+    }
+    for const in temperament_map.get(answers.get("temperament", ""), []):
+        scores[const] = scores.get(const, 0) + 3
+
+    sleep_map = {
+        "Sweats on head/neck at night": ["Calcarea Carbonica"],
+        "Restless after midnight (12-2 AM)": ["Arsenicum Album"],
+        "Can't sleep from mental overwork": ["Nux Vomica"],
+        "Sleeps on back with arms above head": ["Pulsatilla"],
+        "Light sleeper, sensitive to noise": ["Phosphorus"],
+        "Feels unrested, worse in morning": ["Sulphur", "Lycopodium", "Natrum Muriaticum"]
+    }
+    for const in sleep_map.get(answers.get("sleep", ""), []):
+        scores[const] = scores.get(const, 0) + 2
+
+    emotion_map = {
+        "Fear of illness and health anxiety": ["Calcarea Carbonica", "Arsenicum Album"],
+        "Fear of being alone, craves company": ["Phosphorus"],
+        "Fear of public speaking / stage fright": ["Lycopodium"],
+        "Grief held inside, avoids consolation": ["Natrum Muriaticum"],
+        "Weeps easily, wants comfort": ["Pulsatilla"],
+        "Irritable, critical, impatient": ["Nux Vomica"],
+        "Burning concerns, restless worrying": ["Arsenicum Album"]
+    }
+    for const in emotion_map.get(answers.get("emotions", ""), []):
+        scores[const] = scores.get(const, 0) + 3
+
+    sorted_scores = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    top = sorted_scores[0]
+    runner_up = sorted_scores[1] if len(sorted_scores) > 1 else None
+
+    return top, runner_up, sorted_scores
+
+
+def get_remedies_for_symptoms(selected_symptoms, modality_worse="", modality_better=""):
+    remedy_scores = {}
+    for symptom in selected_symptoms:
+        remedies = SYMPTOM_TO_REMEDIES.get(symptom, [])
+        for remedy in remedies:
+            remedy_scores[remedy] = remedy_scores.get(remedy, 0) + 1
+
+    sorted_remedies = sorted(remedy_scores.items(), key=lambda x: x[1], reverse=True)
+    return sorted_remedies[:5]
+
+
+# ============ MAIN APP ============
+
 def main():
-    # Header
     st.markdown("""
     <div class="main-header">
-        <h1>🏥 Patient Services</h1>
-        <p>AI powered Patient Support System</p>
+        <h1>🌿 NaturoSage</h1>
+        <p>AI-Powered Homeopathy Assistant</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Login Section
+
     if st.session_state.user_role is None:
-        st.markdown("### 👋 Welcome! Please choose your role to continue:")
-        
+        st.markdown("### 👋 Welcome! Choose your role to get started:")
         col1, col2 = st.columns(2)
-        
         with col1:
-            if st.button("👤 Login as Patient (Sarah Parker)", use_container_width=True):
+            if st.button("🧑 Login as Patient (Ravi Sharma)", use_container_width=True):
                 st.session_state.user_role = "patient"
                 st.session_state.user_name = PATIENT_CONTEXT["name"]
                 st.session_state.chat_history = []
                 st.rerun()
-        
         with col2:
-            if st.button("👩‍💼 Login as Agent (Cindy Smith)", use_container_width=True):
-                st.session_state.user_role = "agent"
-                st.session_state.user_name = AGENT_CONTEXT["name"]
+            if st.button("👩‍⚕️ Login as Practitioner (Dr. Meera Joshi)", use_container_width=True):
+                st.session_state.user_role = "practitioner"
+                st.session_state.user_name = PRACTITIONER_CONTEXT["name"]
                 st.session_state.chat_history = []
                 st.rerun()
-    
     else:
-        # User is logged in
-        user_context = PATIENT_CONTEXT if st.session_state.user_role == "patient" else AGENT_CONTEXT
-        
-        # Sidebar
+        user_context = PATIENT_CONTEXT if st.session_state.user_role == "patient" else PRACTITIONER_CONTEXT
+
         with st.sidebar:
-            # Create proper HTML content
-            card_class = 'user-card' if st.session_state.user_role == 'patient' else 'agent-card'
-            
-            # Build HTML content safely
-            html_content = f"""
-            <div class="{card_class}">
-                <h3>👋 Welcome, {st.session_state.user_name}!</h3>
-                <p><strong>Role:</strong> {st.session_state.user_role.title()}</p>"""
-            
+            card_class = 'user-card' if st.session_state.user_role == 'patient' else 'practitioner-card'
+            html_content = f'<div class="{card_class}"><h3>🌿 Welcome, {st.session_state.user_name}!</h3>'
+            html_content += f'<p><strong>Role:</strong> {st.session_state.user_role.title()}</p>'
             if st.session_state.user_role == "patient":
-                html_content += f'<p><strong>Diagnosis:</strong> {user_context["diagnosis"]}</p>'
+                html_content += f'<p><strong>Age:</strong> {user_context["age"]} • <strong>Gender:</strong> {user_context["gender"]}</p>'
             else:
-                html_content += f'<p><strong>Department:</strong> {user_context["department"]}</p>'
-            
+                html_content += f'<p><strong>Dept:</strong> {user_context["department"]}</p>'
             html_content += "</div>"
-            
             st.markdown(html_content, unsafe_allow_html=True)
-            
-            # Logout
+
+            st.markdown("### 📋 Navigation")
+            page = st.radio("Go to:", [
+                "🏠 Dashboard",
+                "🧬 Constitution Detector",
+                "🔍 Symptom Checker",
+                "📋 Diagnosis",
+                "💊 Prescription",
+                "🤖 AI Chat",
+                "📚 Materia Medica"
+            ], label_visibility="collapsed")
+
             if st.button("🚪 Logout", use_container_width=True):
                 st.session_state.user_role = None
                 st.session_state.user_name = None
                 st.session_state.chat_history = []
+                st.session_state.constitution_result = None
+                st.session_state.selected_symptoms = []
+                st.session_state.diagnosis_result = None
+                st.session_state.prescription_result = None
                 st.rerun()
-        
-        # Main Content
-        if st.session_state.user_role == "patient":
-            show_patient_dashboard(user_context)
-        else:
-            show_agent_dashboard(user_context)
 
-def show_patient_dashboard(user_context):
-    """Display patient dashboard"""
-    
-    # Welcome Section - Compact
+        if page == "🏠 Dashboard":
+            show_dashboard(user_context)
+        elif page == "🧬 Constitution Detector":
+            show_constitution_detector(user_context)
+        elif page == "🔍 Symptom Checker":
+            show_symptom_checker(user_context)
+        elif page == "📋 Diagnosis":
+            show_diagnosis(user_context)
+        elif page == "💊 Prescription":
+            show_prescription(user_context)
+        elif page == "🤖 AI Chat":
+            show_ai_chat(user_context)
+        elif page == "📚 Materia Medica":
+            show_materia_medica()
+
+
+def show_dashboard(user_context):
+    if st.session_state.user_role == "patient":
+        st.markdown(f"""
+        <div class="user-card">
+            <h2>Welcome back, {user_context['name'].split(' ')[0]}! 🌿</h2>
+            <p>Your holistic health journey starts here.</p>
+            <p><strong>Age:</strong> {user_context['age']} • <strong>Chief Complaint:</strong> {user_context['chief_complaint']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("### 🗺️ Your Healing Journey")
+        j1, j2, j3, j4 = st.columns(4)
+        with j1:
+            st.markdown("""<div class="constitution-card"><h5>🧬 Step 1</h5><p style="margin:0">Constitution<br>Detection</p></div>""", unsafe_allow_html=True)
+        with j2:
+            st.markdown("""<div class="constitution-card"><h5>🔍 Step 2</h5><p style="margin:0">Symptom<br>Check</p></div>""", unsafe_allow_html=True)
+        with j3:
+            st.markdown("""<div class="constitution-card"><h5>📋 Step 3</h5><p style="margin:0">Diagnosis<br>Analysis</p></div>""", unsafe_allow_html=True)
+        with j4:
+            st.markdown("""<div class="constitution-card"><h5>💊 Step 4</h5><p style="margin:0">Remedy<br>Prescription</p></div>""", unsafe_allow_html=True)
+
+        st.markdown("### 📊 Quick Stats")
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            const_status = "✅ Done" if st.session_state.constitution_result else "⏳ Pending"
+            st.markdown(f'<div class="metric-card"><h3 style="font-size:1.2rem;">🧬</h3><p>Constitution: {const_status}</p></div>', unsafe_allow_html=True)
+        with c2:
+            symp_count = len(st.session_state.selected_symptoms)
+            st.markdown(f'<div class="metric-card"><h3 style="font-size:1.2rem;">🔍</h3><p>Symptoms: {symp_count} logged</p></div>', unsafe_allow_html=True)
+        with c3:
+            diag_status = "✅ Done" if st.session_state.diagnosis_result else "⏳ Pending"
+            st.markdown(f'<div class="metric-card"><h3 style="font-size:1.2rem;">📋</h3><p>Diagnosis: {diag_status}</p></div>', unsafe_allow_html=True)
+        with c4:
+            rx_status = "✅ Done" if st.session_state.prescription_result else "⏳ Pending"
+            st.markdown(f'<div class="metric-card"><h3 style="font-size:1.2rem;">💊</h3><p>Prescription: {rx_status}</p></div>', unsafe_allow_html=True)
+
+    else:
+        st.markdown(f"""
+        <div class="practitioner-card">
+            <h2>Welcome, {user_context['name']}! 👩‍⚕️</h2>
+            <p><strong>Department:</strong> {user_context['department']} • <strong>Experience:</strong> {user_context['experience']}</p>
+            <p>Specializations: {', '.join(user_context['specializations'])}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+        st.markdown("### 📊 Practice Overview")
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            st.markdown('<div class="metric-card"><h3>24</h3><p>Active Patients</p></div>', unsafe_allow_html=True)
+        with c2:
+            st.markdown('<div class="metric-card"><h3>156</h3><p>Remedies Prescribed</p></div>', unsafe_allow_html=True)
+        with c3:
+            st.markdown('<div class="metric-card"><h3>89%</h3><p>Recovery Rate</p></div>', unsafe_allow_html=True)
+        with c4:
+            st.markdown('<div class="metric-card"><h3>4.8⭐</h3><p>Patient Rating</p></div>', unsafe_allow_html=True)
+
+        st.markdown("### 👥 Recent Patients")
+        patients = [
+            {"name": "Ravi Sharma", "complaint": "Chronic digestive issues", "constitution": "Lycopodium", "status": "Follow-up"},
+            {"name": "Priya Patel", "complaint": "Recurrent migraines", "constitution": "Natrum Mur", "status": "New"},
+            {"name": "Amit Kumar", "complaint": "Skin eczema", "constitution": "Sulphur", "status": "Improving"},
+        ]
+        for p in patients:
+            with st.expander(f"👤 {p['name']} — {p['status']}"):
+                st.write(f"**Chief Complaint:** {p['complaint']}")
+                st.write(f"**Constitution:** {p['constitution']}")
+                st.write(f"**Status:** {p['status']}")
+
+
+def show_constitution_detector(user_context):
+    st.markdown("### 🧬 Constitution Detector")
+    st.markdown("Answer these questions to discover your homeopathic constitution (body-mind type). This helps identify your **constitutional remedy**.")
+
+    with st.form("constitution_form"):
+        body_type = st.selectbox("1. What best describes your body type?", [
+            "Select...", "Stocky / tendency to gain weight", "Tall and slender",
+            "Lean / wiry / tense", "Soft / plump", "Average build"
+        ])
+        thermal = st.selectbox("2. How do you respond to temperature?", [
+            "Select...", "Very chilly — hate cold weather",
+            "Warm-blooded — dislike heat", "Mixed — affected by both extremes"
+        ])
+        food_craving = st.selectbox("3. What foods do you crave most?", [
+            "Select...", "Eggs, dairy, starchy food", "Cold drinks, ice cream, salt",
+            "Spicy food, stimulants, alcohol", "Rich food, butter, cream",
+            "Salt and sour foods", "Warm drinks, sweets"
+        ])
+        temperament = st.selectbox("4. Which temperament fits you best?", [
+            "Select...", "Cautious, anxious, methodical", "Open, sociable, sympathetic",
+            "Intellectual, philosophical, untidy", "Driven, competitive, irritable",
+            "Reserved, serious, holds grudges", "Gentle, weepy, changeable moods",
+            "Anxious, restless, perfectionist", "Intellectual but insecure"
+        ])
+        sleep = st.selectbox("5. What is your sleep pattern like?", [
+            "Select...", "Sweats on head/neck at night",
+            "Restless after midnight (12-2 AM)", "Can't sleep from mental overwork",
+            "Sleeps on back with arms above head", "Light sleeper, sensitive to noise",
+            "Feels unrested, worse in morning"
+        ])
+        emotions = st.selectbox("6. Which emotional pattern resonates with you?", [
+            "Select...", "Fear of illness and health anxiety",
+            "Fear of being alone, craves company", "Fear of public speaking / stage fright",
+            "Grief held inside, avoids consolation", "Weeps easily, wants comfort",
+            "Irritable, critical, impatient", "Burning concerns, restless worrying"
+        ])
+
+        submitted = st.form_submit_button("🧬 Detect My Constitution", use_container_width=True)
+
+        if submitted:
+            if any(v == "Select..." for v in [body_type, thermal, food_craving, temperament, sleep, emotions]):
+                st.error("Please answer all questions to get an accurate result.")
+            else:
+                answers = {
+                    "body_type": body_type, "thermal": thermal, "food_craving": food_craving,
+                    "temperament": temperament, "sleep": sleep, "emotions": emotions
+                }
+                top, runner_up, all_scores = determine_constitution(answers)
+                st.session_state.constitution_result = {"top": top, "runner_up": runner_up, "all_scores": all_scores}
+                st.rerun()
+
+    if st.session_state.constitution_result:
+        result = st.session_state.constitution_result
+        top_name, top_score = result["top"]
+        const_info = CONSTITUTIONS.get(top_name, {})
+
+        st.markdown("---")
+        st.markdown(f"### 🎯 Your Primary Constitution: **{top_name}**")
+        st.markdown(f"""
+        <div class="remedy-card">
+            <h4 style="color: #2e7d32; margin-bottom: 0.5rem;">{top_name} Constitution</h4>
+            <p><strong>Body Type:</strong> {const_info.get('body_type', 'N/A')}</p>
+            <p><strong>Temperament:</strong> {const_info.get('temperament', 'N/A')}</p>
+            <p><strong>Thermal:</strong> {const_info.get('thermal', 'N/A')}</p>
+            <p><strong>Food Cravings:</strong> {const_info.get('food_cravings', 'N/A')}</p>
+            <p><strong>Food Aversions:</strong> {const_info.get('food_aversions', 'N/A')}</p>
+            <p><strong>Key Features:</strong></p>
+            <ul>{''.join(f'<li>{f}</li>' for f in const_info.get('key_features', []))}</ul>
+        </div>
+        """, unsafe_allow_html=True)
+
+        if result["runner_up"]:
+            ru_name, ru_score = result["runner_up"]
+            st.info(f"🔄 Runner-up constitution: **{ru_name}** (score: {ru_score})")
+
+        st.caption("⚠️ This is an educational tool. Please consult a qualified homeopathic practitioner for accurate constitutional prescribing.")
+
+
+def show_symptom_checker(user_context):
+    st.markdown("### 🔍 Symptom Checker")
+    st.markdown("Select your symptoms across different body systems. The more specific you are, the better the analysis.")
+
+    selected = []
+    for category, symptoms in SYMPTOM_CATEGORIES.items():
+        with st.expander(f"📂 {category}"):
+            chosen = st.multiselect(f"Select symptoms in {category}:", symptoms, key=f"sym_{category}")
+            selected.extend(chosen)
+
+    st.markdown("---")
+    st.markdown("### ⏰ Modalities (What makes symptoms better or worse?)")
+    col1, col2 = st.columns(2)
+    with col1:
+        worse = st.multiselect("Worse from:", [
+            "Morning", "Evening", "Night", "Cold", "Heat", "Motion", "Rest",
+            "Touch", "Eating", "After sleep", "Dampness", "Before storms"
+        ])
+    with col2:
+        better = st.multiselect("Better from:", [
+            "Warmth", "Cold applications", "Rest", "Motion", "Open air",
+            "Pressure", "Eating", "Company", "Alone", "After sleep"
+        ])
+
+    if st.button("🔍 Analyze Symptoms", use_container_width=True):
+        if not selected:
+            st.error("Please select at least one symptom.")
+        else:
+            st.session_state.selected_symptoms = selected
+            st.session_state.symptom_modalities = {"worse": worse, "better": better}
+            st.success(f"✅ {len(selected)} symptom(s) recorded! Go to **Diagnosis** for analysis.")
+
+    if st.session_state.selected_symptoms:
+        st.markdown("### 📋 Your Current Symptoms")
+        symptom_html = " ".join(f'<span class="symptom-tag">{s}</span>' for s in st.session_state.selected_symptoms)
+        st.markdown(symptom_html, unsafe_allow_html=True)
+
+
+def show_diagnosis(user_context):
+    st.markdown("### 📋 Homeopathic Diagnosis")
+
+    if not st.session_state.selected_symptoms:
+        st.warning("⚠️ No symptoms recorded yet. Please use the **Symptom Checker** first.")
+        return
+
+    st.markdown("#### Current Symptoms")
+    symptom_html = " ".join(f'<span class="symptom-tag">{s}</span>' for s in st.session_state.selected_symptoms)
+    st.markdown(symptom_html, unsafe_allow_html=True)
+
+    if st.button("📋 Generate Diagnosis", use_container_width=True):
+        remedies = get_remedies_for_symptoms(st.session_state.selected_symptoms)
+
+        if not remedies:
+            st.error("Could not determine matching remedies. Please add more symptoms.")
+            return
+
+        diagnosis_data = []
+        for remedy_name, score in remedies:
+            remedy_info = HOMEO_MATERIA_MEDICA.get(remedy_name, {})
+            diagnosis_data.append({
+                "name": remedy_name,
+                "score": score,
+                "common_name": remedy_info.get("common_name", ""),
+                "indications": remedy_info.get("indications", ""),
+                "key_symptoms": remedy_info.get("key_symptoms", [])
+            })
+
+        st.session_state.diagnosis_result = diagnosis_data
+        st.rerun()
+
+    if st.session_state.diagnosis_result:
+        st.markdown("---")
+        st.markdown("### 🎯 Diagnosis Results — Top Matching Remedies")
+
+        for i, remedy in enumerate(st.session_state.diagnosis_result):
+            match_pct = min(100, int((remedy["score"] / max(1, len(st.session_state.selected_symptoms))) * 100))
+            st.markdown(f"""
+            <div class="diagnosis-box">
+                <h4 style="color: #e65100; margin-bottom: 0.5rem;">{'🥇' if i == 0 else '🥈' if i == 1 else '🥉' if i == 2 else '📌'} {remedy['name']} ({remedy['common_name']})</h4>
+                <p><strong>Match Score:</strong> {remedy['score']} symptoms covered ({match_pct}% match)</p>
+                <p><strong>Key Symptoms:</strong> {', '.join(remedy['key_symptoms'])}</p>
+                <p><strong>Indications:</strong> {remedy['indications']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+
+        if st.session_state.constitution_result:
+            top_const = st.session_state.constitution_result["top"][0]
+            st.info(f"🧬 Your constitution ({top_const}) has been considered in the analysis. Constitutional remedies often provide deeper, longer-lasting healing.")
+
+        st.caption("⚠️ This analysis is educational. Always consult a qualified homeopathic practitioner for personalized treatment.")
+
+
+def show_prescription(user_context):
+    st.markdown("### 💊 Homeopathic Prescription")
+
+    if not st.session_state.diagnosis_result:
+        st.warning("⚠️ Please complete the **Diagnosis** step first.")
+        return
+
+    top_remedy_data = st.session_state.diagnosis_result[0]
+    top_remedy_name = top_remedy_data["name"]
+    remedy_info = HOMEO_MATERIA_MEDICA.get(top_remedy_name, {})
+
     st.markdown(f"""
-    <div class="user-card">
-        <h2>Welcome back, {user_context['name'].split(' ')[0]}!</h2>
-        <p><strong>{user_context['diagnosis']}</strong> • <strong>{user_context['therapy']}</strong></p>
-        <p>Next infusion: <strong>{user_context['nextInfusion']}</strong></p>
+    <div class="remedy-card">
+        <h3 style="color: #2e7d32;">💊 Primary Remedy: {top_remedy_name}</h3>
+        <p><strong>Common Name:</strong> {remedy_info.get('common_name', 'N/A')}</p>
+        <p><strong>Recommended Potency:</strong> {remedy_info.get('potency', '30C')}</p>
+        <p><strong>Indications:</strong> {remedy_info.get('indications', 'N/A')}</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Treatment Journey - Compact
-    st.markdown("### 🗺️ Treatment Journey")
-    
-    journey_col1, journey_col2, journey_col3 = st.columns(3)
-    
-    with journey_col1:
-        st.markdown("""
-        <div class="journey-step">
-            <h5 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem;">✅ MS Diagnosis</h5>
-            <p style="color: #666; margin: 0; font-size: 0.9rem;">October 20, 2025</p>
+
+    st.markdown("#### 📝 Prescription Details")
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown(f"**Remedy:** {top_remedy_name}")
+        st.markdown(f"**Potency:** {remedy_info.get('potency', '30C')}")
+        st.markdown(f"**Form:** Globules / Pills")
+    with col2:
+        modalities = remedy_info.get("modalities", {})
+        st.markdown(f"**Worse from:** {modalities.get('worse', 'N/A')}")
+        st.markdown(f"**Better from:** {modalities.get('better', 'N/A')}")
+
+    st.markdown("#### 📋 Dosage Guidelines")
+    st.markdown("""
+    | Condition Type | Potency | Frequency | Duration |
+    |---|---|---|---|
+    | Acute (sudden onset) | 30C | Every 2-4 hours | Until improvement |
+    | Subacute | 30C | 2-3 times daily | 1-2 weeks |
+    | Chronic | 200C | Once weekly | 4-6 weeks |
+    | Constitutional | 200C / 1M | Single dose | Wait & watch |
+    """)
+
+    st.markdown("#### 🔄 Alternative Remedies")
+    for remedy in st.session_state.diagnosis_result[1:3]:
+        alt_info = HOMEO_MATERIA_MEDICA.get(remedy["name"], {})
+        st.markdown(f"""
+        <div style="background: #f5f5f5; padding: 0.75rem; border-radius: 8px; margin: 0.5rem 0; border-left: 3px solid #9e9e9e;">
+            <strong>{remedy['name']}</strong> ({alt_info.get('common_name', '')}) — Potency: {alt_info.get('potency', '30C')}<br>
+            <small>{alt_info.get('indications', '')}</small>
         </div>
         """, unsafe_allow_html=True)
-    
-    with journey_col2:
-        st.markdown("""
-        <div class="journey-step">
-            <h5 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem;">✅ Treatment Plan</h5>
-            <p style="color: #666; margin: 0; font-size: 0.9rem;">Tysabri Approved</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with journey_col3:
-        st.markdown("""
-        <div class="journey-step">
-            <h5 style="color: #0066cc; font-weight: 600; margin-bottom: 0.5rem; font-size: 1rem;">📅 First Infusion</h5>
-            <p style="color: #666; margin: 0; font-size: 0.9rem;">October 25, 2025</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # AI Chat Section - Compact
-    st.markdown("### 🤖 AI Agent")
-    
-    # Display chat history
+
+    st.markdown("#### ⚠️ Important Guidelines")
+    st.warning("""
+    **Homeopathic Prescription Guidelines:**
+    - Take remedies 15-30 minutes away from food, drink, or strong flavors (mint, coffee)
+    - Avoid touching pills with hands — tip into cap and place under tongue
+    - Stop the remedy once significant improvement begins
+    - If symptoms worsen briefly then improve, this is a good sign (homeopathic aggravation)
+    - Consult your practitioner if no improvement after the recommended duration
+    """)
+
+    if st.button("💾 Save Prescription", use_container_width=True):
+        st.session_state.prescription_result = {
+            "remedy": top_remedy_name,
+            "potency": remedy_info.get("potency", "30C"),
+            "date": datetime.now().strftime("%Y-%m-%d"),
+            "symptoms": st.session_state.selected_symptoms,
+            "constitution": st.session_state.constitution_result["top"][0] if st.session_state.constitution_result else "Not assessed"
+        }
+        st.success("✅ Prescription saved! You can view it from your Dashboard.")
+
+    st.caption("⚠️ This prescription is for educational purposes only. Always follow guidance from a qualified homeopathic practitioner.")
+
+
+def show_ai_chat(user_context):
+    st.markdown("### 🤖 NaturoSage AI Chat")
+    st.markdown("Ask me anything about homeopathy, remedies, constitutions, or your health concerns.")
+
     for message in st.session_state.chat_history:
         if message["role"] == "user":
-            st.markdown(f"""
-            <div class="chat-message user-message">
-                <strong>You:</strong> {message["content"]}
-            </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f'<div class="chat-message user-message"><strong>You:</strong> {message["content"]}</div>', unsafe_allow_html=True)
         else:
-            st.markdown(f"""
-            <div class="chat-message ai-message">
-                <strong>AI:</strong> {message["content"]}
-            </div>
-            """, unsafe_allow_html=True)
-    
-    # Chat input
-    user_input = st.text_input("Ask me anything about MS, Tysabri, appointments, or your treatment:", placeholder="e.g., What is Tysabri?")
-    
-    if st.button("Ask Patient Services AI Agent", use_container_width=True):
+            st.markdown(f'<div class="chat-message ai-message"><strong>🌿 NaturoSage:</strong> {message["content"]}</div>', unsafe_allow_html=True)
+
+    user_input = st.text_input("Ask about homeopathy, remedies, or your symptoms:", placeholder="e.g., What remedy is good for anxiety?")
+
+    if st.button("🌿 Ask NaturoSage", use_container_width=True):
         if user_input:
-            # Add user message to history
-            st.session_state.chat_history.append({
-                "role": "user",
-                "content": user_input,
-                "timestamp": datetime.now()
-            })
-            
-            # Generate AI response
-            with st.spinner("AI is thinking..."):
+            st.session_state.chat_history.append({"role": "user", "content": user_input, "timestamp": datetime.now()})
+            with st.spinner("NaturoSage is thinking..."):
                 ai_response = generate_ai_response(user_input, user_context)
-            
-            # Add AI response to history
-            st.session_state.chat_history.append({
-                "role": "assistant",
-                "content": ai_response,
-                "timestamp": datetime.now()
-            })
-            
-            st.rerun()
-    
-    # Quick Actions - Compact
-    st.markdown("### 🚀 Actions")
-    
-    col1, col2, col3 = st.columns(3)
-    
-    with col1:
-        if st.button("📞 Contact Your Rep", use_container_width=True):
-            st.session_state.show_whatsapp = True
-        
-        if st.session_state.get('show_whatsapp', False):
-            col_patient, col_agent = st.columns(2)
-            
-            with col_patient:
-                patient_phone = st.text_input("Your phone number:", key="patient_phone", placeholder="+1 555 123-4567")
-            
-            with col_agent:
-                agent_phone = st.text_input("Agent's phone number:", key="agent_phone", placeholder="+1 555 987-6543", value="+1 555 987-6543")
-            
-            if patient_phone and agent_phone and len(patient_phone.replace('+', '').replace('-', '').replace(' ', '')) >= 10 and len(agent_phone.replace('+', '').replace('-', '').replace(' ', '')) >= 10:
-                # Clean phone numbers
-                clean_patient_phone = patient_phone.replace('+', '').replace('-', '').replace(' ', '')
-                clean_agent_phone = agent_phone.replace('+', '').replace('-', '').replace(' ', '')
-                
-                if not clean_patient_phone.startswith('1') and len(clean_patient_phone) == 10:
-                    clean_patient_phone = '1' + clean_patient_phone
-                if not clean_agent_phone.startswith('1') and len(clean_agent_phone) == 10:
-                    clean_agent_phone = '1' + clean_agent_phone
-                
-                # Create WhatsApp message
-                message = f"Hi Cindy! This is Sarah Parker (Patient ID: SP-2025-001). I have some questions about my Tysabri therapy. My number is {patient_phone}. Thank you for your support! 💙"
-                encoded_message = urllib.parse.quote(message)
-                whatsapp_url = f"https://wa.me/{clean_agent_phone}?text={encoded_message}"
-                
-                # Create a clickable link that actually works
-                st.markdown(f"""
-                <div style="text-align: center; margin: 15px 0;">
-                    <a href="{whatsapp_url}" target="_blank" style="
-                        background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-                        color: white;
-                        padding: 12px 24px;
-                        text-decoration: none;
-                        border-radius: 25px;
-                        font-weight: 600;
-                        display: inline-block;
-                        box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-                        font-size: 16px;
-                    ">
-                        💬 Open WhatsApp Chat
-                    </a>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                st.success("✅ WhatsApp link generated! Click the green button above to start chatting with your agent.")
-                st.info(f"📱 This will open WhatsApp and send a message to {agent_phone}")
-            elif patient_phone or agent_phone:
-                st.error("❌ Please enter valid phone numbers for both fields (at least 10 digits each)")
-            else:
-                st.info("Please enter both your phone number and the agent's phone number to generate the WhatsApp link.")
-    
-    with col2:
-        if st.button("🚗 Request Transportation", use_container_width=True):
-            st.session_state.show_transportation = True
-    
-    # Transportation Section
-    if st.session_state.get('show_transportation', False):
-        st.markdown("### 🚗 Transportation Assistance")
-        
-        # Starting address input
-        st.markdown("**Enter your starting address:**")
-        starting_address = st.text_input(
-            "Your address:",
-            placeholder="e.g., 123 Main St, Palo Alto, CA 94301",
-            key="starting_address"
-        )
-        
-        if starting_address:
-            # Simulate AI finding nearby infusion centers
-            st.markdown("**🤖 AI is finding nearby infusion centers...**")
-            
-            # Simulated infusion centers (in a real app, this would use geocoding APIs)
-            nearby_centers = [
-                {
-                    "name": "Palo Alto Infusion Center",
-                    "address": "456 University Ave, Palo Alto, CA 94301",
-                    "distance": "2.3 miles",
-                    "rating": "4.8",
-                    "phone": "(650) 123-4567",
-                    "hours": "Mon-Fri 8AM-6PM"
-                },
-                {
-                    "name": "Stanford Medical Center",
-                    "address": "300 Pasteur Dr, Stanford, CA 94305",
-                    "distance": "3.1 miles", 
-                    "rating": "4.9",
-                    "phone": "(650) 723-4000",
-                    "hours": "Mon-Fri 7AM-7PM"
-                },
-                {
-                    "name": "Mountain View Infusion Clinic",
-                    "address": "789 Castro St, Mountain View, CA 94041",
-                    "distance": "4.7 miles",
-                    "rating": "4.6",
-                    "phone": "(650) 987-6543",
-                    "hours": "Mon-Fri 9AM-5PM"
-                },
-                {
-                    "name": "Redwood City Medical Center",
-                    "address": "123 Veterans Blvd, Redwood City, CA 94063",
-                    "distance": "6.2 miles",
-                    "rating": "4.7",
-                    "phone": "(650) 555-0123",
-                    "hours": "Mon-Fri 8AM-6PM"
-                }
-            ]
-            
-            st.markdown("**📍 Nearby Infusion Centers:**")
-            
-            # Display centers with selection
-            selected_center = None
-            for i, center in enumerate(nearby_centers):
-                col_name, col_distance, col_select = st.columns([3, 1, 1])
-                
-                with col_name:
-                    st.markdown(f"""
-                    <div style="background: #f8f9fa; padding: 1rem; border-radius: 8px; margin: 0.5rem 0; border-left: 4px solid #0066cc;">
-                        <strong>{center['name']}</strong><br>
-                        <small style="color: #666;">{center['address']}</small><br>
-                        <small style="color: #666;">⭐ {center['rating']} • 📞 {center['phone']}</small><br>
-                        <small style="color: #666;">🕒 {center['hours']}</small>
-                    </div>
-                    """, unsafe_allow_html=True)
-                
-                with col_distance:
-                    st.markdown(f"**{center['distance']}**")
-                
-                with col_select:
-                    if st.button(f"Select", key=f"select_center_{i}"):
-                        selected_center = center
-                        st.session_state.selected_center = center
-                        st.success(f"✅ Selected: {center['name']}")
-            
-            # Uber booking section
-            if selected_center or 'selected_center' in st.session_state:
-                center = selected_center or st.session_state.selected_center
-                
-                st.markdown("---")
-                st.markdown(f"### 🚗 Book Uber Ride to {center['name']}")
-                
-                col_from, col_to = st.columns(2)
-                
-                with col_from:
-                    st.markdown(f"**From:** {starting_address}")
-                
-                with col_to:
-                    st.markdown(f"**To:** {center['address']}")
-                
-                # Trip details
-                st.markdown("**Trip Details:**")
-                col_distance, col_time, col_price = st.columns(3)
-                
-                with col_distance:
-                    st.metric("Distance", center['distance'])
-                
-                with col_time:
-                    # Simulate estimated time based on distance
-                    estimated_time = "8-12 min" if float(center['distance'].split()[0]) < 3 else "12-18 min"
-                    st.metric("Est. Time", estimated_time)
-                
-                with col_price:
-                    # Simulate price estimation
-                    base_price = 8.50 if float(center['distance'].split()[0]) < 3 else 12.75
-                    st.metric("Est. Price", f"${base_price:.2f}")
-                
-                # Uber booking options
-                st.markdown("**Choose Uber Service:**")
-                col_uberx, col_comfort, col_xl = st.columns(3)
-                
-                with col_uberx:
-                    if st.button("🚗 UberX", use_container_width=True):
-                        uber_url = f"https://m.uber.com/ul/?action=setPickup&pickup[latitude]=37.4419&pickup[longitude]=-122.1430&dropoff[latitude]=37.4419&dropoff[longitude]=-122.1430&dropoff[nickname]={center['name']}"
-                        st.markdown(f"""
-                        <div style="text-align: center; margin: 15px 0;">
-                            <a href="{uber_url}" target="_blank" style="
-                                background: linear-gradient(135deg, #000000 0%, #333333 100%);
-                                color: white;
-                                padding: 12px 24px;
-                                text-decoration: none;
-                                border-radius: 25px;
-                                font-weight: 600;
-                                display: inline-block;
-                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-                            ">
-                                🚗 Open Uber App
-                            </a>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        st.success("✅ UberX ride requested! The Uber app will open with your trip details.")
-                
-                with col_comfort:
-                    if st.button("🚙 Uber Comfort", use_container_width=True):
-                        st.info("💡 Uber Comfort provides newer cars with extra legroom - perfect for medical appointments!")
-                
-                with col_xl:
-                    if st.button("🚐 UberXL", use_container_width=True):
-                        st.info("💡 UberXL offers larger vehicles - ideal if you need assistance or extra space!")
-                
-                # Additional options
-                st.markdown("**Additional Options:**")
-                col_schedule, col_roundtrip = st.columns(2)
-                
-                with col_schedule:
-                    if st.button("📅 Schedule for Later", use_container_width=True):
-                        st.info("💡 Schedule your ride for a specific time - great for planned appointments!")
-                
-                with col_roundtrip:
-                    if st.button("🔄 Round Trip", use_container_width=True):
-                        st.info("💡 Book a round trip to ensure you have a ride home after your infusion!")
-                
-                # Reset selection
-                if st.button("🔄 Choose Different Center"):
-                    if 'selected_center' in st.session_state:
-                        del st.session_state.selected_center
-                    st.rerun()
-        
-        else:
-            st.info("📍 Please enter your starting address to find nearby infusion centers.")
-    
-    with col3:
-        if st.button("📅 Schedule Appointment", use_container_width=True):
-            st.session_state.show_scheduling = True
-    
-    # Scheduling Section
-    if st.session_state.get('show_scheduling', False):
-        st.markdown("### 📅 Infusion Scheduling")
-        
-        # Initialize appointments if not exists
-        if 'appointments' not in st.session_state:
-            st.session_state.appointments = generate_appointments()
-        
-        st.markdown("**Your Next 6 Infusion Appointments (Every 28 Days):**")
-        
-        # Display appointments with edit capability
-        for i, appointment in enumerate(st.session_state.appointments):
-            col_date, col_edit, col_status = st.columns([3, 1, 1])
-            
-            with col_date:
-                try:
-                    appointment_dt = datetime.strptime(appointment, "%Y-%m-%d")
-                    st.write(f"**Appointment {i+1}:** {appointment_dt.strftime('%B %d, %Y')} ({appointment_dt.strftime('%A')})")
-                except ValueError:
-                    st.write(f"**Appointment {i+1}:** {appointment} (Invalid Date)")
-            
-            with col_edit:
-                if st.button("✏️", key=f"edit_{i}", help="Edit this appointment"):
-                    try:
-                        st.session_state.edit_appointment = int(i)
-                    except (ValueError, TypeError):
-                        st.session_state.edit_appointment = 0
-            
-            with col_status:
-                if i == 0:
-                    st.success("Next")
-                elif i < 3:
-                    st.info("Upcoming")
-                else:
-                    st.write("Scheduled")
-        
-        # Edit appointment modal
-        if 'edit_appointment' in st.session_state and st.session_state.edit_appointment is not None:
-            try:
-                appointment_index = int(st.session_state.edit_appointment)
-                st.markdown("---")
-                st.markdown(f"### ✏️ Edit Appointment {appointment_index + 1}")
-                
-                if appointment_index < len(st.session_state.appointments):
-                    current_date = st.session_state.appointments[appointment_index]
-                    
-                    try:
-                        current_date_obj = datetime.strptime(current_date, "%Y-%m-%d").date()
-                    except ValueError:
-                        # Fallback to a default date if current date is invalid
-                        current_date_obj = datetime(2025, 10, 25).date()
-                        st.warning(f"⚠️ Invalid date format found: {current_date}. Using default date.")
-                else:
-                    st.error("❌ Invalid appointment index. Please try again.")
-                    st.session_state.edit_appointment = None
-                    st.rerun()
-                    return
-            except (ValueError, TypeError):
-                st.error("❌ Invalid appointment selection. Please try again.")
-                st.session_state.edit_appointment = None
-                st.rerun()
-                return
-            
-            new_date = st.date_input(
-                "Select new date:",
-                value=current_date_obj,
-                key=f"new_date_{appointment_index}",
-                help="Select any date. Appointments will adjust to maintain 28-day intervals."
-            )
-            
-            col_save, col_cancel = st.columns(2)
-            with col_save:
-                if st.button("💾 Save Changes", key="save_appointment"):
-                    try:
-                        # Calculate new start date
-                        new_start = new_date
-                        new_appointments = []
-                        for i in range(6):
-                            appointment_date = new_start + timedelta(days=28 * i)
-                            new_appointments.append(appointment_date.strftime("%Y-%m-%d"))
-                        
-                        st.session_state.appointments = new_appointments
-                        st.session_state.edit_appointment = None
-                        st.success("✅ Appointments updated! All future appointments adjusted to maintain 28-day intervals.")
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"❌ Error updating appointments: {str(e)}")
-                        st.info("Please try again or contact support if the issue persists.")
-            
-            with col_cancel:
-                if st.button("❌ Cancel", key="cancel_appointment"):
-                    st.session_state.edit_appointment = None
-                    st.rerun()
-        
-        # Custom date selection for extended intervals
-        st.markdown("---")
-        st.markdown("### 📅 Custom Date Selection")
-        st.markdown("**Need to schedule an appointment more than 28 days apart?**")
-        
-        # Safe date calculation for custom date input
-        try:
-            if 'appointments' in st.session_state and st.session_state.appointments:
-                last_appointment = datetime.strptime(st.session_state.appointments[-1], "%Y-%m-%d").date()
-                default_custom_date = last_appointment + timedelta(days=28)
-            else:
-                # Fallback to a default date if appointments not initialized
-                default_custom_date = datetime(2025, 10, 25).date() + timedelta(days=28)
-        except (ValueError, KeyError, IndexError):
-            # Additional fallback in case of any date parsing issues
-            default_custom_date = datetime(2025, 11, 22).date()
-        
-        custom_date = st.date_input(
-            "Select custom date:",
-            value=default_custom_date,
-            key="custom_date",
-            help="This will create a new appointment at your selected date, and subsequent appointments will be 28 days from this date."
-        )
-        
-        if st.button("📅 Schedule Custom Appointment"):
-            try:
-                # Ensure appointments are initialized
-                if 'appointments' not in st.session_state:
-                    st.session_state.appointments = generate_appointments()
-                
-                # Add custom appointment and regenerate future ones
-                custom_appointments = []
-                for app in st.session_state.appointments:
-                    try:
-                        app_date = datetime.strptime(app, "%Y-%m-%d").date()
-                        if app_date < custom_date:
-                            custom_appointments.append(app)
-                    except ValueError:
-                        # Skip invalid dates
-                        continue
-                
-                custom_appointments.append(custom_date.strftime("%Y-%m-%d"))
-                
-                # Generate remaining appointments from custom date
-                remaining_count = 6 - len(custom_appointments)
-                for i in range(remaining_count):
-                    next_date = custom_date + timedelta(days=28 * (i + 1))
-                    custom_appointments.append(next_date.strftime("%Y-%m-%d"))
-                
-                st.session_state.appointments = custom_appointments[:6]
-                st.success(f"✅ Custom appointment scheduled for {custom_date.strftime('%B %d, %Y')}! Future appointments adjusted.")
-                st.rerun()
-                
-            except Exception as e:
-                st.error(f"❌ Error scheduling appointment: {str(e)}")
-                st.info("Please try again or contact support if the issue persists.")
-        
-        # Reset appointments button
-        if st.button("🔄 Reset to Default Schedule"):
-            st.session_state.appointments = generate_appointments()
-            st.success("✅ Appointments reset to default 28-day schedule starting October 25, 2025.")
+            st.session_state.chat_history.append({"role": "assistant", "content": ai_response, "timestamp": datetime.now()})
             st.rerun()
 
-def show_agent_dashboard(user_context):
-    """Display agent dashboard"""
-    
-    # Welcome Section
-    st.markdown(f"""
-    <div class="agent-card">
-        <h2>Welcome back, {user_context['name'].split(' ')[0]}!</h2>
-        <p><strong>Department:</strong> {user_context['department']} • <strong>Experience:</strong> {user_context['experience']}</p>
-        <p>You have <strong>3 active patients</strong> today. AI is handling routine questions while you focus on complex cases.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    # Metrics
-    st.markdown("### 📊 Dashboard Metrics")
-    
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.markdown("""
-        <div class="metric-card">
-            <h3 style="color: #0066cc; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">12</h3>
-            <p style="color: #666; font-weight: 500; margin: 0; font-size: 1rem;">Active Patients</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown("""
-        <div class="metric-card">
-            <h3 style="color: #4a7c4a; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">8</h3>
-            <p style="color: #666; font-weight: 500; margin: 0; font-size: 1rem;">Calls Today</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown("""
-        <div class="metric-card">
-            <h3 style="color: #ff6b35; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">2</h3>
-            <p style="color: #666; font-weight: 500; margin: 0; font-size: 1rem;">Pending Prior Auths</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col4:
-        st.markdown("""
-        <div class="metric-card">
-            <h3 style="color: #28a745; font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem;">92%</h3>
-            <p style="color: #666; font-weight: 500; margin: 0; font-size: 1rem;">Satisfaction Score</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Patient Queue
-    st.markdown("### 👥 Active Patients")
-    
-    patient_data = {
-        "Sarah Parker": {
-            "status": "High Priority",
-            "next_appointment": "Oct 25, 2025",
-            "last_contact": "Oct 21, 2025",
-            "concerns": ["New diagnosis anxiety", "Treatment expectations"]
-        },
-        "John Smith": {
-            "status": "Medium Priority", 
-            "next_appointment": "Nov 15, 2025",
-            "last_contact": "Oct 20, 2025",
-            "concerns": ["Insurance coverage", "Side effects"]
-        },
-        "Maria Garcia": {
-            "status": "Low Priority",
-            "next_appointment": "Nov 22, 2025", 
-            "last_contact": "Oct 19, 2025",
-            "concerns": ["Transportation", "Work accommodations"]
-        }
-    }
-    
-    for patient, info in patient_data.items():
-        with st.expander(f"👤 {patient} - {info['status']}"):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.write(f"**Next Appointment:** {info['next_appointment']}")
-                st.write(f"**Last Contact:** {info['last_contact']}")
-            with col2:
-                st.write(f"**Key Concerns:** {', '.join(info['concerns'])}")
-            
-            # WhatsApp contact button
-            st.markdown("---")
-            col_btn1, col_btn2 = st.columns(2)
-            with col_btn1:
-                if st.button(f"📞 Contact {patient.split()[0]}", key=f"contact_{patient}"):
-                    st.session_state[f'show_agent_whatsapp_{patient}'] = True
-            
-            if st.session_state.get(f'show_agent_whatsapp_{patient}', False):
-                phone_input = st.text_input(f"Enter {patient}'s phone number:", key=f"phone_{patient}", placeholder="+1 555 123-4567")
-                if phone_input and len(phone_input.replace('+', '').replace('-', '').replace(' ', '')) >= 10:
-                    # Clean phone number
-                    clean_phone = phone_input.replace('+', '').replace('-', '').replace(' ', '')
-                    if not clean_phone.startswith('1') and len(clean_phone) == 10:
-                        clean_phone = '1' + clean_phone
-                    
-                    # Create WhatsApp message
-                    message = f"Hi {patient.split()[0]}! This is Cindy from Biogen Patient Services. I'm calling to check on your Tysabri treatment. How are you feeling today? We're here to support you every step of the way! 💙"
-                    encoded_message = urllib.parse.quote(message)
-                    whatsapp_url = f"https://wa.me/{clean_phone}?text={encoded_message}"
-                    
-                    st.markdown(f"""
-                    <div style="text-align: center; margin: 10px 0;">
-                        <a href="{whatsapp_url}" target="_blank" style="
-                            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-                            color: white;
-                            padding: 10px 20px;
-                            text-decoration: none;
-                            border-radius: 20px;
-                            font-weight: 600;
-                            display: inline-block;
-                            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
-                            font-size: 14px;
-                        ">
-                            💬 Open WhatsApp Chat
-                        </a>
-                    </div>
-                    """, unsafe_allow_html=True)
-                    
-                    st.success("✅ WhatsApp link generated! Click the button above to start chatting.")
-                    st.info(f"📱 This will open WhatsApp and send a message to {patient}")
-                elif phone_input:
-                    st.error("❌ Please enter a valid phone number (at least 10 digits)")
-                else:
-                    st.info("Please enter the patient's phone number to generate the WhatsApp link.")
-            
-            with col_btn2:
-                if st.button(f"📋 View Details", key=f"details_{patient}"):
-                    st.info(f"Detailed patient information for {patient} would be displayed here in a real system.")
-    
-    # AI Testing Section
-    st.markdown("### 🤖 AI Testing & Support")
-    
-    # Test different scenarios
-    test_scenarios = [
-        "Tell me about Tysabri side effects",
-        "I'm feeling anxious about my treatment",
-        "Can you help with transportation?",
-        "When is my next appointment?"
+    st.markdown("#### 💡 Quick Questions")
+    quick_qs = [
+        "What is homeopathy?",
+        "Tell me about Arnica",
+        "How to choose potency?",
+        "Remedies for anxiety?"
     ]
-    
-    st.markdown("**Quick Test Scenarios:**")
-    for scenario in test_scenarios:
-        if st.button(f"Test: {scenario}", key=f"test_{scenario}"):
-            with st.spinner("AI is responding..."):
-                response = generate_ai_response(scenario, PATIENT_CONTEXT)
-            st.success(f"**Response:** {response}")
+    qcols = st.columns(len(quick_qs))
+    for i, q in enumerate(quick_qs):
+        with qcols[i]:
+            if st.button(q, key=f"quick_{i}", use_container_width=True):
+                st.session_state.chat_history.append({"role": "user", "content": q, "timestamp": datetime.now()})
+                with st.spinner("NaturoSage is thinking..."):
+                    response = generate_ai_response(q, user_context)
+                st.session_state.chat_history.append({"role": "assistant", "content": response, "timestamp": datetime.now()})
+                st.rerun()
+
+
+def show_materia_medica():
+    st.markdown("### 📚 Homeopathic Materia Medica")
+    st.markdown("Browse the key remedies in our database.")
+
+    search = st.text_input("🔎 Search remedies:", placeholder="e.g., Arnica, Belladonna...")
+
+    for name, info in HOMEO_MATERIA_MEDICA.items():
+        if search and search.lower() not in name.lower() and search.lower() not in info.get("common_name", "").lower():
+            continue
+        with st.expander(f"💊 {name} ({info.get('common_name', '')})"):
+            st.markdown(f"**Key Symptoms:** {', '.join(info.get('key_symptoms', []))}")
+            modalities = info.get("modalities", {})
+            st.markdown(f"**Worse from:** {modalities.get('worse', 'N/A')}")
+            st.markdown(f"**Better from:** {modalities.get('better', 'N/A')}")
+            st.markdown(f"**Recommended Potency:** {info.get('potency', '30C')}")
+            st.markdown(f"**Indications:** {info.get('indications', 'N/A')}")
+
 
 if __name__ == "__main__":
     main()
